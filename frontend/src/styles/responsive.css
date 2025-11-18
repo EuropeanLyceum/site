@@ -1,0 +1,957 @@
+/* ========================================
+   RESPONSIVE DESIGN SYSTEM
+   Адаптивні стилі для всіх сторінок сайту
+   ======================================== */
+
+/* ========================================
+   BREAKPOINTS
+   ======================================== */
+/* 
+   Mobile Small: до 480px
+   Mobile Large: 481px - 768px  
+   Tablet: 769px - 1024px
+   Desktop: 1025px - 1440px
+   Large Desktop: 1441px+
+*/
+
+/* ========================================
+   HEADER ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .header .navContainer {
+    max-width: 95%;
+    padding: 0 20px;
+  }
+  
+  .header .navLinks {
+    gap: 40px;
+  }
+  
+  .header .navLink {
+    font-size: 16px;
+  }
+  
+  .header .logo {
+    margin-right: 40px;
+  }
+  
+  .header .languageSwitcher {
+    margin-left: 40px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .header {
+    height: 60px;
+  }
+  
+  .header .navContainer {
+    height: 58px;
+    padding: 0 15px;
+  }
+  
+  .header .navLinks {
+    gap: 25px;
+  }
+  
+  .header .navLink {
+    font-size: 14px;
+  }
+  
+  .header .logo {
+    width: 45px;
+    height: 45px;
+    margin-right: 25px;
+  }
+  
+  .header .languageSwitcher {
+    width: 28px;
+    height: 32px;
+    margin-left: 25px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .header {
+    height: 55px;
+  }
+  
+  .header .navContainer {
+    height: 53px;
+    padding: 0 10px;
+  }
+  
+  .header .navLinks {
+    gap: 15px;
+  }
+  
+  .header .navLink {
+    font-size: 12px;
+  }
+  
+  .header .logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 15px;
+  }
+  
+  .header .languageSwitcher {
+    width: 24px;
+    height: 28px;
+    margin-left: 15px;
+  }
+}
+
+/* ========================================
+   COMMON PAGE LAYOUT ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .content {
+    max-width: 95%;
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 50px;
+    padding-bottom: 100px;
+  }
+  
+  .title {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+  
+  .welcome-text {
+    font-size: 32px;
+    margin-bottom: 25px;
+  }
+  
+  .text-box {
+    padding: 30px 0 30px 10px;
+  }
+  
+  .text-box p {
+    font-size: 16px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .content {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+  
+  .title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .welcome-text {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .text-box {
+    padding: 25px 0 25px 10px;
+  }
+  
+  .text-box p {
+    font-size: 15px;
+    text-align: left;
+  }
+  
+  .text-box::before {
+    left: 0;
+    top: 25px;
+    bottom: 25px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 30px;
+    padding-bottom: 60px;
+  }
+  
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .welcome-text {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  
+  .text-box {
+    padding: 20px 0 20px 15px;
+  }
+  
+  .text-box p {
+    font-size: 14px;
+  }
+  
+  .text-box::before {
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+  }
+}
+
+/* ========================================
+   NEWS PAGE ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .newsMain {
+    max-width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .newsStreamTitle {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+  
+  .newsItem {
+    min-height: 200px;
+  }
+  
+  .newsContent {
+    width: 60%;
+    padding: 25px 25px 25px 35px;
+  }
+  
+  .newsItemTitle {
+    font-size: 20px;
+  }
+  
+  .newsItemText {
+    font-size: 15px;
+  }
+  
+  .newsImage {
+    width: 40%;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .newsMain {
+    padding: 25px 15px;
+    margin-top: 50px;
+  }
+  
+  .newsStreamTitle {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  
+  .newsItem {
+    flex-direction: column;
+    min-height: auto;
+  }
+  
+  .newsContent {
+    width: 100%;
+    padding: 20px;
+    order: 1;
+  }
+  
+  .newsItemTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .newsItemTitle::before {
+    display: none;
+  }
+  
+  .newsItemText {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  
+  .newsImage {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    order: 2;
+    margin-top: 0;
+  }
+  
+  .readMoreBtn {
+    width: 200px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .newsMain {
+    padding: 20px 10px;
+  }
+  
+  .newsStreamTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .newsContent {
+    padding: 15px;
+  }
+  
+  .newsItemTitle {
+    font-size: 16px;
+  }
+  
+  .newsItemText {
+    font-size: 13px;
+  }
+  
+  .newsImage {
+    height: 150px;
+  }
+  
+  .readMoreBtn {
+    width: 180px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   CLUBS & STUDIOS PAGE ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .clubsStudiosPage .content {
+    max-width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .clubsStudiosPage .title {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+  
+  .clubItem {
+    min-height: 200px;
+  }
+  
+  .clubContent {
+    width: 60%;
+    padding: 25px 25px 25px 35px;
+  }
+  
+  .clubTitle {
+    font-size: 20px;
+  }
+  
+  .clubDescription {
+    font-size: 15px;
+  }
+  
+  .clubImage {
+    width: 40%;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .clubsStudiosPage .content {
+    padding: 25px 15px;
+  }
+  
+  .clubsStudiosPage .title {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  
+  .clubItem {
+    flex-direction: column;
+    min-height: auto;
+  }
+  
+  .clubContent {
+    width: 100%;
+    padding: 20px;
+    order: 1;
+  }
+  
+  .clubTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .clubTitle::before {
+    display: none;
+  }
+  
+  .clubDescription {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  
+  .clubImage {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    order: 2;
+    margin-top: 0;
+  }
+  
+  .readMoreBtn {
+    width: 200px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .clubsStudiosPage .content {
+    padding: 20px 10px;
+  }
+  
+  .clubsStudiosPage .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .clubContent {
+    padding: 15px;
+  }
+  
+  .clubTitle {
+    font-size: 16px;
+  }
+  
+  .clubDescription {
+    font-size: 13px;
+  }
+  
+  .clubImage {
+    height: 150px;
+  }
+  
+  .readMoreBtn {
+    width: 180px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   GALLERY MODAL ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .galleryContent {
+    max-width: 95%;
+    max-height: 85vh;
+  }
+  
+  .galleryNav {
+    padding: 0 15px;
+  }
+  
+  .galleryNav button {
+    padding: 12px;
+    font-size: 18px;
+  }
+  
+  .galleryClose {
+    top: 15px;
+    right: 15px;
+    font-size: 25px;
+  }
+  
+  .galleryCounter {
+    bottom: 15px;
+    font-size: 14px;
+  }
+}
+
+/* Mobile - до 768px */
+@media (max-width: 768px) {
+  .galleryContent {
+    max-width: 98%;
+    max-height: 80vh;
+  }
+  
+  .galleryNav {
+    padding: 0 10px;
+  }
+  
+  .galleryNav button {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .galleryClose {
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+  }
+  
+  .galleryCounter {
+    bottom: 10px;
+    font-size: 12px;
+  }
+}
+
+/* ========================================
+   USEFUL FUNCTIONS SECTION ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .useful-functions {
+    max-width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .section-title {
+    font-size: 28px;
+  }
+  
+  .section-subtitle {
+    font-size: 16px;
+  }
+  
+  .card {
+    width: 400px;
+    height: 280px;
+  }
+  
+  .wide-card {
+    height: 280px;
+  }
+  
+  .card-title {
+    font-size: 20px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .useful-functions {
+    padding: 25px 15px;
+  }
+  
+  .section-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .section-subtitle {
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .cards-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+  
+  .card {
+    width: 100%;
+    max-width: 400px;
+    height: 250px;
+  }
+  
+  .wide-card {
+    height: 250px;
+  }
+  
+  .card-title {
+    font-size: 18px;
+    bottom: 30px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .useful-functions {
+    padding: 20px 10px;
+  }
+  
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+  
+  .section-subtitle {
+    font-size: 14px;
+    margin-bottom: 25px;
+  }
+  
+  .cards-container {
+    gap: 20px;
+  }
+  
+  .card {
+    height: 220px;
+  }
+  
+  .wide-card {
+    height: 220px;
+  }
+  
+  .card-title {
+    font-size: 16px;
+    bottom: 25px;
+  }
+}
+
+/* ========================================
+   STATISTICS SECTION ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .statistics-section {
+    height: auto;
+    padding: 40px 0;
+  }
+  
+  .statistics-section::before {
+    top: 20px;
+    height: calc(100% - 40px);
+  }
+  
+  .statistics-content {
+    max-width: 95%;
+    padding: 100px 40px 60px;
+    gap: 30px;
+  }
+  
+  .stat-item {
+    width: 200px;
+  }
+  
+  .stat-number {
+    font-size: 36px;
+    margin-bottom: 15px;
+  }
+  
+  .stat-text {
+    font-size: 16px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .statistics-section {
+    padding: 30px 0;
+  }
+  
+  .statistics-section::before {
+    top: 15px;
+    height: calc(100% - 30px);
+  }
+  
+  .statistics-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 80px 20px 50px;
+    gap: 25px;
+  }
+  
+  .stat-item {
+    width: calc(50% - 15px);
+    min-width: 140px;
+  }
+  
+  .stat-number {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  
+  .stat-text {
+    font-size: 14px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .statistics-section {
+    padding: 25px 0;
+  }
+  
+  .statistics-section::before {
+    top: 12px;
+    height: calc(100% - 24px);
+  }
+  
+  .statistics-content {
+    padding: 60px 15px 40px;
+    gap: 20px;
+  }
+  
+  .stat-item {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  .stat-number {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .stat-text {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+}
+
+/* ========================================
+   FAQ SECTION ADAPTIVE STYLES
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .faq-section {
+    padding: 40px 0;
+  }
+  
+  .faq-container {
+    max-width: 95%;
+    padding: 0 20px;
+  }
+  
+  .faq-title {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+  
+  .faq-content {
+    width: 60%;
+  }
+  
+  .faq-image {
+    max-width: 400px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 30px 0;
+  }
+  
+  .faq-container {
+    flex-direction: column;
+    align-items: center;
+    padding: 0 15px;
+  }
+  
+  .faq-title {
+    font-size: 28px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+  
+  .faq-content {
+    width: 100%;
+    order: 2;
+  }
+  
+  .faq-image {
+    position: relative;
+    max-width: 300px;
+    margin-bottom: 20px;
+    order: 1;
+  }
+  
+  .accordion {
+    gap: 25px;
+  }
+  
+  .accordion-button {
+    padding: 15px 20px;
+  }
+  
+  .accordion-button span {
+    font-size: 15px;
+  }
+  
+  .accordion-content {
+    padding: 0 20px;
+  }
+  
+  .accordion-item.active .accordion-content {
+    padding: 0 20px 15px;
+  }
+  
+  .accordion-content p {
+    font-size: 14px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .faq-section {
+    padding: 25px 0;
+  }
+  
+  .faq-container {
+    padding: 0 10px;
+  }
+  
+  .faq-title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .faq-image {
+    max-width: 250px;
+    margin-bottom: 15px;
+  }
+  
+  .accordion {
+    gap: 20px;
+  }
+  
+  .accordion-button {
+    padding: 12px 15px;
+  }
+  
+  .accordion-button span {
+    font-size: 14px;
+  }
+  
+  .accordion-content {
+    padding: 0 15px;
+  }
+  
+  .accordion-item.active .accordion-content {
+    padding: 0 15px 12px;
+  }
+  
+  .accordion-content p {
+    font-size: 13px;
+  }
+}
+
+/* ========================================
+   COMMON UTILITY CLASSES
+   ======================================== */
+
+/* Hide on mobile */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Hide on tablet and mobile */
+@media (max-width: 1024px) {
+  .hide-tablet {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+@media (min-width: 769px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Show only on tablet */
+@media (max-width: 768px), (min-width: 1025px) {
+  .show-tablet-only {
+    display: none !important;
+  }
+}
+
+/* Show only on desktop */
+@media (max-width: 1024px) {
+  .show-desktop-only {
+    display: none !important;
+  }
+}
+
+/* ========================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ======================================== */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Увеличиваем размеры кнопок для touch устройств */
+  .readMoreBtn,
+  .card,
+  .accordion-button {
+    min-height: 44px;
+  }
+  
+  /* Убираем hover эффекты на touch устройствах */
+  .card:hover {
+    transform: none;
+  }
+  
+  .card:hover .card-gradient {
+    background: linear-gradient(to top, rgba(24, 43, 161, 1) 0%, rgba(255, 255, 255, 0.1) 100%);
+  }
+  
+  .newsImage:hover .newsImageOverlay,
+  .clubImage:hover .clubImageOverlay {
+    opacity: 0;
+  }
+  
+  .newsImage:hover img,
+  .clubImage:hover img {
+    transform: none;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .header,
+  .footer,
+  .galleryModal,
+  .readMoreBtn,
+  .newsImageOverlay,
+  .clubImageOverlay {
+    display: none !important;
+  }
+  
+  .content {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .newsItem,
+  .clubItem {
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
+  
+  .newsItemText,
+  .clubDescription {
+    -webkit-line-clamp: unset !important;
+    display: block !important;
+  }
+}

@@ -1,0 +1,488 @@
+/* Стилі для сторінки "Інтелект та обдарованість" */
+.intellectPage {
+  width: 100%;
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+.intellectContent {
+  max-width: 1344px;
+  margin: 60px auto 60px;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.intellectTitle {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 42px;
+  color: #182BA1;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 700;
+}
+
+.intellectContainer {
+  min-height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingMessage {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 18px;
+  color: #182BA1;
+  text-align: center;
+  padding: 40px;
+}
+
+.noEventsMessage {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 18px;
+  color: #4B555C;
+  text-align: center;
+  padding: 40px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.eventItem {
+  width: 100%;
+  height: auto;
+  min-height: 240px;
+  position: relative;
+  display: flex;
+  border-radius: 15px;
+  overflow: hidden;
+  transition: height 0.3s ease-in-out;
+  background: linear-gradient(to bottom, #9A9DB5, #7A7C8A);
+}
+
+.eventContent {
+  width: 65%;
+  padding: 32px 32px 32px 47px;
+  position: relative;
+  z-index: 2;
+}
+
+.eventTitle {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 24px;
+  color: white;
+  margin-bottom: 12px;
+  font-weight: 600;
+  position: relative;
+}
+
+.eventTitle::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 0;
+  height: 176px;
+  width: 1px;
+  background-color: white;
+}
+
+.eventText {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: white;
+  margin: 12px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-width: 100%;
+  white-space: pre-wrap;
+}
+
+.readMoreBtn {
+  display: inline-block;
+  background-color: rgba(225, 229, 235, 0.62);
+  padding: 8px 20px;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 14px;
+  color: black;
+  text-decoration: none;
+  margin-top: 8px;
+  position: relative;
+  width: 231px;
+  height: 33px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.readMoreBtn:hover {
+  background-color: rgba(225, 229, 235, 0.8);
+}
+
+.readMoreBtn.expanded::after {
+  content: '↑';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.readMoreBtn:not(.expanded)::after {
+  content: '→';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.eventImage {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 35%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.eventImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+/* Позиції фото - додано нові стилі */
+.eventImage img[data-position="top"] {
+  object-position: center top;
+}
+
+.eventImage img[data-position="bottom"] {
+  object-position: center bottom;
+}
+
+.eventImage img[data-position="center"] {
+  object-position: center center;
+}
+
+.eventImageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  z-index: 2;
+}
+
+.eventImage:hover .eventImageOverlay {
+  opacity: 1;
+}
+
+.eventImage:hover img {
+  transform: scale(1.05);
+}
+
+.viewMoreText {
+  color: white;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  text-align: center;
+  padding: 10px 20px;
+  border: 2px solid white;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.viewMoreText:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Gallery Modal Styles */
+.galleryModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+
+.galleryModal.active {
+  display: flex;
+}
+
+.galleryContent {
+  position: relative;
+  max-width: 90%;
+  max-height: 90vh;
+  z-index: 10000;
+}
+
+.galleryContent img {
+  max-width: 100%;
+  max-height: 90vh;
+  object-fit: contain;
+}
+
+.galleryNav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 10000;
+}
+
+.galleryNav button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.galleryNav button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.galleryClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+  z-index: 10000;
+}
+
+.galleryCounter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  z-index: 10000;
+}
+
+.eventItem.expanded {
+  height: auto;
+}
+
+.eventItem.expanded .eventContent {
+  padding-bottom: 40px;
+}
+
+.eventItem.expanded .eventText {
+  -webkit-line-clamp: unset;
+}
+
+/* ========================================
+   RESPONSIVE STYLES FOR INTELLECT PAGE
+   ======================================== */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  .intellectContent {
+    max-width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .intellectTitle {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+  
+  .eventItem {
+    min-height: 200px;
+  }
+  
+  .eventContent {
+    width: 60%;
+    padding: 25px 25px 25px 35px;
+  }
+  
+  .eventTitle {
+    font-size: 20px;
+  }
+  
+  .eventText {
+    font-size: 15px;
+  }
+  
+  .eventImage {
+    width: 40%;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  .intellectContent {
+    padding: 25px 15px;
+  }
+  
+  .intellectTitle {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+  
+  .eventItem {
+    flex-direction: column;
+    min-height: auto;
+  }
+  
+  .eventContent {
+    width: 100%;
+    padding: 20px;
+    order: 1;
+  }
+  
+  .eventTitle {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .eventTitle::before {
+    display: none;
+  }
+  
+  .eventText {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+  
+  .eventImage {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    order: 2;
+    margin-top: 0;
+  }
+  
+  /* Кнопка "Переглянути всі фото" завжди видима на мобільних пристроях */
+  .eventImageOverlay {
+    opacity: 1 !important;
+  }
+  
+  .readMoreBtn {
+    width: 200px;
+    height: 30px;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  .intellectContent {
+    padding: 20px 10px;
+  }
+  
+  .intellectTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .eventContent {
+    padding: 15px;
+  }
+  
+  .eventTitle {
+    font-size: 16px;
+  }
+  
+  .eventText {
+    font-size: 13px;
+  }
+  
+  .eventImage {
+    height: 150px;
+  }
+  
+  /* Кнопка "Переглянути всі фото" завжди видима на малих мобільних пристроях */
+  .eventImageOverlay {
+    opacity: 1 !important;
+  }
+  
+  .readMoreBtn {
+    width: 180px;
+    height: 28px;
+    font-size: 12px;
+  }
+}
+
+/* Gallery Modal Responsive for Intellect */
+@media (max-width: 1024px) {
+  .galleryContent {
+    max-width: 95%;
+    max-height: 85vh;
+  }
+  
+  .galleryNav {
+    padding: 0 15px;
+  }
+  
+  .galleryNav button {
+    padding: 12px;
+    font-size: 18px;
+  }
+  
+  .galleryClose {
+    top: 15px;
+    right: 15px;
+    font-size: 25px;
+  }
+  
+  .galleryCounter {
+    bottom: 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 768px) {
+  .galleryContent {
+    max-width: 98%;
+    max-height: 80vh;
+  }
+  
+  .galleryNav {
+    padding: 0 10px;
+  }
+  
+  .galleryNav button {
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  .galleryClose {
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+  }
+  
+  .galleryCounter {
+    bottom: 10px;
+    font-size: 12px;
+  }
+}

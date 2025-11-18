@@ -1,0 +1,553 @@
+.psychologicalSupportPage {
+  width: 100%;
+  min-height: 100vh;
+  background: #FFFFFF;
+}
+
+.intellectContent {
+  max-width: 1344px;
+  margin: 60px auto 60px;
+  padding: 40px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.intellectTitle {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 42px;
+  color: #182BA1;
+  text-align: center;
+  margin-bottom: 40px;
+  font-weight: 700;
+  position: relative;
+}
+
+.intellectTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #FF8C00, #FF6347);
+  border-radius: 2px;
+}
+
+/* Психолог секція */
+.psychologistSection {
+  margin-bottom: 40px;
+  padding: 50px 80px;
+  background: linear-gradient(90deg, #FF8C0008 0%, transparent 20%, transparent 80%, #FF8C0008 100%);
+  border-left: 4px solid #FF8C0030;
+}
+
+.psychologistInfo {
+  display: flex;
+ 
+  align-items: flex-start;
+}
+
+.psychologistImage {
+  max-width: 300px;
+  height: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  margin-right: 35px;
+}
+
+.psychologistDetails {
+  flex: 1;
+}
+
+.psychologistName {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 28px;
+  color: #000000;
+  margin-bottom: 10px;
+  font-weight: 700;
+  border-bottom: 3px solid #FF8C00;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.psychologistTitle {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+.psychologistDescription {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+.psychologistGoal {
+  font-size: 16px;
+  color: #000000;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.psychologistPrinciples,
+.workDirections,
+.contactInfo {
+  margin-bottom: 20px;
+}
+
+.psychologistPrinciples h3,
+.workDirections h3,
+.contactInfo h3 {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 20px;
+  color: #000000;
+  margin-bottom: 15px;
+  font-weight: 600;
+  border-bottom: 2px solid #FF8C00;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.psychologistPrinciples ul,
+.workDirections ul {
+  list-style: none;
+  padding: 0;
+}
+
+.psychologistPrinciples li,
+.workDirections li {
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+
+.psychologistPrinciples li::before,
+.workDirections li::before {
+  content: "•";
+  color: #FF8C00;
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.contactInfo p {
+  font-size: 15px;
+  color: #000000;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* Ресурси секція */
+.resourcesSection {
+  margin-top: 60px;
+  padding: 40px 0;
+  background-color: rgba(30, 64, 175, 0.25);
+  width: 100vw;
+  margin-left: calc((100% - 100vw) / 2);
+  position: relative;
+  box-sizing: border-box;
+  z-index: 1;
+  clear: both;
+  min-height: fit-content;
+}
+
+.resourcesContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.resourcesTitle {
+  font-size: 18px;
+  color: #000;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.resourcesLinks {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.resourceLink {
+  color: #182BA1;
+  text-decoration: underline;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  line-height: 1.5;
+  display: inline-block;
+  position: relative;
+  padding-left: 20px;
+}
+
+.resourceLink::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #182BA1;
+  font-size: 20px;
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.resourceLink:hover {
+  color: #2a41d1;
+}
+
+/* Стилі для динамічного контенту на синьому фоні - аналогічно до сторінки "На допомогу вчителю" */
+.documentsBlock {
+  margin-bottom: 30px;
+}
+
+.documentsText {
+  font-size: 18px;
+  color: #000;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.documentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.documentLink {
+  color: #182BA1;
+  text-decoration: underline;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  line-height: 1.5;
+  display: inline-block;
+  position: relative;
+  padding-left: 20px;
+}
+
+.documentLink::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #182BA1;
+  font-size: 20px;
+  line-height: 1;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.documentLink:hover {
+  color: #2a41d1;
+}
+
+.divider {
+  height: 1px;
+  background-color: rgba(0, 0, 0, 0.2);
+  margin: 30px 0;
+  width: 100%;
+}
+
+/* Заголовок статей */
+.articlesTitle {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #FF8C00;
+  margin: 60px 0 40px 0;
+  text-align: center;
+  position: relative;
+}
+
+.articlesTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #FF8C00, #FFA500);
+  border-radius: 2px;
+}
+
+/* Accordion Styles */
+.accordionContainer {
+  max-width: 1000px;
+  margin: 0 auto 80px;
+}
+
+.accordionItem {
+  margin-bottom: 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.accordionItem::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: #FF8C00;
+  opacity: 1;
+}
+
+.accordionItem:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: #FF8C00;
+}
+
+.accordionHeader {
+  width: 100%;
+  padding: 24px 32px;
+  background: #F8FAFC;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  transition: all 0.3s ease;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.accordionHeader:hover {
+  background: #F1F5F9;
+}
+
+.accordionHeader.active {
+  background: #E0E7FF;
+  color: #3730A3;
+  border-left: 3px solid #FF8C00;
+}
+
+.accordionTitle {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.accordionIcon {
+  font-size: 24px;
+  font-weight: 700;
+  color: #6B7280;
+  transition: all 0.3s ease;
+  min-width: 24px;
+  text-align: center;
+}
+
+.accordionHeader.active .accordionIcon {
+  color: #3730A3;
+}
+
+.accordionContent {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #FFFFFF;
+}
+
+.accordionContent.open {
+  max-height: 2000px;
+}
+
+.accordionText {
+  padding: 0 32px 32px;
+  line-height: 1.7;
+  color: #374151;
+}
+
+.paragraph {
+  margin-bottom: 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.paragraph.bullet-point {
+  position: relative;
+  padding-left: 20px;
+}
+
+.paragraph.bullet-point:before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #FF8C00;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.loadingMessage, .noArticlesMessage {
+  text-align: center;
+  padding: 40px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  color: #6B7280;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .intellectContent {
+    max-width: 95%;
+    padding: 30px 20px;
+  }
+  
+  .intellectTitle {
+    font-size: 36px;
+    margin-bottom: 35px;
+  }
+  
+  .accordionContainer {
+    margin-bottom: 60px;
+  }
+  
+  .accordionHeader {
+    padding: 22px 28px;
+    font-size: 17px;
+  }
+  
+  .accordionText {
+    padding: 0 28px 28px;
+  }
+  
+  .paragraph {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 768px) {
+  .psychologistSection {
+    margin-bottom: 60px;
+    padding: 30px 20px;
+  }
+  
+  .psychologistInfo {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+  
+  
+  .psychologistImage {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  .intellectContent {
+    padding: 25px 15px;
+  }
+  
+  .intellectTitle {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+  
+  .articlesTitle {
+    font-size: 28px;
+    margin: 40px 0 30px 0;
+  }
+  
+  .resourcesSection {
+    margin-top: 40px;
+    padding: 25px 0;
+  }
+  
+  .resourcesContainer {
+    padding: 0 30px;
+  }
+  
+  .resourcesTitle {
+    font-size: 16px;
+  }
+  
+  .resourceLink {
+    font-size: 15px;
+    padding-left: 15px;
+  }
+  
+  .accordionHeader {
+    padding: 20px 24px;
+    font-size: 16px;
+  }
+  
+  .accordionTitle {
+    margin-right: 12px;
+  }
+  
+  .accordionText {
+    padding: 0 24px 24px;
+  }
+  
+  .accordionIcon {
+    font-size: 20px;
+  }
+  
+  .paragraph {
+    font-size: 15px;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .intellectContent {
+    padding: 20px 10px;
+  }
+  
+  .intellectTitle {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  .accordionHeader {
+    padding: 18px 20px;
+    font-size: 15px;
+  }
+  
+  .accordionTitle {
+    margin-right: 10px;
+  }
+  
+  .accordionText {
+    padding: 0 20px 20px;
+  }
+  
+  .accordionIcon {
+    font-size: 18px;
+  }
+  
+  .paragraph {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  
+  .paragraph.bullet-point {
+    padding-left: 18px;
+  }
+  
+  .paragraph.bullet-point:before {
+    font-size: 14px;
+  }
+}

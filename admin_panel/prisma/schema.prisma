@@ -1,0 +1,370 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model News {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StaffCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  nameEn    String?  // English name
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  staff     Staff[]
+}
+
+model Staff {
+  id            Int           @id @default(autoincrement())
+  fullName      String
+  description   String
+  fullNameEn    String?       // English full name
+  descriptionEn String?       // English description
+  photoUrl      String?
+  categoryId    Int
+  order         Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  category      StaffCategory @relation(fields: [categoryId], references: [id])
+}
+
+model Link {
+  id        Int       @id @default(autoincrement())
+  title     String
+  url       String?
+  content   String?
+  year      Int?
+  subject   String?
+  category  String
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model BusinessCard {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SchoolHistory {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InnovationActivity {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RegulatoryDocuments {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  url       String?
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  linkText  String?
+  linkTextEn String? // English link text
+}
+
+model FinancialReports {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  url       String?
+  linkText  String?
+  linkTextEn String? // English link text
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PublicInformation {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  url       String?
+  linkText  String?
+  linkTextEn String? // English link text
+  photoUrls String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model IntellectTalent {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model StudentGovernment {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ProjectResearch {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model PatrioticEducation {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model EvaluationCriteria {
+  id          Int      @id @default(autoincrement())
+  name        String
+  nameEn      String?  // English name
+  url         String?
+  color       String   @default("#FF6B6B")
+  hasSubItems Boolean  @default(false)
+  subItems    String   @default("[]")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PsychologicalSupport {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  text      String?
+  link      String?
+  linkText  String?
+  titleEn   String?  // English title (for accordion)
+  contentEn String?  // English content (for accordion)
+  textEn    String?  // English additional text
+  linkTextEn String? // English link text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClubsStudios {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SportLife {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  photoUrls       String
+  imagePosition   String   @default("center")
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AntiBullying {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  text      String?
+  link      String?
+  linkText  String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  linkTextEn String? // English link text
+  photoUrls String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Accordion {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  photoUrl  String?
+  url       String?
+  category  String
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MethodologicalEvents {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  photoUrls       String   @default("[]")
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  imagePosition   String?  @default("center")
+}
+
+model ForParents {
+  id              Int      @id @default(autoincrement())
+  heading         String?
+  content         String?
+  url             String?
+  photoUrls       String   @default("[]")
+  headingEn       String?  // English heading
+  contentEn       String?  // English content
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ForStudents {
+  id              Int      @id @default(autoincrement())
+  heading         String?
+  content         String?
+  url             String?
+  photoUrls       String   @default("[]")
+  headingEn       String?  // English heading (for accordion)
+  contentEn       String?  // English content (for accordion)
+  textOnlyEn      String?  // English text without heading
+  textOnly        String?
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model HelpTeacher {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  text      String?
+  link      String?
+  linkText  String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  textEn    String?  // English additional text
+  linkTextEn String? // English link text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model QualificationImprovement {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  content   String?
+  photoUrls String   @default("[]")
+  text      String?
+  link      String?
+  linkText  String?
+  titleEn   String?  // English title
+  contentEn String?  // English content
+  textEn    String?  // English additional text
+  linkTextEn String? // English link text
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TeacherCertification {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  description     String
+  text            String?
+  url             String?
+  linkText        String?
+  photoUrls       String   @default("[]")
+  headingEn       String?  // English heading
+  descriptionEn   String?  // English description
+  textEn          String?  // English additional text
+  linkTextEn      String?  // English link text
+  publicationDate DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  imagePosition   String?  @default("center")
+}
+
+model AdminUser {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  password  String
+  email     String?   @unique
+  role      String    @default("admin")
+  isActive  Boolean   @default(true)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}

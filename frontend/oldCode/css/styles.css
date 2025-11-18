@@ -1,0 +1,405 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat Alternates', sans-serif;
+    overflow-x: hidden;
+    margin-bottom: 0;
+}
+
+.container {
+    width: 100vw;
+    min-height: 100vh;
+    position: relative;
+    padding-top: 60px;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.gradient-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #182ba1 0%, #8e99dd 84%, #9ea8e5 100%);
+    z-index: 0;
+}
+
+.content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 72px;
+    padding-top: 116px;
+    color: white;
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-text {
+    font-size: 46px;
+    margin-bottom: 72px;
+    font-weight: 700;
+    padding-left: 96px;
+    position: relative;
+    z-index: 2;
+}
+
+.text-container {
+    max-width: 706px;
+    max-height: 372px;
+    position: relative;
+    z-index: 2;
+}
+
+.text-box {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 40px;
+    padding: 32px 24px;
+}
+
+.text-box p {
+    color: #E5E7EB;
+    font-size: 18px;
+    line-height: 1.6;
+    font-weight: 400;
+    font-family: 'Montserrat Alternates', sans-serif;
+}
+
+.bold-text {
+    font-weight: 600;
+}
+
+.logo-image-bg {
+    position: absolute;
+    top: 0px;
+    right: -180px;
+    width: 80%;
+    height: 133%;
+    z-index: 1;
+    clip-path: inset(0 0 25% 0);
+}
+
+.logo-image-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(8px);
+    opacity: 0.8;
+}
+
+/* Useful Functions Section */
+.useful-functions {
+    padding: 40px 0;
+    width: 100%;
+    max-width: 1172px;
+    margin: 0 auto;
+}
+
+.section-title {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 34px;
+    color: #000000;
+    text-align: center;
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+
+.section-subtitle {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 18px;
+    color: #4B555C;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.cards-row {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+}
+
+.card {
+    position: relative;
+    width: 514px;
+    height: 331px;
+    border-radius: 20px;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+}
+
+.wide-card {
+    width: 100%;
+    height: 331px;
+}
+
+.card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(24, 43, 161, 1) 0%, rgba(255, 255, 255, 0.1) 100%);
+    border-radius: 20px;
+}
+
+.card-title {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 24px;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    z-index: 1;
+    font-weight: 500;
+}
+
+/* Hover Effects */
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card:hover .card-gradient {
+    background: linear-gradient(to top, rgba(24, 43, 161, 0.9) 0%, rgba(255, 255, 255, 0.05) 100%);
+  } 
+  
+
+  /* FAQ Section */
+  .faq-section {
+    padding: 60px 0 20px;
+    background: #FFFFFF;
+    position: relative;
+    overflow: visible;
+    margin-bottom: 60px;
+    min-height: 800px;
+}
+
+.faq-container {
+    max-width: 1352px;
+    margin: 0 auto;
+    display: flex;
+    gap: 60px;
+    justify-content: flex-end;
+    align-items: flex-start;
+    position: static;
+}
+
+.faq-image {
+    position: absolute;
+    width: 450px;
+    height: 900px;
+    top: -30px;
+    left: 5px;
+    border-radius: 0 18px 18px 0;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.firebird-image {
+    width: 120%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center center;
+    display: block;
+}
+
+.faq-content {
+    flex: 0 0 auto;
+    width: 60%;
+    max-width: 750px;
+    margin-left: auto;
+}
+
+.faq-title {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 48px;
+    color: #182BA1;
+    margin-bottom: 40px;
+}
+
+.accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.accordion-item {
+    background: #F8F8F8;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.accordion-button {
+    width: 100%;
+    padding: 20px 30px;
+    background: none;
+    border: none;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.accordion-button span {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 16px;
+    color: #FF5700;
+    font-weight: 500;
+  }
+  
+  .arrow {
+    width: 20px;
+    height: 10px;
+    border-left: 2px solid #AD958B;
+    border-bottom: 2px solid #AD958B;
+    transform: rotate(-45deg);
+    transition: transform 0.3s ease;
+  }
+  
+  .accordion-item.active .arrow {
+    transform: rotate(135deg);
+  }
+  
+  .accordion-content {
+    padding: 0 30px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  
+  .accordion-item.active .accordion-content {
+    padding: 0 30px 20px;
+    max-height: 200px;
+  }
+  
+  .accordion-content p {
+    font-family: 'Montserrat Alternates', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Add JavaScript functionality */
+.accordion-item.active .accordion-button {
+    background: #F8F8F8;
+  } 
+  
+  .arrow {
+      width: 12px;
+      height: 12px;
+      border: solid #AD958B;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+      transition: transform 0.3s ease;
+      margin-top: -6px;
+  }
+  
+  .accordion-item.active .arrow {
+      transform: rotate(-135deg);
+      margin-top: 6px;
+  }
+  
+  .accordion-content {
+      padding: 0 30px;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+  }
+  
+  .accordion-item.active .accordion-content {
+      padding: 0 30px 20px;
+      max-height: 200px;
+  }
+
+  
+/* статистика */
+.statistics-section {
+    height: 451px;
+    width: 100%;
+    background-image: url('../img/geometric_ornament.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+}
+
+.statistics-section::before {
+    backdrop-filter: blur(7px);
+    content: '';
+    position: absolute;
+    top: 93px;
+    left: 0;
+    width: 100%;
+    height: 265px;
+    background-color: rgba(12, 24, 101, 0.85);
+}
+
+.statistics-content {
+    position: relative;
+    max-width: 1271px;
+    margin: 0 auto;
+    padding: 155px 85px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.stat-item {
+    text-align: center;
+    width: 243px;
+}
+
+.stat-number {
+    color: #fff;
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 17px;
+}
+
+.stat-text {
+    color: #d1d5db;
+    font-size: 18px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Змінюємо параметри футера для зменшення проміжку */
+.footer {
+    margin-top: 0;
+    padding-top: 30px;
+    position: relative;
+    z-index: 2;
+}

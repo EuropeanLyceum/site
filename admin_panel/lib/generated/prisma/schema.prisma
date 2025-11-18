@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Link {
+  id   Int    @id @default(autoincrement())
+  url  String
+  name String
+}
+
+model Staff {
+  id            Int         @id @default(autoincrement())
+  photoUrl      String?
+  fullname      String
+  position      String
+  short_bio     String
+  community     String
+  subjects      Subject[]   @relation("SubjectTeacher")
+  staffSubjects SubjStaff[]
+  classTaught   Class[]     @relation("ClassTeacher")
+}
+
+model Subject {
+  id           Int    @id @default(autoincrement())
+  subject_name String
+  teacher_id   Int
+
+  teacher       Staff       @relation("SubjectTeacher", fields: [teacher_id], references: [id])
+  classSubjects ClassSubj[]
+  subjectStaff  SubjStaff[]
+}
+
+model Class {
+  id            Int    @id @default(autoincrement())
+  class_name    String
+  class_teacher Int
+
+  teacher       Staff       @relation("ClassTeacher", fields: [class_teacher], references: [id])
+  classSubjects ClassSubj[]
+}
+
+model ClassSubj {
+  classId Int
+  subjId  Int
+
+  class   Class   @relation(fields: [classId], references: [id])
+  subject Subject @relation(fields: [subjId], references: [id])
+
+  @@id([classId, subjId])
+}
+
+model SubjStaff {
+  subject_id Int
+  staff_id   Int
+
+  subject Subject @relation(fields: [subject_id], references: [id])
+  staff   Staff   @relation(fields: [staff_id], references: [id])
+
+  @@id([subject_id, staff_id])
+}
+
+model News {
+  id              Int      @id @default(autoincrement())
+  heading         String
+  publicationDate DateTime @map("publication_date")
+  description     String
+  photoUrl        String   @default("[]")
+}

@@ -1,0 +1,747 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Montserrat Alternates', sans-serif;
+}
+
+body {
+  font-family: 'Montserrat Alternates', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.pageWrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.mainContent {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  width: 100%;
+  position: relative;
+  padding-top: 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.gradient-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, #182ba1 0%, #8e99dd 84%, #9ea8e5 100%);
+  z-index: 0;
+}
+
+.content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-left: 72px;
+  padding-top: 60px;
+  color: white;
+  position: relative;
+  z-index: 2;
+  padding-bottom: 150px;
+}
+
+.welcome-text {
+  font-size: 42px;
+  margin-bottom: 40px;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+  letter-spacing: 0.5px;
+}
+
+.text-container {
+  max-width: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.text-box {
+  background: none;
+  backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  padding: 40px 0 40px 10px;
+  box-shadow: none;
+  position: relative;
+  width: 100%;
+}
+
+
+
+.text-box::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 40px;
+  bottom: 40px;
+  width: 3px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0;
+}
+
+.text-box p {
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1.7;
+  font-weight: 400;
+  font-family: 'Montserrat Alternates', sans-serif;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin: 0;
+  text-align: justify;
+  letter-spacing: 0.2px;
+  width: 100%;
+}
+
+.bold-text {
+  font-weight: 600;
+}
+
+.logo-image-bg {
+  position: absolute;
+  top: 0px;
+  right: -180px;
+  width: 80%;
+  height: 133%;
+  z-index: 1;
+  clip-path: inset(0 0 25% 0);
+}
+
+.logo-image-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(8px);
+  opacity: 0.8;
+}
+
+/* Useful Functions Section */
+.useful-functions {
+  padding: 40px 0;
+  width: 100%;
+  max-width: 1172px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.section-title {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 34px;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+.section-subtitle {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 18px;
+  color: #4B555C;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.cards-row {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+}
+
+.card {
+  position: relative;
+  width: 514px;
+  height: 331px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: block;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+button.card {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.wide-card {
+  width: 100%;
+  height: 331px;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(24, 43, 161, 1) 0%, rgba(255, 255, 255, 0.1) 100%);
+  border-radius: 20px;
+}
+
+.card-title {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 24px;
+  text-align: center;
+  width: 100%;
+  margin: 0;
+  z-index: 1;
+  font-weight: 500;
+}
+
+/* Hover Effects */
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card:hover .card-gradient {
+  background: linear-gradient(to top, rgba(24, 43, 161, 0.9) 0%, rgba(255, 255, 255, 0.05) 100%);
+}
+
+
+/* FAQ Section */
+.faq-section {
+  position: relative;
+  padding: 60px 0;
+  flex: 1;
+}
+
+.faq-container {
+  max-width: 1352px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: flex-end;
+  /*gap: 60px;*/
+}
+.firebird-image{
+  width: 100%;
+  height: 100%;
+}
+
+.faq-image {
+  position: absolute;
+  left: -37px;
+  max-width: 540px;
+  top: -10px;
+}
+
+.faq-content {
+  width: 50%;
+}
+
+.faq-title {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 48px;
+  color: #182BA1;
+  margin-bottom: 40px;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.accordion-item {
+  background: #F8F8F8;
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.accordion-button {
+  width: 100%;
+  padding: 20px 30px;
+  background: none;
+  border: none;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.accordion-button span {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 16px;
+  color: #FF5700;
+  font-weight: 500;
+}
+
+.arrow {
+  width: 20px;
+  height: 10px;
+  border-left: 2px solid #AD958B;
+  border-bottom: 2px solid #AD958B;
+  transform: rotate(-45deg);
+  transition: transform 0.3s ease;
+}
+
+.accordion-item.active .arrow {
+  transform: rotate(135deg);
+}
+
+.accordion-content {
+  padding: 0 30px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.accordion-item.active .accordion-content {
+  padding: 0 30px 20px;
+  max-height: 200px;
+}
+
+.accordion-content p {
+  font-family: 'Montserrat Alternates', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #6B7280;
+  margin: 0;
+}
+
+/* Add JavaScript functionality */
+.accordion-item.active .accordion-button {
+  background: #F8F8F8;
+}
+
+.arrow {
+  width: 12px;
+  height: 12px;
+  border: solid #AD958B;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+  margin-top: -6px;
+}
+
+.accordion-item.active .arrow {
+  transform: rotate(-135deg);
+  margin-top: 6px;
+}
+
+.accordion-content {
+  padding: 0 30px;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.accordion-item.active .accordion-content {
+  padding: 0 30px 20px;
+  max-height: 200px;
+}
+
+
+/* статистика */
+.statistics-section {
+  height: 451px;
+  width: 100%;
+  background-image: url('../assets/geometric_ornament.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.statistics-section::before {
+  backdrop-filter: blur(7px);
+  content: '';
+  position: absolute;
+  top: 93px;
+  left: 0;
+  width: 100%;
+  height: 265px;
+  background-color: rgba(12, 24, 101, 0.85);
+}
+
+.statistics-content {
+  position: relative;
+  max-width: 1271px;
+  margin: 0 auto;
+  padding: 155px 85px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stat-item {
+  text-align: center;
+  width: 243px;
+}
+
+.stat-number {
+  color: #fff;
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 17px;
+}
+
+.stat-text {
+  color: #d1d5db;
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Responsive Styles - додати до основного CSS файлу або імпортувати окремо */
+
+/* Tablet - до 1024px */
+@media (max-width: 1024px) {
+  /* Hero Section */
+  .content {
+    max-width: 90%;
+    padding-left: 40px;
+    padding-top: 40px;
+    padding-bottom: 100px;
+  }
+
+  .welcome-text {
+    font-size: 32px;
+    margin-bottom: 25px;
+  }
+
+  .text-container {
+    max-width: 100%;
+  }
+
+  .text-box {
+    padding: 35px 0 35px 10px;
+  }
+
+  .text-box::before {
+    left: 0;
+    top: 35px;
+    bottom: 35px;
+  }
+
+  .logo-image-bg {
+    right: -120px;
+    width: 70%;
+  }
+
+  /* Useful Functions */
+  .useful-functions {
+    max-width: 90%;
+    padding: 30px 20px;
+  }
+
+  .section-title {
+    font-size: 28px;
+  }
+
+  .card {
+    width: 400px;
+    height: 280px;
+  }
+
+  .wide-card {
+    height: 280px;
+  }
+
+  /* Statistics */
+  .statistics-content {
+    max-width: 90%;
+    padding: 120px 40px 0;
+    gap: 20px;
+  }
+
+  .stat-item {
+    width: 200px;
+  }
+
+  .stat-number {
+    font-size: 36px;
+  }
+
+  .stat-text {
+    font-size: 16px;
+  }
+}
+
+/* Mobile Large - до 768px */
+@media (max-width: 768px) {
+  /* Hero Section */
+  .container {
+    padding-top: 40px;
+  }
+
+  .content {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 30px;
+    padding-bottom: 80px;
+  }
+
+  .welcome-text {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .text-container {
+    max-width: 100%;
+  }
+
+  .text-box {
+    padding: 30px 0 30px 10px;
+  }
+
+  .text-box::before {
+    left: 0;
+    top: 30px;
+    bottom: 30px;
+  }
+
+  .text-box p {
+    font-size: 16px;
+  }
+
+  .logo-image-bg {
+    right: -80px;
+    width: 60%;
+    height: 100%;
+  }
+
+  /* Useful Functions */
+  .section-title {
+    font-size: 24px;
+  }
+
+  .section-subtitle {
+    font-size: 16px;
+  }
+
+  .cards-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 400px;
+    height: 250px;
+  }
+
+  .wide-card {
+    height: 250px;
+  }
+
+  .card-title {
+    font-size: 20px;
+  }
+
+  /* Statistics */
+  .statistics-section {
+    height: auto;
+    padding: 60px 0;
+  }
+
+  .statistics-section::before {
+    top: 20px;
+    height: calc(100% - 40px);
+  }
+
+  .statistics-content {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 80px 20px 60px;
+    gap: 40px;
+  }
+
+  .stat-item {
+    width: calc(50% - 20px);
+    min-width: 150px;
+  }
+
+  .stat-number {
+    font-size: 32px;
+  }
+
+  .stat-text {
+    font-size: 14px;
+  }
+
+  .faq-image {
+    display: none; /* Приховуємо зображення Firebird у мобільній версії */
+  }
+  .faq-content{
+    width: 100%;
+    padding: 0 20px;
+  }
+}
+
+/* Mobile Small - до 480px */
+@media (max-width: 480px) {
+  /* Hero Section */
+  .content {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 60px;
+  }
+
+  .welcome-text {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .text-box {
+    padding: 20px 0 20px 15px;
+  }
+
+  .text-box::before {
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+  }
+
+  .text-box p {
+    font-size: 14px;
+  }
+
+  .logo-image-bg {
+    display: none; /* Ховаємо на дуже маленьких екранах */
+  }
+
+  /* Useful Functions */
+  .useful-functions {
+    padding: 20px 15px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .section-subtitle {
+    font-size: 15px;
+    margin-bottom: 30px;
+  }
+
+  .cards-container {
+    gap: 25px;
+  }
+
+  .card {
+    height: 220px;
+  }
+
+  .wide-card {
+    height: 220px;
+  }
+
+  .card-title {
+    font-size: 18px;
+    bottom: 30px;
+  }
+
+  /* Statistics */
+  .statistics-content {
+    padding: 60px 15px 40px;
+    gap: 30px;
+  }
+
+  .stat-item {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .stat-number {
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+
+  .stat-text {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  /* FAQ Section для малих мобільних пристроїв */
+  .faq-image {
+    display: none; /* Приховуємо зображення Firebird у мобільній версії */
+  }
+  
+  .faq-content {
+    width: 100%;
+    padding: 0 15px;
+  }
+}
+
+/* Extra Small - до 360px */
+@media (max-width: 360px) {
+  .welcome-text {
+    font-size: 20px;
+  }
+
+  .text-box {
+    border-radius: 25px;
+  }
+
+  .section-title {
+    font-size: 20px;
+  }
+
+  .card {
+    height: 200px;
+  }
+
+  .wide-card {
+    height: 200px;
+  }
+
+  .card-title {
+    font-size: 16px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+}

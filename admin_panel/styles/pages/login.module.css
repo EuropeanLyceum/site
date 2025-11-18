@@ -1,0 +1,213 @@
+/* Кастомні стилі для сторінки входу */
+
+.login-gradient {
+  background: linear-gradient(135deg, 
+    #FFCB8B 0%, 
+    #D7DCE8 50%, 
+    #182AA1 100%
+  ) !important;
+}
+
+/* Додатковий градієнт для основного контейнера */
+.login-page {
+  background: linear-gradient(135deg, 
+    #FFCB8B 0%, 
+    #D7DCE8 50%, 
+    #182AA1 100%
+  ) !important;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.login-logo {
+  width: 360px;
+  height: 80px;
+  background: #182AA1;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  gap: 16px;
+  position: relative;
+}
+
+.login-logo-icon {
+  width: 60px;
+  height: 60px;
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.login-logo-icon-inner {
+  width: 60px;
+  height: 60px;
+  background: url('/logo_picture_visit_card.jpg') center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 20px;
+  position: relative;
+}
+
+.login-title {
+  color: #182AA1;
+  font-size: 3rem;
+  font-weight: 600; 
+  text-align: center;
+  font-family: var(--font-montserrat-alternates), sans-serif;
+  line-height: 1.2;
+}
+
+.login-title div {
+  margin: 0;
+  padding: 0;
+}
+
+.login-input {
+  width: 360px;
+  height: 40px;
+  background: #FBFBFF;
+  border: none;
+  border-radius: 20px;
+  padding: 0 20px;
+  font-size: 16px;
+  color: #868686;
+  font-family: var(--font-montserrat-alternates), sans-serif;
+}
+
+.login-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(24, 42, 161, 0.2);
+}
+
+.login-input::placeholder {
+  color: #868686;
+  font-family: var(--font-montserrat-alternates), sans-serif;
+}
+
+.login-button {
+  width: 360px;
+  height: 48px;
+  background: #182AA1;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: var(--font-montserrat-alternates), sans-serif;
+}
+
+.login-button:hover {
+  background: #151f7a;
+}
+
+.login-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+
+.login-error {
+  background: #FEE2E2;
+  border: 1px solid #F87171;
+  color: #DC2626;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-montserrat-alternates), sans-serif;
+}
+
+/* Додаткові стилі для центрування */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  gap: 2rem;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Стилі для тексту в логотипі */
+.login-logo span {
+  color: white !important;
+  font-family: var(--font-montserrat-alternates), sans-serif !important;
+  font-weight: 300 !important;
+  font-size: 1.25rem !important;
+}
+
+/* Адаптивність */
+@media (max-width: 768px) {
+  .login-logo {
+    width: 300px;
+    height: 70px;
+  }
+  
+  .login-input,
+  .login-button {
+    width: 300px;
+  }
+  
+  .login-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .login-form {
+    max-width: 300px;
+  }
+  
+  .login-logo span {
+  font-size: 1.125rem !important;
+  color: white !important;
+  font-family: var(--font-montserrat-alternates), sans-serif !important;
+  font-weight: 300 !important;
+}
+}
+
+@media (max-width: 480px) {
+  .login-logo {
+    width: 280px;
+    height: 60px;
+  }
+  
+  .login-input,
+  .login-button {
+    width: 280px;
+  }
+  
+  .login-title {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  
+  .login-form {
+    max-width: 280px;
+  }
+  
+  .login-logo span {
+    font-size: 1rem !important;
+    color: white !important;
+    font-family: var(--font-montserrat-alternates), sans-serif !important;
+    font-weight: 300 !important;
+  }
+}
