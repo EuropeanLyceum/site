@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "@/styles/intellect.module.css";
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
+import { apiUrl, assetUrl } from "@/utils/api";
 
 export default function IntellectPage() {
   const { t, locale } = useTranslation();
@@ -45,7 +46,7 @@ export default function IntellectPage() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch("http://localhost:3001/api/intellect-talent");
+      const response = await fetch(apiUrl("/api/intellect-talent"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,7 +63,7 @@ export default function IntellectPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) => 
-          url.startsWith('http') ? url : `http://localhost:3001${url}`
+          assetUrl(url)
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

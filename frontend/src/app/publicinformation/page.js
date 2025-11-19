@@ -5,6 +5,7 @@ import styles from '@/styles/publicinformation.module.css';
 import Image from 'next/image';
 import firebird3 from '@/assets/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 const PublicInformationPage = () => {
   const { t, locale } = useTranslation();
@@ -42,7 +43,7 @@ const PublicInformationPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/public-information');
+        const res = await fetch(apiUrl('/api/public-information'));
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -131,7 +132,7 @@ const PublicInformationPage = () => {
                             {JSON.parse(item.photoUrls).map((url, i) => (
                               <div key={i} className={styles.photoItem}>
                                 <img
-                                  src={`http://localhost:3001${url}`}
+                                  src={assetUrl(url)}
                                   alt={`${t('publicInfoPhotoAlt')} ${i + 1}`}
                                   onError={(e) => { e.target.style.display = 'none'; }}
                                 />

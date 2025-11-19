@@ -39,6 +39,11 @@ export default function MainPage() {
   };
 
   useEffect(() => {
+    // Only run in browser
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !isVisible) {
@@ -108,15 +113,17 @@ export default function MainPage() {
             <button 
               className="card" 
               onClick={() => {
-                const element = document.getElementById('faq-section');
-                if (element) {
-                  const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
-                  const offsetPosition = elementPosition - 0; // 20px відступ для заголовка
-                  
-                  window.scrollTo({
-                    top: offsetPosition,
-                    behavior: 'smooth'
-                  });
+                if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+                  const element = document.getElementById('faq-section');
+                  if (element) {
+                    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - 0; // 20px відступ для заголовка
+                    
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
                 }
               }}
             >

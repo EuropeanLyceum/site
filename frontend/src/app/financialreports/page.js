@@ -5,6 +5,7 @@ import styles from '@/styles/financialreports.module.css';
 import Image from 'next/image';
 import firebird3 from '@/assets/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 const FinancialReportsPage = () => {
   const { t, locale } = useTranslation();
@@ -41,7 +42,7 @@ const FinancialReportsPage = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/financial-reports');
+        const res = await fetch(apiUrl('/api/financial-reports'));
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -116,7 +117,7 @@ const FinancialReportsPage = () => {
                             {JSON.parse(item.photoUrls).map((url, i) => (
                               <div key={i} className={styles.photoItem}>
                                 <img
-                                  src={`http://localhost:3001${url}`}
+                                  src={assetUrl(url)}
                                   alt={`${t('reportPhotoAlt')} ${i + 1}`}
                                   onError={(e) => { e.target.style.display = 'none'; }}
                                 />

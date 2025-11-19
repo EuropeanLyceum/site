@@ -25,6 +25,7 @@ import bova from "@/assets/bova.jpg";
 import vorozhbyt from "@/assets/vorozhbyt.jpg";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useEffect, useState } from 'react';
+import { apiUrl } from '@/utils/api';
 
 export default function HistoryPage() {
   const { t, locale } = useTranslation();
@@ -34,7 +35,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/school-history');
+        const response = await fetch(apiUrl('/api/school-history'));
         if (response.ok) {
           const data = await response.json();
           setSchoolHistoryData(data);

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import firebird from '@/assets/firebird2.png';
 import styles from '@/styles/students.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 const StudentsPage = () => {
   const { t, locale } = useTranslation();
@@ -35,7 +36,7 @@ const StudentsPage = () => {
   const fetchDynamicItems = async () => {
     try {
       console.log('Завантаження даних для сторінки "Учням"...');
-      const response = await fetch('http://localhost:3001/api/for-students');
+      const response = await fetch(apiUrl('/api/for-students'));
       
       if (response.ok) {
         const data = await response.json();
@@ -625,7 +626,7 @@ const StudentsPage = () => {
                         {item.photoUrls.map((url, photoIndex) => (
                           <Image 
                             key={photoIndex}
-                            src={url.startsWith('http') ? url : `http://localhost:3001${url}`}
+                            src={assetUrl(url)}
                             alt={`Фото для учня ${photoIndex + 1}`}
                             width={1800}
                             height={1000}

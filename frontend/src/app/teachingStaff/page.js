@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import styles from '@/styles/teachingstaff.module.css';
 import derkachPhoto from '@/assets/derkach.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function TeachingStaffPage() {
   const { t, locale } = useTranslation();
@@ -46,7 +47,7 @@ export default function TeachingStaffPage() {
     const fetchData = async () => {
       try {
         // Отримуємо категорії
-        const categoriesResponse = await fetch('http://localhost:3001/api/staff-categories');
+        const categoriesResponse = await fetch(apiUrl('/api/staff-categories'));
         if (categoriesResponse.ok) {
           const categoriesData = await categoriesResponse.json();
           setCategories(categoriesData);
@@ -59,7 +60,7 @@ export default function TeachingStaffPage() {
         }
 
         // Отримуємо всіх вчителів
-        const staffResponse = await fetch('http://localhost:3001/api/staff');
+        const staffResponse = await fetch(apiUrl('/api/staff'));
         if (staffResponse.ok) {
           const staffData = await staffResponse.json();
           setStaffData(staffData);
@@ -172,12 +173,12 @@ export default function TeachingStaffPage() {
                 <div className={styles.adminPhoto}>
                   {staff.photoUrl ? (
                     <img
-                      src={`http://localhost:3001${staff.photoUrl}`}
+                      src={assetUrl(staff.photoUrl)}
                       alt={localized.fullName}
                       style={{ borderRadius: '10px' }}
                       onError={(e) => {
                         console.error('Помилка завантаження зображення:', staff.photoUrl);
-                        console.log('Full URL:', `http://localhost:3001${staff.photoUrl}`);
+                        console.log('Full URL:', assetUrl(staff.photoUrl));
                         e.target.style.display = 'none';
                       }}
                     />

@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "@/styles/news.module.css";
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
+import { apiUrl, assetUrl } from "@/utils/api";
 
 export default function NewsPage() {
   const { t, locale } = useTranslation();
@@ -20,7 +21,7 @@ export default function NewsPage() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера (після налаштування CORS)
-      const response = await fetch("http://localhost:3001/api/news");
+      const response = await fetch(apiUrl("/api/news"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -37,7 +38,7 @@ export default function NewsPage() {
         text: item.description || item.text || 'Опис відсутній',
         textEn: item.descriptionEn || '',
         images: item.photoUrls ? item.photoUrls.map(url => 
-          url.startsWith('http') ? url : `http://localhost:3001${url}`
+          assetUrl(url)
         ) : [],
         imagePosition: item.imagePosition || 'center' // Додано підтримку imagePosition
       }));

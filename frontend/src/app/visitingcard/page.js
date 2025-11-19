@@ -7,6 +7,7 @@ import materialBasis from '@/assets/material_basis.jpg';
 import galochka from '@/assets/galochka.png';
 import styles from '@/styles/visitingcard.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function VisitingCardPage() {
   const { t, locale } = useTranslation();
@@ -17,7 +18,7 @@ export default function VisitingCardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('http://localhost:3001/api/visiting-card');
+        const res = await fetch(apiUrl('/api/visiting-card'));
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -362,7 +363,7 @@ export default function VisitingCardPage() {
                           {item.photoUrls.map((url, i) => (
                             <div key={i} className={styles.photoItem}>
                               <img
-                                src={`http://localhost:3002${url}`}
+                                src={assetUrl(url)}
                                 alt={`Visiting card photo ${i + 1}`}
                                 onError={(e) => { e.target.style.display = 'none'; }}
                               />

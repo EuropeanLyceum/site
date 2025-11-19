@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/evaluationcriteria.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl } from '@/utils/api';
 
 export default function EvaluationCriteria() {
   const { t, locale } = useTranslation();
@@ -39,7 +40,7 @@ export default function EvaluationCriteria() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch("http://localhost:3001/api/evaluation-criteria");
+      const response = await fetch(apiUrl("/api/evaluation-criteria"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

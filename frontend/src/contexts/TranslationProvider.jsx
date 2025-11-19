@@ -12,8 +12,18 @@ export const TranslationProvider = ({ children }) => {
 
   useEffect(() => {
     // Завжди починаємо з української мови
-    setLocale("uk");
-    localStorage.setItem("locale", "uk");
+    // Check if we're in browser environment
+    if (typeof window !== 'undefined') {
+      const savedLocale = localStorage.getItem("locale");
+      if (savedLocale && translations[savedLocale]) {
+        setLocale(savedLocale);
+      } else {
+        setLocale("uk");
+        localStorage.setItem("locale", "uk");
+      }
+    } else {
+      setLocale("uk");
+    }
     setIsInitialized(true);
   }, []);
 
@@ -25,7 +35,9 @@ export const TranslationProvider = ({ children }) => {
     console.log("Changing language to:", newLocale);
     if (translations[newLocale]) {
       setLocale(newLocale);
-      localStorage.setItem("locale", newLocale);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem("locale", newLocale);
+      }
     }
   };
 

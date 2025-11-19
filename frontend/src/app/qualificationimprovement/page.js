@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/qualificationimprovement.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function QualificationImprovementPage() {
   const { t, locale } = useTranslation();
@@ -15,7 +16,7 @@ export default function QualificationImprovementPage() {
 
   const fetchDynamicItems = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/qualification-improvement');
+      const response = await fetch(apiUrl('/api/qualification-improvement'));
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);
@@ -196,7 +197,7 @@ export default function QualificationImprovementPage() {
                             e.currentTarget.style.transform = 'scale(1)';
                           }}>
                             <img
-                              src={`http://localhost:3001${url}`}
+                              src={assetUrl(url)}
                               alt={`Qualification improvement photo ${index + 1}`}
                               style={{ 
                                 width: '100%', 

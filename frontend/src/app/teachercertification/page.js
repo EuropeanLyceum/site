@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/teachercertification.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 // Імпортуємо зображення
 import attest1 from '@/assets/attest1.jpg';
@@ -38,7 +39,7 @@ export default function TeacherCertificationPage() {
 
   const fetchDynamicItems = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/teacher-certification');
+      const response = await fetch(apiUrl('/api/teacher-certification'));
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);
@@ -115,7 +116,7 @@ export default function TeacherCertificationPage() {
           return [];
         }
       })().map(url => 
-        url.startsWith('http') ? url : `http://localhost:3001${url}`
+        assetUrl(url)
       ),
       imagePosition: item.imagePosition || 'center'
     };

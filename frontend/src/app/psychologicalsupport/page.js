@@ -5,6 +5,7 @@ import styles from '@/styles/psychologicalsupport.module.css';
 import Image from 'next/image';
 import kogutPhoto from '@/assets/kogut.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl } from '@/utils/api';
 
 export default function PsychologicalSupport() {
   const { t, locale } = useTranslation();
@@ -50,7 +51,7 @@ export default function PsychologicalSupport() {
       setIsLoading(true);
       console.log(" --- start ---");
 
-      const response = await fetch("http://localhost:3001/api/psychological-support");
+      const response = await fetch(apiUrl("/api/psychological-support"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

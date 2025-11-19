@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import styles from '@/styles/projectresearch.module.css';
 import Image from 'next/image';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function ProjectResearchPage() {
   const { t, locale } = useTranslation();
@@ -46,7 +47,7 @@ export default function ProjectResearchPage() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3001/api/project-research');
+      const response = await fetch(apiUrl('/api/project-research'));
       
       if (!response.ok) {
         throw new Error('Помилка завантаження даних');
@@ -62,7 +63,7 @@ export default function ProjectResearchPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) =>
-          url.startsWith('http') ? url : `http://localhost:3001${url}`
+          assetUrl(url)
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

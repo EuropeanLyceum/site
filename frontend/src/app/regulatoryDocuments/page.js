@@ -5,6 +5,7 @@ import styles from '@/styles/regulatorydocuments.module.css';
 import Image from 'next/image';
 import firebird3 from '@/assets/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function RegulatoryDocuments() {
   const { t, locale } = useTranslation();
@@ -43,7 +44,7 @@ export default function RegulatoryDocuments() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/regulatory-documents');
+        const response = await fetch(apiUrl('/api/regulatory-documents'));
         if (response.ok) {
           const data = await response.json();
           // старі зверху, нові знизу
@@ -207,7 +208,7 @@ export default function RegulatoryDocuments() {
                                   return JSON.parse(document.photoUrls).map((url, photoIndex) => (
                                     <div key={photoIndex} className={styles.photoItem}>
                                       <img
-                                        src={`http://localhost:3001${url}`}
+                                        src={assetUrl(url)}
                                         alt={`${t('documentPhotoAlt')} ${photoIndex + 1}`}
                                         onError={(e) => {
                                           console.error('Помилка завантаження зображення:', url);

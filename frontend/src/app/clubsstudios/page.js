@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/clubsstudios.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function ClubsStudiosPage() {
   const { t, locale } = useTranslation();
@@ -44,7 +45,7 @@ export default function ClubsStudiosPage() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch("http://localhost:3001/api/clubs-studios");
+      const response = await fetch(apiUrl("/api/clubs-studios"));
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -61,7 +62,7 @@ export default function ClubsStudiosPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) => 
-          url.startsWith('http') ? url : `http://localhost:3001${url}`
+          assetUrl(url)
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

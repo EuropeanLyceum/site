@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/antibullying.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function Antibullying() {
   const { t, locale } = useTranslation();
@@ -39,7 +40,7 @@ export default function Antibullying() {
   const loadArticles = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:3001/api/anti-bullying");
+      const response = await fetch(apiUrl("/api/anti-bullying"));
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -269,7 +270,7 @@ export default function Antibullying() {
                           e.currentTarget.style.transform = 'scale(1)';
                         }}>
                           <img
-                            src={`http://localhost:3001${url}`}
+                            src={assetUrl(url)}
                             alt={`Фото ${photoIndex + 1}`}
                             style={{ 
                               width: '100%', 

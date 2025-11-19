@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import styles from '@/styles/parents.module.css';
 import Image from 'next/image';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function ParentsPage() {
     const { t, locale } = useTranslation();
@@ -28,7 +29,7 @@ export default function ParentsPage() {
         const fetchData = async () => {
             try {
                 console.log(' Завантаження даних для сторінки "Батькам"...');
-                const response = await fetch('http://localhost:3001/api/for-parents');
+                const response = await fetch(apiUrl('/api/for-parents'));
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -108,7 +109,7 @@ export default function ParentsPage() {
                                     {item.photoUrls.map((photoUrl, photoIndex) => (
                                         <div key={photoIndex} className={styles.photo}>
                                             <Image 
-                                                src={photoUrl.startsWith('http') ? photoUrl : `http://localhost:3001${photoUrl}`}
+                                                src={assetUrl(photoUrl)}
                                                 alt={`фото ${photoIndex + 1} для батьків`}
                                                 width={1800}
                                                 height={1000}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/methodicalevents.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function MethodicalEventsPage() {
   const { t, locale } = useTranslation();
@@ -32,7 +33,7 @@ export default function MethodicalEventsPage() {
     const fetchDynamicEvents = async () => {
       try {
         console.log('🔄 Завантаження динамічних методичних заходів...');
-        const response = await fetch('http://localhost:3001/api/methodological-events');
+        const response = await fetch(apiUrl('/api/methodological-events'));
         if (response.ok) {
           const data = await response.json();
           console.log('📊 Отримано динамічних методичних заходів:', data.length);
@@ -46,7 +47,7 @@ export default function MethodicalEventsPage() {
               title: localized.heading,
               text: localized.description,
               images: item.photoUrls ? item.photoUrls.map(url => 
-                url.startsWith('http') ? url : `http://localhost:3001${url}`
+                assetUrl(url)
               ) : [],
               imagePosition: item.imagePosition || 'center',
               isDynamic: true

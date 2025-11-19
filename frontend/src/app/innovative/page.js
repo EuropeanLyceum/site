@@ -7,6 +7,7 @@ import newProjectImg from '@/assets/new_project.jpg';
 import healthCircleImg from '@/assets/health_circle.jpg';
 import healthProjectImg from '@/assets/health_prjct.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl, assetUrl } from '@/utils/api';
 
 const InnovativePage = () => {
   const { t, locale } = useTranslation();
@@ -17,7 +18,7 @@ const InnovativePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/innovation-activity");
+        const response = await fetch(apiUrl("/api/innovation-activity"));
         if (response.ok) {
           const data = await response.json();
           // старі зверху, нові знизу
@@ -325,7 +326,7 @@ const InnovativePage = () => {
                               e.currentTarget.style.transform = 'scale(1)';
                             }}>
                               <img
-                                src={`http://localhost:3001${url}`}
+                                src={assetUrl(url)}
                                 alt={`Innovative activity photo ${index + 1}`}
                                 style={{ 
                                   width: '100%', 

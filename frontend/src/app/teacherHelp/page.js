@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/teacherhelp.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
+import { apiUrl } from '@/utils/api';
 
 export default function TeacherHelpPage() {
   const { t, locale } = useTranslation();
@@ -47,7 +48,7 @@ export default function TeacherHelpPage() {
   const fetchDynamicItems = async () => {
     try {
       // Змінюємо URL на порт 3000, де знаходиться API
-      const response = await fetch('http://localhost:3001/api/help-teacher');
+      const response = await fetch(apiUrl('/api/help-teacher'));
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);
