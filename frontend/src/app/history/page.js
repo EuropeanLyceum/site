@@ -26,6 +26,7 @@ import vorozhbyt from "@/assets/vorozhbyt.jpg";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { useEffect, useState } from 'react';
 import { apiUrl } from '@/utils/api';
+import { sanitizeTextWithLineBreaks } from '@/utils/sanitize';
 
 export default function HistoryPage() {
   const { t, locale } = useTranslation();
@@ -542,7 +543,7 @@ export default function HistoryPage() {
                       {localized.content && (
                         <div 
                           dangerouslySetInnerHTML={{ 
-                            __html: localized.content.replace(/\n/g, '<br>') 
+                            __html: sanitizeTextWithLineBreaks(localized.content)
                           }} 
                           style={{ 
                             color: 'white', 

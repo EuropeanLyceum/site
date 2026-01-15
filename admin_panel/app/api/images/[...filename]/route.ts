@@ -14,7 +14,22 @@ export async function GET(
     }
 
     const filename = awaitedParams.filename.join('/');
+    
+    // Захист від path traversal
+    // Видаляємо всі небезпечні символи та перевіряємо шлях
+    const sanitizedFilename = filename.replace(/\.\./g, '').replace(/[\/\\]/g, '');
+    if (sanitizedFilename !== filename) {
+      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
+    }
+    
     const filePath = join(process.cwd(), 'public', 'uploads', filename);
+    
+    // Додаткова перевірка - переконуємось, що шлях всередині uploads директорії
+    const resolvedPath = require('path').resolve(filePath);
+    const resolvedUploadsDir = require('path').resolve(join(process.cwd(), 'public', 'uploads'));
+    if (!resolvedPath.startsWith(resolvedUploadsDir)) {
+      return NextResponse.json({ error: 'Invalid file path' }, { status: 400 });
+    }
 
     console.log('🖼️ Запит зображення:', filename);
     console.log('🔍 Повний шлях:', filePath);

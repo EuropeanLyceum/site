@@ -32,12 +32,30 @@ export async function POST(req: NextRequest) {
       console.log('📁 Створено папку uploads');
     }
 
-    // Генеруємо унікальне ім'я файлу
+    // Валідація розширення файлу (тільки безпечні зображення)
+    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      return NextResponse.json({ 
+        error: 'Недозволений тип файлу. Дозволені: jpg, jpeg, png, gif, webp' 
+      }, { status: 400 });
+    }
+
+    // Генеруємо унікальне ім'я файлу (без використання оригінального імені для безпеки)
     const timestamp = Date.now();
     const randomString = Math.random().toString(36).substring(2, 15);
-    const fileExtension = file.name.split('.').pop();
     const fileName = `${timestamp}_${randomString}.${fileExtension}`;
+    
+    // Захист від path traversal - використовуємо join для безпечного шляху
     const filePath = join(uploadsDir, fileName);
+    
+    // Додаткова перевірка - переконуємось, що шлях всередині uploadsDir
+    const resolvedPath = require('path').resolve(filePath);
+    const resolvedUploadsDir = require('path').resolve(uploadsDir);
+    if (!resolvedPath.startsWith(resolvedUploadsDir)) {
+      return NextResponse.json({ error: 'Недозволений шлях до файлу' }, { status: 400 });
+    }
 
     // Конвертуємо File в Buffer
     const bytes = await file.arrayBuffer();

@@ -6,6 +6,7 @@ import styles from '@/styles/teachingstaff.module.css';
 import derkachPhoto from '@/assets/derkach.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
+import { sanitizeTextWithLineBreaks } from '@/utils/sanitize';
 
 export default function TeachingStaffPage() {
   const { t, locale } = useTranslation();
@@ -204,7 +205,7 @@ export default function TeachingStaffPage() {
                     {/* Використовуємо dangerouslySetInnerHTML для підтримки переносів рядків */}
                     <div
                       dangerouslySetInnerHTML={{
-                        __html: localized.description.replace(/\n/g, '<br>')
+                        __html: sanitizeTextWithLineBreaks(localized.description)
                       }}
                     />
                   </div>
