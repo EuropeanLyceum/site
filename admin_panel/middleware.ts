@@ -43,7 +43,9 @@ export function middleware(request: NextRequest) {
   }
 
   // Перенаправлення з /admin на /login
-  if (request.nextUrl.pathname === '/admin') {
+  // With basePath: '/admin', Next.js handles the prefix, so we check for root or /admin
+  const pathname = request.nextUrl.pathname;
+  if (pathname === '/admin' || pathname === '/') {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
@@ -84,14 +86,14 @@ export function middleware(request: NextRequest) {
   );
   // Також захищаємо всі маршрути під /admin/*
   const isAdminPrefixed = request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/');
-  const isProtected = isProtectedExplicit || isAdminPrefixed;
-  if (isProtected) {
-    const token = request.cookies.get('admin-token')?.value;
-    const recent = request.cookies.get('recent-login')?.value === '1';
-    if (!token || !recent) {
-      return NextResponse.redirect(new URL('/login', request.url));
+    const isProtected = isProtectedExplicit || isAdminPrefixed;
+    if (isProtected) {
+      const token = request.cookies.get('admin-token')?.value;
+      const recent = request.cookies.get('recent-login')?.value === '1';
+      if (!token || !recent) {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
     }
-  }
 
   return NextResponse.next();
 }

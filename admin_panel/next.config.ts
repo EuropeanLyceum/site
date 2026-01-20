@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
   output: 'standalone',
+  basePath: '/admin',
   reactStrictMode: true,
   experimental: {
     // Видалив serverActions: true - воно включене за замовчуванням в Next.js 14+
