@@ -11,8 +11,8 @@ export function middleware(request: NextRequest) {
       'http://localhost:3000',        // Фронтенд
       'http://localhost:3001',        // Адмін панель
       'http://localhost:3003',        // Додатковий порт (якщо потрібно)
-      'https://yourdomain.com',       // Ваш продакшен домен
-      'https://www.yourdomain.com'    // www версія
+      'https://https://european-lyceum.pp.ua',       // Ваш продакшен домен
+      'https://site.https://european-lyceum.pp.ua'    // www версія
     ];
     
     // Якщо origin дозволений, встановлюємо його та credentials
@@ -42,14 +42,17 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Перенаправлення з /admin на /login
-  // With basePath: '/admin', Next.js handles the prefix, so we check for root or /admin
+  // Перенаправлення з /admin на /admin/login
+  // With basePath: '/admin', we need to include basePath in redirects
   const pathname = request.nextUrl.pathname;
-  if (pathname === '/admin' || pathname === '/') {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (pathname === '/admin' || pathname === '/admin/') {
+    return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  // Перевірка аутентифікації для адмін розділів (реальні URL без групи '(admin)')
+  // Перевірка аутентифікації для адмін розділів
+  // With basePath: '/admin', paths come with the prefix, so we check the path after /admin/
+  const pathWithoutBase = pathname.startsWith('/admin/') ? pathname.slice(7) : pathname; // Remove '/admin' prefix
+  
   const protectedPaths = [
     '/dashboard',
     '/visiting-card',
@@ -82,16 +85,18 @@ export function middleware(request: NextRequest) {
     '/links/create',
   ];
   const isProtectedExplicit = protectedPaths.some((p) =>
-    request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(`${p}/`)
+    pathWithoutBase === p || pathWithoutBase.startsWith(`${p}/`)
   );
-  // Також захищаємо всі маршрути під /admin/*
-  const isAdminPrefixed = request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/');
+  // Також захищаємо всі маршрути під /admin/* (except /admin/login and /admin/api)
+  const isAdminPrefixed = (request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/'))
+    && !request.nextUrl.pathname.startsWith('/admin/login')
+    && !request.nextUrl.pathname.startsWith('/admin/api');
     const isProtected = isProtectedExplicit || isAdminPrefixed;
     if (isProtected) {
       const token = request.cookies.get('admin-token')?.value;
       const recent = request.cookies.get('recent-login')?.value === '1';
       if (!token || !recent) {
-        return NextResponse.redirect(new URL('/login', request.url));
+        return NextResponse.redirect(new URL('/admin/login', request.url));
       }
     }
 
