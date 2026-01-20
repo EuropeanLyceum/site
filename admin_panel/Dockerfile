@@ -29,6 +29,11 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
+# Install dependencies for scripts (not included in standalone build)
+# These are needed by scripts/auth/*.js files
+RUN npm install --no-save bcryptjs@^3.0.2 @types/bcryptjs@^2.4.6 @prisma/client@^6.8.2 && \
+    chown -R nextjs:nodejs /app/node_modules
+
 # Copy standalone build
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
@@ -36,6 +41,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Copy scripts (bcryptjs installed above)
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 USER nextjs
