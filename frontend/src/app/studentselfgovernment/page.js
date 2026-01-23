@@ -47,7 +47,7 @@ export default function StudentGovernmentPage() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      const response = await fetch(apiUrl('/api/student-government'));
+      const response = await fetch('/api/student-government');
       
       if (!response.ok) {
         throw new Error('Помилка завантаження даних');
@@ -63,7 +63,7 @@ export default function StudentGovernmentPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) =>
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

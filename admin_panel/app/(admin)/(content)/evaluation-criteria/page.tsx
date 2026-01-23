@@ -3,7 +3,7 @@ import EvaluationCriteriaManager from "@/components/content-managers/EvaluationC
 export default function EvaluationCriteriaPage() {
   return (
     <EvaluationCriteriaManager 
-      apiEndpoint="/api/evaluation-criteria" 
+      apiEndpoint="/admin/api/evaluation-criteria" 
       title="Критерії оцінювання" 
     />
   );

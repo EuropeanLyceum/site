@@ -7,7 +7,7 @@ export default async function DashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get('admin-token')?.value;
   if (!token) {
-    redirect('/login');
+    redirect('/admin/login');
   }
   return (
     <div className="p-8">

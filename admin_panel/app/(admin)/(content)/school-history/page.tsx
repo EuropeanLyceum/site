@@ -3,7 +3,7 @@ import ContentWithPhotosManager from "@/components/content-managers/ContentWithP
 export default function SchoolHistoryPage() {
   return (
     <ContentWithPhotosManager 
-      apiEndpoint="/api/school-history" 
+      apiEndpoint="/admin/api/school-history" 
       title="Історія закладу" 
     />
   );

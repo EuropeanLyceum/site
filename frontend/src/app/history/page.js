@@ -36,7 +36,7 @@ export default function HistoryPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl('/api/school-history'));
+        const response = await fetch('/api/school-history');
         if (response.ok) {
           const data = await response.json();
           setSchoolHistoryData(data);
@@ -571,7 +571,7 @@ export default function HistoryPage() {
                               minWidth: '200px'
                             }}>
                               <img
-                                src={`http://localhost:3002${url}`}
+                                src={url}
                                 alt={`Photo ${index + 1}`}
                                 style={{ 
                                   width: '100%', 

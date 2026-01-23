@@ -18,7 +18,7 @@ const InnovativePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl("/api/innovation-activity"));
+        const response = await fetch("/api/innovation-activity");
         if (response.ok) {
           const data = await response.json();
           // старі зверху, нові знизу
@@ -326,7 +326,7 @@ const InnovativePage = () => {
                               e.currentTarget.style.transform = 'scale(1)';
                             }}>
                               <img
-                                src={assetUrl(url)}
+                                src={url}
                                 alt={`Innovative activity photo ${index + 1}`}
                                 style={{ 
                                   width: '100%', 

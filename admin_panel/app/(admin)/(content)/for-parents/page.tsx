@@ -3,7 +3,7 @@ import SimpleContentManager from "@/components/content-managers/SimpleContentMan
 export default function ForParentsPage() {
   return (
     <SimpleContentManager 
-      apiEndpoint="/api/for-parents" 
+      apiEndpoint="/admin/api/for-parents" 
       title="Батькам" 
     />
   );

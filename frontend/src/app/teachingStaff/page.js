@@ -48,7 +48,7 @@ export default function TeachingStaffPage() {
     const fetchData = async () => {
       try {
         // Отримуємо категорії
-        const categoriesResponse = await fetch(apiUrl('/api/staff-categories'));
+        const categoriesResponse = await fetch('/api/staff-categories');
         if (categoriesResponse.ok) {
           const categoriesData = await categoriesResponse.json();
           setCategories(categoriesData);
@@ -61,7 +61,7 @@ export default function TeachingStaffPage() {
         }
 
         // Отримуємо всіх вчителів
-        const staffResponse = await fetch(apiUrl('/api/staff'));
+        const staffResponse = await fetch('/api/staff');
         if (staffResponse.ok) {
           const staffData = await staffResponse.json();
           setStaffData(staffData);
@@ -174,12 +174,12 @@ export default function TeachingStaffPage() {
                 <div className={styles.adminPhoto}>
                   {staff.photoUrl ? (
                     <img
-                      src={assetUrl(staff.photoUrl)}
+                      src={staff.photoUrl}
                       alt={localized.fullName}
                       style={{ borderRadius: '10px' }}
                       onError={(e) => {
                         console.error('Помилка завантаження зображення:', staff.photoUrl);
-                        console.log('Full URL:', assetUrl(staff.photoUrl));
+                        console.log('Full URL:', staff.photoUrl);
                         e.target.style.display = 'none';
                       }}
                     />

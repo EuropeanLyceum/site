@@ -41,7 +41,7 @@ export default function TeacherCertificationPublicPage() {
   const fetchDynamicItems = async () => {
     try {
       console.log('🔄 Завантаження динамічних елементів...');
-      const response = await fetch('http://localhost:3000/api/teacher-certification');
+      const response = await fetch('/api/teacher-certification');
       if (response.ok) {
         const data = await response.json();
         console.log('📊 Отримано динамічних елементів:', data.length);

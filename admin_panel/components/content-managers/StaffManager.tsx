@@ -106,7 +106,7 @@ export default function StaffManager({ apiEndpoint, title }: StaffManagerProps) 
   const fetchCategories = async () => {
     try {
       console.log('🔍 fetchCategories - початок виконання');
-      const response = await fetch('/api/staff-categories');
+      const response = await fetch('/admin/api/staff-categories');
       const data = await response.json();
       console.log('📊 Отримано категорій:', data.length);
       console.log('📋 Категорії:', data);
@@ -126,7 +126,7 @@ export default function StaffManager({ apiEndpoint, title }: StaffManagerProps) 
     if (!newCategoryName.trim()) return;
     
     try {
-      const response = await fetch('/api/staff-categories', {
+      const response = await fetch('/admin/api/staff-categories', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ export default function StaffManager({ apiEndpoint, title }: StaffManagerProps) 
     console.log('🗑️ Спроба видалення категорії з ID:', categoryId);
     
     try {
-      const response = await fetch(`/api/staff-categories/${categoryId}`, {
+      const response = await fetch(`/admin/api/staff-categories/${categoryId}`, {
         method: 'DELETE',
       });
 

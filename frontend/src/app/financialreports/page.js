@@ -42,7 +42,7 @@ const FinancialReportsPage = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch(apiUrl('/api/financial-reports'));
+        const res = await fetch('/api/financial-reports');
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -117,7 +117,7 @@ const FinancialReportsPage = () => {
                             {JSON.parse(item.photoUrls).map((url, i) => (
                               <div key={i} className={styles.photoItem}>
                                 <img
-                                  src={assetUrl(url)}
+                                  src={url}
                                   alt={`${t('reportPhotoAlt')} ${i + 1}`}
                                   onError={(e) => { e.target.style.display = 'none'; }}
                                 />

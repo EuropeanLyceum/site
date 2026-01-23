@@ -39,7 +39,7 @@ export default function TeacherCertificationPage() {
 
   const fetchDynamicItems = async () => {
     try {
-      const response = await fetch(apiUrl('/api/teacher-certification'));
+      const response = await fetch('/api/teacher-certification');
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);
@@ -116,7 +116,7 @@ export default function TeacherCertificationPage() {
           return [];
         }
       })().map(url => 
-        assetUrl(url)
+        url.startsWith('http') ? url : url
       ),
       imagePosition: item.imagePosition || 'center'
     };

@@ -29,7 +29,7 @@ export default function CreateStaffPage() {
     setError("");
 
     try {
-      const response = await fetch("/api/staff", {
+      const response = await fetch("/admin/api/staff", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

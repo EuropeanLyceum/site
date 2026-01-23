@@ -18,7 +18,7 @@ export default function VisitingCardPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(apiUrl('/api/visiting-card'));
+        const res = await fetch('/api/visiting-card');
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -363,7 +363,7 @@ export default function VisitingCardPage() {
                           {item.photoUrls.map((url, i) => (
                             <div key={i} className={styles.photoItem}>
                               <img
-                                src={assetUrl(url)}
+                                src={url}
                                 alt={`Visiting card photo ${i + 1}`}
                                 onError={(e) => { e.target.style.display = 'none'; }}
                               />

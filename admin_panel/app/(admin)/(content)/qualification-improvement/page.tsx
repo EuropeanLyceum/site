@@ -3,7 +3,7 @@ import QualificationImprovementManager from '@/components/content-managers/Quali
 export default function QualificationImprovementAdminPage() {
   return (
     <QualificationImprovementManager
-      apiEndpoint="/api/qualification-improvement"
+      apiEndpoint="/admin/api/qualification-improvement"
       title="Підвищення кваліфікації"
     />
   );

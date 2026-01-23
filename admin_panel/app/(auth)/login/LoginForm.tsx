@@ -19,8 +19,8 @@ export default function LoginForm() {
     console.log('🔄 Attempting login with:', { username, password });
 
     try {
-      console.log('📡 Sending request to /api/auth/login...');
-      const response = await fetch('/api/auth/login', {
+      console.log('📡 Sending request to /admin/api/auth/login...');
+      const response = await fetch('/admin/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,24 +48,9 @@ export default function LoginForm() {
 
       if (response.ok && data.success) {
         console.log('✅ Login successful, redirecting to dashboard...');
-        console.log('Current URL:', window.location.href);
-        console.log('Target URL:', '/dashboard');
-        
-        // Спробуємо кілька способів перенаправлення
-        console.log('🔄 Trying window.location.replace...');
-        window.location.replace('/dashboard');
-        
-        // Якщо не спрацює, спробуємо через router
-        setTimeout(() => {
-          console.log('🔄 Trying router.push as fallback...');
-          router.push('/dashboard');
-        }, 100);
-        
-        // Якщо і це не спрацює, спробуємо window.location.href
-        setTimeout(() => {
-          console.log('🔄 Trying window.location.href as final fallback...');
-          window.location.href = '/dashboard';
-        }, 200);
+
+        // Use Next.js router so basePath (/admin) is respected.
+        router.push('/dashboard');
         
       } else {
         console.log('❌ Login failed:', data.error || 'Unknown error');

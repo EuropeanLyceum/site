@@ -40,7 +40,7 @@ export default function Antibullying() {
   const loadArticles = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(apiUrl("/api/anti-bullying"));
+      const response = await fetch("/api/anti-bullying");
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -270,7 +270,7 @@ export default function Antibullying() {
                           e.currentTarget.style.transform = 'scale(1)';
                         }}>
                           <img
-                            src={assetUrl(url)}
+                            src={url}
                             alt={`Фото ${photoIndex + 1}`}
                             style={{ 
                               width: '100%', 

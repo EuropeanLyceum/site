@@ -3,7 +3,7 @@ import ContentWithPhotosManager from "@/components/content-managers/ContentWithP
 export default function InnovationActivityPage() {
   return (
     <ContentWithPhotosManager 
-      apiEndpoint="/api/innovation-activity" 
+      apiEndpoint="/admin/api/innovation-activity" 
       title="Інноваційна діяльність" 
     />
   );

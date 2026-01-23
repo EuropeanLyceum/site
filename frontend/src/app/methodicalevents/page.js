@@ -33,7 +33,7 @@ export default function MethodicalEventsPage() {
     const fetchDynamicEvents = async () => {
       try {
         console.log('🔄 Завантаження динамічних методичних заходів...');
-        const response = await fetch(apiUrl('/api/methodological-events'));
+        const response = await fetch('/api/methodological-events');
         if (response.ok) {
           const data = await response.json();
           console.log('📊 Отримано динамічних методичних заходів:', data.length);
@@ -47,7 +47,7 @@ export default function MethodicalEventsPage() {
               title: localized.heading,
               text: localized.description,
               images: item.photoUrls ? item.photoUrls.map(url => 
-                assetUrl(url)
+                url.startsWith('http') ? url : url
               ) : [],
               imagePosition: item.imagePosition || 'center',
               isDynamic: true

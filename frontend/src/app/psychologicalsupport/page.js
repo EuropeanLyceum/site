@@ -51,7 +51,7 @@ export default function PsychologicalSupport() {
       setIsLoading(true);
       console.log(" --- start ---");
 
-      const response = await fetch(apiUrl("/api/psychological-support"));
+      const response = await fetch("/api/psychological-support");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

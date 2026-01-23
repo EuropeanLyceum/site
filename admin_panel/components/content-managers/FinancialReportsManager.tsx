@@ -23,7 +23,7 @@ interface FinancialReport {
 }
 
 export default function FinancialReportsManager() {
-  const apiEndpoint = "/api/financial-reports";
+  const apiEndpoint = "/admin/api/financial-reports";
 
   const [items, setItems] = useState<FinancialReport[]>([]);
   const [isEditing, setIsEditing] = useState(false);

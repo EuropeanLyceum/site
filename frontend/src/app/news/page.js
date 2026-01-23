@@ -20,8 +20,8 @@ export default function NewsPage() {
       setIsLoading(true);
       console.log(" --- start ---");
       
-      // Прямий запит до API сервера (після налаштування CORS)
-      const response = await fetch(apiUrl("/api/news"));
+      // Запит до API через nginx proxy
+      const response = await fetch("/api/news");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,7 +38,7 @@ export default function NewsPage() {
         text: item.description || item.text || 'Опис відсутній',
         textEn: item.descriptionEn || '',
         images: item.photoUrls ? item.photoUrls.map(url => 
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center' // Додано підтримку imagePosition
       }));

@@ -45,7 +45,7 @@ export default function SportLifePage() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch(apiUrl("/api/sport-life"));
+      const response = await fetch("/api/sport-life");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,7 +62,7 @@ export default function SportLifePage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) => 
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

@@ -11,8 +11,8 @@ export function middleware(request: NextRequest) {
       'http://localhost:3000',        // Фронтенд
       'http://localhost:3001',        // Адмін панель
       'http://localhost:3003',        // Додатковий порт (якщо потрібно)
-      'https://https://european-lyceum.pp.ua',       // Ваш продакшен домен
-      'https://site.https://european-lyceum.pp.ua'    // www версія
+      'https://yourdomain.com',       // Ваш продакшен домен
+      'https://www.yourdomain.com'    // www версія
     ];
     
     // Якщо origin дозволений, встановлюємо його та credentials
@@ -42,17 +42,16 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Перенаправлення з /admin на /admin/login
-  // With basePath: '/admin', we need to include basePath in redirects
-  const pathname = request.nextUrl.pathname;
-  if (pathname === '/admin' || pathname === '/admin/') {
-    return NextResponse.redirect(new URL('/admin/login', request.url));
+  // Перенаправлення з кореня на /login (з basePath це буде /admin -> /admin/login)
+  // With basePath, Next.js strips /admin from pathname, so '/' means /admin/
+  if (request.nextUrl.pathname === '/' || request.nextUrl.pathname === '') {
+    const loginUrl = new URL(request.url);
+    loginUrl.pathname = '/admin/login';
+    return NextResponse.redirect(loginUrl);
   }
 
-  // Перевірка аутентифікації для адмін розділів
-  // With basePath: '/admin', paths come with the prefix, so we check the path after /admin/
-  const pathWithoutBase = pathname.startsWith('/admin/') ? pathname.slice(7) : pathname; // Remove '/admin' prefix
-  
+  // Перевірка аутентифікації для адмін розділів (реальні URL без групи '(admin)')
+  // З basePath: '/admin', Next.js автоматично видаляє префікс, тому перевіряємо без /admin
   const protectedPaths = [
     '/dashboard',
     '/visiting-card',
@@ -85,20 +84,28 @@ export function middleware(request: NextRequest) {
     '/links/create',
   ];
   const isProtectedExplicit = protectedPaths.some((p) =>
-    pathWithoutBase === p || pathWithoutBase.startsWith(`${p}/`)
+    request.nextUrl.pathname === p || request.nextUrl.pathname.startsWith(`${p}/`)
   );
-  // Також захищаємо всі маршрути під /admin/* (except /admin/login and /admin/api)
-  const isAdminPrefixed = (request.nextUrl.pathname === '/admin' || request.nextUrl.pathname.startsWith('/admin/'))
-    && !request.nextUrl.pathname.startsWith('/admin/login')
-    && !request.nextUrl.pathname.startsWith('/admin/api');
-    const isProtected = isProtectedExplicit || isAdminPrefixed;
-    if (isProtected) {
-      const token = request.cookies.get('admin-token')?.value;
-      const recent = request.cookies.get('recent-login')?.value === '1';
-      if (!token || !recent) {
-        return NextResponse.redirect(new URL('/admin/login', request.url));
-      }
+  // З basePath, всі шляхи вже без /admin префіксу
+  const isProtected = isProtectedExplicit;
+  if (isProtected) {
+    const token = request.cookies.get('admin-token')?.value;
+    // Debug logging
+    console.log('🔐 Middleware: Checking protected path:', request.nextUrl.pathname);
+    console.log('🔐 Middleware: admin-token present:', !!token);
+    
+    // Check token first - if valid token exists, allow access
+    // recent-login is a short-term cookie for immediate post-login access
+    // For ongoing sessions, we rely on the token validity
+    if (!token) {
+      console.log('❌ Middleware: No token, redirecting to login');
+      const loginUrl = new URL(request.url);
+      loginUrl.pathname = '/admin/login';
+      return NextResponse.redirect(loginUrl);
     }
+    console.log('✅ Middleware: Token found, allowing access');
+    // Optional: verify token is valid (could add JWT verification here)
+  }
 
   return NextResponse.next();
 }

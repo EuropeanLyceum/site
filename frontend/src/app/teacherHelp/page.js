@@ -48,7 +48,7 @@ export default function TeacherHelpPage() {
   const fetchDynamicItems = async () => {
     try {
       // Змінюємо URL на порт 3000, де знаходиться API
-      const response = await fetch(apiUrl('/api/help-teacher'));
+      const response = await fetch('/api/help-teacher');
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);

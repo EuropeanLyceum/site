@@ -3,7 +3,7 @@ import TeacherCertificationManager from "@/components/content-managers/TeacherCe
 export default function TeacherCertificationPage() {
   return (
     <TeacherCertificationManager 
-      apiEndpoint="/api/teacher-certification" 
+      apiEndpoint="/admin/api/teacher-certification" 
       title="Атестація педпрацівників" 
     />
   );

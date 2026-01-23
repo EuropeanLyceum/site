@@ -3,7 +3,7 @@ import PsychologicalSupportManager from "@/components/content-managers/Psycholog
 export default function SocialPsychologicalSupportPage() {
   return (
     <PsychologicalSupportManager
-      apiEndpoint="/api/psychological-support"
+      apiEndpoint="/admin/api/psychological-support"
       title="Соціально-психологічна підтримка"
     />
   );

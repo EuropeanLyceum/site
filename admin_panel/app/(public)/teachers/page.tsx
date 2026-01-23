@@ -20,7 +20,7 @@ export default function PublicTeachersPage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       try {
-        const res = await fetch("/api/staff");
+        const res = await fetch("/admin/api/staff");
         const data = await res.json();
         setTeachers(data);
       } catch (error) {

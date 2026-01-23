@@ -40,7 +40,7 @@ export default function EvaluationCriteria() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch(apiUrl("/api/evaluation-criteria"));
+      const response = await fetch("/api/evaluation-criteria");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

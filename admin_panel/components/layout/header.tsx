@@ -8,7 +8,7 @@ export default function Header() {
   const handleSignOut = async () => {
     try {
       // Викликаємо API для виходу
-      await fetch('/api/auth/logout', {
+      await fetch('/admin/api/auth/logout', {
         method: 'POST',
       });
       

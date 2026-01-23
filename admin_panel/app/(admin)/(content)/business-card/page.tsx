@@ -3,7 +3,7 @@ import ContentWithPhotosManager from "@/components/content-managers/ContentWithP
 export default function VisitingCardPage() {
   return (
     <ContentWithPhotosManager 
-      apiEndpoint="/api/visiting-card" 
+      apiEndpoint="/admin/api/visiting-card" 
       title="Наша візитка" 
     />
   );

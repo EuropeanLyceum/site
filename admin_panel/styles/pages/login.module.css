@@ -46,7 +46,7 @@
 .login-logo-icon-inner {
   width: 60px;
   height: 60px;
-  background: url('/logo_picture_visit_card.jpg') center center;
+  background: url('/admin/logo_picture_visit_card.jpg') center center;
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 20px;

@@ -29,7 +29,7 @@ export default function ParentsPage() {
         const fetchData = async () => {
             try {
                 console.log(' Завантаження даних для сторінки "Батькам"...');
-                const response = await fetch(apiUrl('/api/for-parents'));
+                const response = await fetch('/api/for-parents');
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -109,7 +109,7 @@ export default function ParentsPage() {
                                     {item.photoUrls.map((photoUrl, photoIndex) => (
                                         <div key={photoIndex} className={styles.photo}>
                                             <Image 
-                                                src={assetUrl(photoUrl)}
+                                                src={photoUrl.startsWith('http') ? photoUrl : photoUrl}
                                                 alt={`фото ${photoIndex + 1} для батьків`}
                                                 width={1800}
                                                 height={1000}

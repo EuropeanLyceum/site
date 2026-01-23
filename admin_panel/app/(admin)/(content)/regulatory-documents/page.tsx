@@ -3,7 +3,7 @@ import RegulatoryDocumentsManager from "@/components/content-managers/Regulatory
 export default function RegulatoryDocumentsPage() {
   return (
     <RegulatoryDocumentsManager 
-      apiEndpoint="/api/regulatory-documents" 
+      apiEndpoint="/admin/api/regulatory-documents" 
       title="Нормативні документи" 
     />
   );

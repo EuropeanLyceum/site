@@ -43,7 +43,7 @@ const PublicInformationPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(apiUrl('/api/public-information'));
+        const res = await fetch('/api/public-information');
         if (res.ok) {
           const data = await res.json();
           // старі зверху, нові знизу
@@ -132,7 +132,7 @@ const PublicInformationPage = () => {
                             {JSON.parse(item.photoUrls).map((url, i) => (
                               <div key={i} className={styles.photoItem}>
                                 <img
-                                  src={assetUrl(url)}
+                                  src={url}
                                   alt={`${t('publicInfoPhotoAlt')} ${i + 1}`}
                                   onError={(e) => { e.target.style.display = 'none'; }}
                                 />

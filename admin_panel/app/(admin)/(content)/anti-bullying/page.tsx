@@ -3,7 +3,7 @@ import AntiBullyingManager from "@/components/content-managers/AntiBullyingManag
 export default function AntiBullyingPage() {
   return (
     <AntiBullyingManager
-      apiEndpoint="/api/anti-bullying"
+      apiEndpoint="/admin/api/anti-bullying"
       title="Протидія булінгу"
     />
   );

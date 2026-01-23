@@ -19,7 +19,7 @@ export default function LinksPage() {
 
   useEffect(() => {
     const fetchLinks = async () => {
-      const res = await fetch('/api/links');
+      const res = await fetch('/admin/api/links');
       const data = await res.json();
       setLinks(data);
     };

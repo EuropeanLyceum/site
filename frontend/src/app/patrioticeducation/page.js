@@ -47,7 +47,7 @@ export default function PatrioticEducation() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      const response = await fetch(apiUrl('/api/patriotic-education'));
+      const response = await fetch('/api/patriotic-education');
       
       if (!response.ok) {
         throw new Error('Помилка завантаження даних');
@@ -63,7 +63,7 @@ export default function PatrioticEducation() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) =>
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

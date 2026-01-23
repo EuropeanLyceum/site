@@ -47,7 +47,7 @@ export default function ProjectResearchPage() {
   const loadEvents = async () => {
     try {
       setLoading(true);
-      const response = await fetch(apiUrl('/api/project-research'));
+      const response = await fetch('/api/project-research');
       
       if (!response.ok) {
         throw new Error('Помилка завантаження даних');
@@ -63,7 +63,7 @@ export default function ProjectResearchPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) =>
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

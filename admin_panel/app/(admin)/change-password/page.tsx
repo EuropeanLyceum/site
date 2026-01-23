@@ -68,7 +68,7 @@ export default function ChangePasswordPage() {
     setVerificationState({ status: 'loading', message: '' });
 
     try {
-      const response = await fetch('/api/auth/verify-credentials', {
+      const response = await fetch('/admin/api/auth/verify-credentials', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -107,7 +107,7 @@ export default function ChangePasswordPage() {
     setUpdateState({ status: 'loading', message: '' });
 
     try {
-      const response = await fetch('/api/auth/change-password', {
+      const response = await fetch('/admin/api/auth/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,11 +1,14 @@
 import Providers from '@/components/layout/Providers';
-import { Montserrat_Alternates } from 'next/font/google';
 
-const montserratAlternates = Montserrat_Alternates({
-  subsets: ['latin', 'cyrillic'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-montserrat-alternates',
-});
+// Temporarily disable Google Fonts during Docker build (no network access)
+// const { Montserrat_Alternates } = require('next/font/google');
+// const montserratAlternates = Montserrat_Alternates({
+//   subsets: ['latin', 'cyrillic'],
+//   weight: ['400', '500', '600', '700'],
+//   variable: '--font-montserrat-alternates',
+//   display: 'swap',
+//   fallback: ['system-ui', 'arial'],
+// });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={montserratAlternates.variable}>
+      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         <Providers>
           {children}
         </Providers>

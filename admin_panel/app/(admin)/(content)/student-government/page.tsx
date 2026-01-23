@@ -3,7 +3,7 @@ import NewsManager from "@/components/content-managers/NewsManager";
 export default function StudentGovernmentPage() {
   return (
     <NewsManager 
-      apiEndpoint="/api/student-government" 
+      apiEndpoint="/admin/api/student-government" 
       title="Учнівське самоврядування" 
     />
   );

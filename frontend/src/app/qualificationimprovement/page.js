@@ -16,7 +16,7 @@ export default function QualificationImprovementPage() {
 
   const fetchDynamicItems = async () => {
     try {
-      const response = await fetch(apiUrl('/api/qualification-improvement'));
+      const response = await fetch('/api/qualification-improvement');
       if (response.ok) {
         const data = await response.json();
         setDynamicItems(data);
@@ -197,7 +197,7 @@ export default function QualificationImprovementPage() {
                             e.currentTarget.style.transform = 'scale(1)';
                           }}>
                             <img
-                              src={assetUrl(url)}
+                              src={url}
                               alt={`Qualification improvement photo ${index + 1}`}
                               style={{ 
                                 width: '100%', 

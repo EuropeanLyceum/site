@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set('admin-token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax', // Changed to 'lax' for better compatibility
       path: '/', // доступний на всіх маршрутах
       maxAge: 24 * 60 * 60 // 24 години
     });
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     response.cookies.set('recent-login', '1', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: 60, // 1 хвилина для доступу до dashboard після логіну
     });

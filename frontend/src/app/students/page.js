@@ -36,7 +36,7 @@ const StudentsPage = () => {
   const fetchDynamicItems = async () => {
     try {
       console.log('Завантаження даних для сторінки "Учням"...');
-      const response = await fetch(apiUrl('/api/for-students'));
+      const response = await fetch('/api/for-students');
       
       if (response.ok) {
         const data = await response.json();
@@ -626,7 +626,7 @@ const StudentsPage = () => {
                         {item.photoUrls.map((url, photoIndex) => (
                           <Image 
                             key={photoIndex}
-                            src={assetUrl(url)}
+                            src={url.startsWith('http') ? url : url}
                             alt={`Фото для учня ${photoIndex + 1}`}
                             width={1800}
                             height={1000}

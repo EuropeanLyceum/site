@@ -45,7 +45,7 @@ export default function ClubsStudiosPage() {
       console.log(" --- start ---");
       
       // Прямий запит до API сервера
-      const response = await fetch(apiUrl("/api/clubs-studios"));
+      const response = await fetch("/api/clubs-studios");
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,7 +62,7 @@ export default function ClubsStudiosPage() {
         headingEn: item.headingEn,
         descriptionEn: item.descriptionEn,
         photoUrls: item.photoUrls ? item.photoUrls.map((url) => 
-          assetUrl(url)
+          url.startsWith('http') ? url : url
         ) : [],
         imagePosition: item.imagePosition || 'center'
       }));

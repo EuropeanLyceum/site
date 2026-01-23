@@ -44,7 +44,7 @@ export default function RegulatoryDocuments() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(apiUrl('/api/regulatory-documents'));
+        const response = await fetch('/api/regulatory-documents');
         if (response.ok) {
           const data = await response.json();
           // старі зверху, нові знизу
@@ -208,7 +208,7 @@ export default function RegulatoryDocuments() {
                                   return JSON.parse(document.photoUrls).map((url, photoIndex) => (
                                     <div key={photoIndex} className={styles.photoItem}>
                                       <img
-                                        src={assetUrl(url)}
+                                        src={url}
                                         alt={`${t('documentPhotoAlt')} ${photoIndex + 1}`}
                                         onError={(e) => {
                                           console.error('Помилка завантаження зображення:', url);
