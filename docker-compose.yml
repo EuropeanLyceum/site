@@ -1,12 +1,35 @@
 version: '3.3'
 
 services:
+  # PostgreSQL Database
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: liceum
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - school-network
+
   # Admin Panel (Next.js)
   admin-panel:
     build:
       context: ./admin_panel
       dockerfile: Dockerfile
+      args:
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        NEXTAUTH_URL: ${NEXTAUTH_URL}
+        JWT_SECRET: ${JWT_SECRET}
+        DATABASE_URL: ${DATABASE_URL}
     container_name: admin-panel
+    ports:
+      - "3001:3001"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
@@ -14,6 +37,8 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3001
+    depends_on:
+      - postgres_db
     volumes:
       - admin-uploads:/app/public/uploads
       - admin-db:/app/prisma
@@ -29,7 +54,7 @@ services:
     container_name: frontend
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
       - PORT=3000
     depends_on:
       - admin-panel
@@ -37,57 +62,31 @@ services:
       - school-network
     restart: unless-stopped
 
-  admin:
-    build:
-      context: ./admin_panel
-      args:
-        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-        NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost/admin}
-        JWT_SECRET: ${JWT_SECRET}
-        DATABASE_URL: "postgresql://postgres:postgres@db:5432/liceum?schema=public"
-    container_name: admin-panel
-    ports:
-      - "3001:3001"
-    environment:
-      DATABASE_URL: "postgresql://postgres:postgres@db:5432/liceum?schema=public"
-      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost/admin}
-      JWT_SECRET: ${JWT_SECRET}
-      PORT: "3001"
-    depends_on:
-      - db
-    # Using standalone mode - CMD is already set in Dockerfile
-
-  db:
-    image: postgres:15-alpine
-    container_name: postgres_db
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
     restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: liceum
     ports:
-      - "5432:5432"
+      - "80:80"
+      - "443:443"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  nginx: 
-      image: nginx:alpine
-      container_name: nginx
-      restart: always
-      ports:
-        - "80:80"
-      volumes:
-        - ./nginx/nginx.localhost.conf:/etc/nginx/nginx.conf:ro
-        - ./admin-uploads:/usr/share/nginx/html/uploads:ro
-      depends_on:
-        - front
-        - admin
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - admin-uploads:/usr/share/nginx/html/uploads:ro
+      - ../certs/origin_cert.pem:/etc/ssl/cloudflare/origin.pem
+      - ../certs/origin_cert_private_key.pem:/etc/ssl/cloudflare/origin.key
+    depends_on:
+      - frontend
+      - admin-panel
+    networks:
+      - school-network
 
 volumes:
   admin-uploads:
     driver: local
   admin-db:
+    driver: local
+  postgres_data:
     driver: local
 
 networks:

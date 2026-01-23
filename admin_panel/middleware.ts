@@ -8,11 +8,15 @@ export function middleware(request: NextRequest) {
     // Дозволяємо запити з фронтенду
     const origin = request.headers.get('origin');
     const allowedOrigins = [
-      'http://localhost:3000',        // Фронтенд
-      'http://localhost:3001',        // Адмін панель
-      'http://localhost:3003',        // Додатковий порт (якщо потрібно)
-      'https://yourdomain.com',       // Ваш продакшен домен
-      'https://www.yourdomain.com'    // www версія
+      'https://european-lyceum.pp.ua',       // Production domain
+      'https://site.european-lyceum.pp.ua',  // Production site domain
+      'https://www.european-lyceum.pp.ua',   // WWW variant
+      // Development origins (only for local development)
+      ...(process.env.NODE_ENV === 'development' ? [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3003',
+      ] : [])
     ];
     
     // Якщо origin дозволений, встановлюємо його та credentials

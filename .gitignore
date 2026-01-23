@@ -1,0 +1,18 @@
+# Environment files
+.env
+.env.local
+.env.production
+.env.production.local
+
+# SSL certificates (sensitive)
+ssl/
+*.pem
+*.key
+*.crt
+
+# Docker volumes
+volumes/
+
+# Logs
+*.log
+logs/
