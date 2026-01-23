@@ -32,9 +32,9 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Copy standalone build
-COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/standalone/.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./.next/standalone/public
 
 USER nextjs
 
@@ -42,5 +42,7 @@ EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
+
+WORKDIR /app/.next/standalone
 
 CMD ["node", "server.js"]
