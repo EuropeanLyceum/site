@@ -20,8 +20,8 @@ ENV NEXT_PUBLIC_ESLINT_NO_DEV_ERRORS=true
 RUN npm run build
 
 # Copy static files and public folder to standalone directory (required for standalone mode)
-RUN cp -r .next/static .next/standalone/.next/static
-RUN cp -r public/* .next/standalone/public/ 2>/dev/null || true
+RUN mkdir -p .next/standalone/.next/static && cp -r .next/static/* .next/standalone/.next/static/
+RUN mkdir -p .next/standalone/public && cp -r public/* .next/standalone/public/ 2>/dev/null || true
 
 # Production image, copy all the files and run next
 FROM base AS runner
