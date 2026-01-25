@@ -2,6 +2,7 @@ version: '3.3'
 
 services:
   # PostgreSQL Database
+  # Internal only - not exposed to internet
   postgres_db:
     image: postgres:15-alpine
     container_name: postgres_db
@@ -10,14 +11,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: liceum
-    ports:
-      - "5432:5432"
+    # No ports exposed - only accessible within Docker network
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - school-network
 
   # Admin Panel (Next.js)
+  # Internal only - accessible through nginx at /admin
   admin-panel:
     build:
       context: ./admin_panel
@@ -28,8 +29,7 @@ services:
         JWT_SECRET: ${JWT_SECRET}
         DATABASE_URL: ${DATABASE_URL}
     container_name: admin-panel
-    ports:
-      - "3001:3001"
+    # No ports exposed - only accessible through nginx
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
@@ -47,11 +47,13 @@ services:
     restart: unless-stopped
 
   # Frontend (Next.js)
+  # Internal only - accessible through nginx
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: frontend
+    # No ports exposed - only accessible through nginx
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
@@ -63,13 +65,14 @@ services:
     restart: unless-stopped
 
   # Nginx Reverse Proxy
+  # Only service exposed to internet - routes traffic to frontend and admin-panel
   nginx:
     image: nginx:alpine
     container_name: nginx
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - "80:80"    # HTTP
+      - "443:443"  # HTTPS
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - admin-uploads:/usr/share/nginx/html/uploads:ro
