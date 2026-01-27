@@ -1,0 +1,96 @@
+services:
+  # PostgreSQL Database
+  # Exposed for local development access
+  postgres_db:
+    image: postgres:15-alpine
+    container_name: postgres_db_local
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-postgres}
+      POSTGRES_DB: liceum
+    ports:
+      - "5432:5432"  # Exposed for local database tools
+    volumes:
+      - postgres_data_local:/var/lib/postgresql/data
+    networks:
+      - school-network-local
+
+  # Admin Panel (Next.js)
+  # Exposed for local development
+  admin-panel:
+    build:
+      context: ./admin_panel
+      dockerfile: Dockerfile
+      args:
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-local-secret-key-change-in-production}
+        NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost/admin}
+        JWT_SECRET: ${JWT_SECRET:-local-jwt-secret-change-in-production}
+        DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:${DATABASE_PASSWORD:-postgres}@postgres_db:5432/liceum}
+    container_name: admin-panel-local
+    ports:
+      - "3001:3001"  # Exposed for direct access
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:${DATABASE_PASSWORD:-postgres}@postgres_db:5432/liceum}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-local-secret-key-change-in-production}
+      - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost/admin}
+      - JWT_SECRET=${JWT_SECRET:-local-jwt-secret-change-in-production}
+      - PORT=3001
+    depends_on:
+      - postgres_db
+    volumes:
+      - admin-uploads-local:/app/public/uploads
+      - admin-db-local:/app/prisma
+    networks:
+      - school-network-local
+    restart: unless-stopped
+
+  # Frontend (Next.js)
+  # Exposed for local development
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend-local
+    ports:
+      - "3000:3000"  # Exposed for direct access
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-}
+      - PORT=3000
+    depends_on:
+      - admin-panel
+    networks:
+      - school-network-local
+    restart: unless-stopped
+
+  # Nginx Reverse Proxy (Local)
+  # Simplified for local development
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-local
+    restart: always
+    ports:
+      - "8080:80"  # Use port 8080 to avoid conflicts
+    volumes:
+      - ./nginx/nginx.local.conf:/etc/nginx/nginx.conf:ro
+      - admin-uploads-local:/usr/share/nginx/html/uploads:ro
+    depends_on:
+      - frontend
+      - admin-panel
+    networks:
+      - school-network-local
+
+volumes:
+  admin-uploads-local:
+    driver: local
+  admin-db-local:
+    driver: local
+  postgres_data_local:
+    driver: local
+
+networks:
+  school-network-local:
+    driver: bridge
+
