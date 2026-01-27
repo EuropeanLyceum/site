@@ -37,6 +37,10 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3001
+    pids_limit: 300
+    resources:
+      cpus: "1.5"
+      memory: 3G
     depends_on:
       - postgres_db
     volumes:
