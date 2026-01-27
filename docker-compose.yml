@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.8'
 
 services:
   # PostgreSQL Database
@@ -38,9 +38,14 @@ services:
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3001
     pids_limit: 300
-    resources:
-      cpus: "1.5"
-      memory: 3G
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: 3G
+        reservations:
+          cpus: '0.5'
+          memory: 1G
     depends_on:
       - postgres_db
     volumes:
