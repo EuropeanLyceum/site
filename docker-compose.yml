@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # PostgreSQL Database
   # Internal only - not exposed to internet
@@ -37,12 +35,12 @@ services:
       - NEXTAUTH_URL=${NEXTAUTH_URL}
       - JWT_SECRET=${JWT_SECRET}
       - PORT=3001
-    pids_limit: 300
     deploy:
       resources:
         limits:
           cpus: '1.5'
           memory: 3G
+          pids: 300
         reservations:
           cpus: '0.5'
           memory: 1G
