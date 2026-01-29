@@ -203,13 +203,13 @@ const Header = () => {
               {t("aboutLyceumFull")}
             </Link>
             <div className={styles.mobileDropdownContent}>
-              <Link href="/visitingcard" onClick={closeMobileMenu}>
+              <Link href="/about-lyceum/visiting-card" onClick={closeMobileMenu}>
                 {t("ourCard")}
               </Link>
-              <Link href="/history" onClick={closeMobileMenu}>
+              <Link href="/about-lyceum/history" onClick={closeMobileMenu}>
                 {t("history")}
               </Link>
-              <Link href="/innovative" onClick={closeMobileMenu}>
+              <Link href="/about-lyceum/innovative" onClick={closeMobileMenu}>
                 {t("innovation")}
               </Link>
             </div>
@@ -228,7 +228,7 @@ const Header = () => {
           <div className={styles.mobileNavItem}>
             <Link
               className={styles.mobileNavLink}
-              href="/teachingStaff"
+              href="/teaching-staff"
               onClick={closeMobileMenu}
             >
               {t("teachingStaff")}
@@ -244,14 +244,14 @@ const Header = () => {
               {t("transparencyManagement")}
             </Link>
             <div className={styles.mobileDropdownContent}>
-              <Link href="/regulatoryDocuments" onClick={closeMobileMenu}>
-                Нормативні документи
+              <Link href="/transparency-managment/regulatory-documents" onClick={closeMobileMenu}>
+                {t("regulatoryDocuments")}
               </Link>
-              <Link href="/financialreports" onClick={closeMobileMenu}>
-                Фінансова звітність
+              <Link href="/transparency-managment/financial-reports" onClick={closeMobileMenu}>
+                {t("financialReports")}
               </Link>
-              <Link href="/publicinformation" onClick={closeMobileMenu}>
-                Публічна інформація
+              <Link href="/transparency-managment/public-information" onClick={closeMobileMenu}>
+                {t("publicInformation")}
               </Link>
             </div>
           </div>
@@ -265,32 +265,32 @@ const Header = () => {
               {t("educationalProcess")}
             </Link>
             <div className={styles.mobileDropdownContent}>
-              <Link href="/intellect" onClick={closeMobileMenu}>
+              <Link href="/educational-process/intellect" onClick={closeMobileMenu}>
                 {t("intellectAndTalent")}
               </Link>
-              <Link href="/studentselfgovernment" onClick={closeMobileMenu}>
+              <Link href="/educational-process/student-self-government" onClick={closeMobileMenu}>
                 {t("studentSelfGovernment")}
               </Link>
-              <Link href="/projectresearch" onClick={closeMobileMenu}>
-                Проєктно-дослідницька діяльність
+              <Link href="/educational-process/project-research" onClick={closeMobileMenu}>
+                {t("projectResearch")}
               </Link>
-              <Link href="/patrioticeducation" onClick={closeMobileMenu}>
-                Національно-патріотичне виховання
+              <Link href="/educational-process/patriotical-education" onClick={closeMobileMenu}>
+                {t("patrioticEducation")}
               </Link>
-              <Link href="/evaluationcriteria" onClick={closeMobileMenu}>
-                Критерії оцінювання
+              <Link href="/educational-process/evaluation-criteria" onClick={closeMobileMenu}>
+                {t("evaluationCriteria")}
               </Link>
-              <Link href="/clubsstudios" onClick={closeMobileMenu}>
-                Клуби та студії
+              <Link href="/educational-process/clubs-studios" onClick={closeMobileMenu}>
+                {t("clubsAndStudios")}
               </Link>
-              <Link href="/sportlife" onClick={closeMobileMenu}>
+              <Link href="/educational-process/sportlife" onClick={closeMobileMenu}>
                 {t("sportLife")}
               </Link>
-              <Link href="/psychologicalsupport" onClick={closeMobileMenu}>
-                Соціально-психологічна підтримка
+              <Link href="/educational-process/psychological-support" onClick={closeMobileMenu}>
+                {t("psychologicalSupport")}
               </Link>
-              <Link href="/antibullying" onClick={closeMobileMenu}>
-                Протидія булінгу
+              <Link href="/educational-process/anti-bullying" onClick={closeMobileMenu}>
+                {t("antiBullying")}
               </Link>
             </div>
           </div>
@@ -304,17 +304,17 @@ const Header = () => {
               {t("methodicalWork")}
             </Link>
             <div className={styles.mobileDropdownContent}>
-              <Link href="/teacherHelp" onClick={closeMobileMenu}>
-                На допомогу вчителю
+              <Link href="/methodical-work/teacher-support" onClick={closeMobileMenu}>
+                {t("teacherHelp")}
               </Link>
-              <Link href="/qualificationimprovement" onClick={closeMobileMenu}>
-                Підвищення кваліфікації
+              <Link href="/methodical-work/qualification-improvement" onClick={closeMobileMenu}>
+                {t("qualificationImprovement")}
               </Link>
-              <Link href="/teachercertification" onClick={closeMobileMenu}>
-                Атестація педпрацівників
+              <Link href="/methodical-work/teacher-certification" onClick={closeMobileMenu}>
+                {t("teacherCertification")}
               </Link>
-              <Link href="/methodicalevents" onClick={closeMobileMenu}>
-                Основні методичні заходи
+              <Link href="/methodical-work/methodical-events" onClick={closeMobileMenu}>
+                {t("methodicalEvents")}
               </Link>
             </div>
           </div>
@@ -328,10 +328,10 @@ const Header = () => {
               {t("informationPage")}
             </Link>
             <div className={styles.mobileDropdownContent}>
-              <Link href="/parents" onClick={closeMobileMenu}>
+              <Link href="/inforamtion-page/parents" onClick={closeMobileMenu}>
                 {t("parents")}
               </Link>
-              <Link href="/students" onClick={closeMobileMenu}>
+              <Link href="/inforamtion-page/students" onClick={closeMobileMenu}>
                 {t("students")}
               </Link>
             </div>
