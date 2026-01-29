@@ -1,43 +1,7 @@
-/* --- Наша візитка секція --- */
 .section {
   margin: 0;
   padding: 0;
   background: transparent;
-}
-
-/* --- Динамічний контент з адмінки --- */
-.dynamicSection {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 40px 20px;
-}
-
-.dynamicDocument {
-  background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f3ff 100%);
-  border-radius: 12px;
-  padding: 50px 80px;
-  margin-bottom: 45px;
-  box-shadow: 0 4px 15px rgba(24, 43, 161, 0.1);
-  display: flex;
-  gap: 40px;
-  align-items: flex-start;
-}
-
-.documentContent {
-  flex: 1;
-  min-width: 0;
-}
-
-/* Заголовок - перший */
-.documentContent h3 {
-  font-family: 'Montserrat Alternates', sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  color: #182BA1;
-  margin-bottom: 20px;
-  text-align: left;
-  border-bottom: 2px solid #182BA1;
-  padding-bottom: 12px;
 }
 
 /* Текст - другий */
@@ -197,12 +161,14 @@
 .ourCard {
   background: radial-gradient(50% 50% at 50% 50%, #fff 0%, rgba(187, 188, 192, 0.3) 61.92%, #d5e0f0 100%);
   width: 100%;
-  height: 819px;
+  height: 100%;
   position: relative;
   z-index: 1;
   margin-top: -83px;
   padding-top: 83px;
+  padding-bottom: 20px;
   margin-bottom: 80px;
+  padding-inline: 20px;
 }
 
 .ourCardTitle {
@@ -211,33 +177,25 @@
   font-size: 50px;
   line-height: 60px;
   color: #182BA1;
-  margin-left: 235px;
-  margin-top: 160px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  align-content: center;
 }
 
 .ourCardContent {
-  display: flex;
-  margin-left: 122px;
-  margin-top: -120px;
-  gap: 48px;
-  position: relative;
+  margin-top: 120px;
 }
 
 .ourCardImageContainer {
-  width: 710px;
-  height: 400px;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   border-radius: 20px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .ourCardImage {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   border-radius: 20px;
-  margin-top: 120px;
-  margin-left: -30px;
 }
 
 .ourCardInfo {
@@ -245,25 +203,21 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 562px;
+  width: 100%;
   height: 578px;
 }
 
-.mainInfoRow {
-  display: flex;
-  gap: 16px;
-}
-
 .mainInfo {
-  width: 356px;
-  height: 140px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+}
+
+.infoBlock {
+  background: white;
+  border-radius: 24px;
+  padding: 20px;
+  height: 130px;
 }
 
 .infoContent {
@@ -282,102 +236,14 @@
   gap: 4px;
 }
 
-.infoContentH2Span {
-  display: block;
-}
-
 .infoLogo {
   width: 105px;
   height: 105px;
   object-fit: contain;
   display: block;
-  position: absolute;
-  right: 1px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.specialization {
-  width: 190px;
-  height: 140px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 16px;
-}
-.staffInfoRow {
-  display: flex;
-  gap: 16px;
-}
-.staffInfoColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 386px;
-}
-.infoRow {
-  display: flex;
-  gap: 16px;
-}
-.teachers, .anthem {
-  width: 170px;
-  height: 72px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 5px 16px 16px 16px;
 }
 
-/* Менший шрифт для англійського перекладу заголовку anthem */
-[lang="en"] .anthem h3 {
-  font-size: 16px !important;
-}
-.totalStaff, .language {
-  width: 170px;
-  height: 82px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 3px 16px 16px 16px;
-}
-.name {
-  width: 170px;
-  height: 82px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 5px 16px 16px 16px;
-}
-.classes {
-  width: 170px;
-  height: 82px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 3px 16px 16px 16px;
-}
-.students {
-  width: 190px;
-  height: 82px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 3px 16px 16px 16px;
-}
-.license {
-  width: 190px;
-  height: 170px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 11px 16px 16px 16px;
-  margin-left: -32px;
-}
-.contacts {
-  width: 562px;
-  height: 138px;
-  background: #FFFFFF;
-  border-radius: 20px;
-  padding: 16px 16px 16px 61px;
-  display: flex;
-  justify-content: space-between;
-  gap: 56px;
-}
-.address, .contactInfo {
-  flex: 1;
-}
+
 .infoBlockH3 {
   font-family: "Montserrat Alternates", sans-serif;
   font-weight: 600;
@@ -429,7 +295,7 @@
 .serviceAreaTitle {
   font-family: "Montserrat Alternates", sans-serif;
   font-weight: 700;
-  font-size: 50px;
+  font-size: 40px;
   line-height: 100%;
   text-align: center;
   color: #182ba1;
@@ -437,37 +303,25 @@
 }
 .serviceAreaContent {
   width: 100%;
-  height: 314px;
+  height: 100%;
   position: relative;
-  margin: 0 auto;
+  margin-block: 0 auto;
   background: rgba(24, 43, 161, 0.6);
   padding: 36px 64px;
-  display: flex;
-  justify-content: space-between;
-  gap: 52px;
-}
-.addressColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 46px;
 }
 .addressBlock {
-  width: 400px;
-  height: 50px;
+  width: auto;
+  min-height: 50px;
+  height: auto;
   background: #F8F8F8;
   border-radius: 18px;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
+  padding: 12px;
 }
 .addressBlockP {
   color: #000000;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-weight: 400;
-}
-.addressP {
-  line-height: 1.5;
 }
 
 /* --- В ліцеї працюють --- */
@@ -479,15 +333,14 @@
   margin: 0 0 60px 0;
 }
 .staffContent {
-  width: 1400px;
+  width: 90%;
   height: auto;
   min-height: 650px;
-  margin: 130px auto 0;
+  margin: 100px auto 0;
   background: #ebebeb;
   border-radius: 30px;
   padding: 60px 60px 40px;
   position: relative;
-  margin-bottom: 80px;
 }
 .staffItem {
   display: flex;
@@ -497,7 +350,7 @@
   border-bottom: 1px solid #000000;
   margin-bottom: 30px;
   position: relative;
-  width: 1280px;
+  width: 100%;
 }
 .staffMarker {
   width: 20px;
@@ -532,25 +385,28 @@
   text-align: center;
   margin: 100px 0 40px;
 }
+
 .facilitiesContent {
-  display: flex;
   gap: 100px;
-  width: 1274px;
+  width: 100%;
   margin: 0 auto;
   align-items: flex-start;
+  padding-inline: 10px;
 }
-.facilitiesImage {
-  width: 696px;
-  height: 522px;
+
+.facilitiesImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   border-radius: 20px;
   overflow: hidden;
-  margin-left: -10px;
 }
-.facilitiesImageImg {
-  width: 100%;
-  height: 100%;
+
+.facilitiesImage {
   object-fit: cover;
+  border-radius: 20px;
 }
+
 .facilitiesInfo {
   flex: 1;
   padding-top: 16px;
@@ -563,7 +419,7 @@
 .facilitiesList {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
 }
 .facilityItem {
   display: flex;
@@ -573,11 +429,6 @@
 .checkIcon {
   width: 21px;
   height: 21px;
-}
-.facilityItemP {
-  font-size: 16px;
-  color: #000000;
-  margin: 0;
 }
 
 .infoBlock h3,
@@ -607,422 +458,27 @@
   margin-bottom: 12px;
 }
 
-/* === АДАПТИВНІ СТИЛІ === */
-
-/* Tablet - до 1024px */
 @media (max-width: 1024px) {
-  .ourCard {
-    height: auto;
-    padding-bottom: 40px;
-  }
-  
-  .ourCardTitle {
-    font-size: 40px;
-    line-height: 48px;
-    margin-left: 60px;
-    margin-top: 120px;
-  }
-  
-  .ourCardContent {
-    margin-left: 60px;
-    margin-right: 60px;
-    gap: 30px;
-  }
-  
-  .ourCardImageContainer {
-    width: 500px;
-    height: 300px;
-  }
-  
-  .ourCardImage {
-    margin-top: 80px;
-    margin-left: -20px;
-  }
-  
-  .ourCardInfo {
-    width: 100%;
-    height: auto;
-  }
-  
-  .mainInfo {
-    width: 100%;
-    height: auto;
-    min-height: 120px;
-  }
-  
-  .specialization {
-    width: 100%;
-    height: auto;
-    min-height: 120px;
-  }
-  
-  .staffInfoColumn {
-    width: 100%;
-  }
-  
-  .teachers, .anthem, .totalStaff, .language, .name, .classes, .students {
-    width: 100%;
-    height: auto;
-    min-height: 60px;
-  }
-  
-  .license {
-    width: 100%;
-    height: auto;
-    min-height: 150px;
-    margin-left: 0;
-  }
-  
-  .contacts {
-    width: 100%;
-    height: auto;
-    min-height: 120px;
-    padding: 16px;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .serviceAreaTitle {
-    font-size: 40px;
-  }
-  
-  .serviceAreaContent {
-    padding: 30px 40px;
-    gap: 30px;
-  }
-  
-  .addressBlock {
-    width: 100%;
-  }
-  
-  .staffContent {
-    width: 90%;
-    margin: 80px auto 0;
-    padding: 40px 30px;
-  }
-  
-  .staffItem {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-  
   .staffInfo {
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
   }
-  
-  .staffName {
-    margin-left: 0;
-    font-size: 24px;
-  }
-  
+
   .staffDescription {
     text-align: left;
-    font-size: 16px;
   }
-  
-  .facilitiesTitle {
-    font-size: 36px;
-    margin: 80px 0 30px;
-  }
-  
-  .facilitiesContent {
-    width: 90%;
-    gap: 50px;
-  }
-  
-  .facilitiesImage {
-    width: 500px;
-    height: 400px;
-  }
-}
 
-/* Mobile Large - до 768px */
-@media (max-width: 768px) {
-  .ourCard {
-    margin-top: 60px; /* Збільшуємо відступ зверху, щоб не перекриватися з хедером */
-    padding-top: 20px; /* Зменшуємо padding-top */
-    margin-bottom: 60px;
-  }
-  
-  .ourCardTitle {
-    font-size: 32px;
-    line-height: 40px;
-    margin-left: 20px;
-    margin-right: 20px;
-    margin-top: 0;
-    margin-bottom: 30px;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-  
-  /* Переміщуємо заголовок на початок сторінки */
-  .visitingCardPage {
-    position: relative;
-  }
-  
-  .ourCardTitle {
-    position: absolute;
-    top: 40px; /* Опускаємо заголовок нижче */
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 40px);
-    margin: 0;
-    z-index: 100;
-  }
-  
-  .ourCardContent {
-    margin-left: 20px;
-    margin-right: 20px;
-    flex-direction: column;
-    gap: 20px;
-    margin-top: 80px; /* Додаємо відступ зверху, щоб контент не перекривався з заголовком */
-  }
-  
-  .ourCardImageContainer {
-    width: 100%;
-    height: 250px;
-    order: 2;
-  }
-  
-  .ourCardImage {
-    margin-top: 0;
+  .staffName {
     margin-left: 0;
   }
-  
-  .ourCardInfo {
-    order: 1;
-  }
-  
-  .mainInfoRow {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .infoContent h2 {
-    font-size: 16px;
-  }
-  
-  .infoLogo {
-    width: 80px;
-    height: 80px;
-  }
-  
-  .staffInfoRow {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .infoRow {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .infoBlockH3 {
-    font-size: 18px;
-  }
-  
-  .infoBlockP {
-    font-size: 13px;
-  }
-  
-  .serviceAreaTitle {
-    font-size: 32px;
-    margin: 30px 0 20px;
-  }
-  
-  .serviceAreaContent {
-    padding: 20px;
-    flex-direction: column;
-    gap: 20px;
-    height: auto;
-  }
-  
-  .addressColumn {
-    gap: 20px;
-  }
-  
-  .addressBlock {
-    height: auto;
-    min-height: 40px;
-  }
-  
-  .addressBlockP {
-    font-size: 14px;
-  }
-  
-  .staffTitle {
-    font-size: 32px;
-    margin: 0 0 40px 0;
-  }
-  
-  .staffContent {
-    width: 95%;
-    margin: 60px auto 0;
-    padding: 30px 20px;
-  }
-  
-  .staffName {
-    font-size: 20px;
-  }
-  
-  .staffDescription {
-    font-size: 14px;
-  }
-  
-  .facilitiesTitle {
-    font-size: 28px;
-    margin: 60px 0 20px;
-  }
-  
-  .facilitiesContent {
-    width: 95%;
-    flex-direction: column;
-    gap: 30px;
-  }
-  
-  .facilitiesImage {
-    width: 100%;
-    height: 300px;
-    margin-left: 0;
-  }
-  
-  .facilitiesSubtitle {
-    font-size: 18px;
-    margin-bottom: 20px;
-  }
-  
-  .facilitiesList {
-    gap: 20px;
-  }
-  
-  .facilityItem {
-    gap: 20px;
-  }
-  
-  .facilityItemP {
-    font-size: 14px;
-  }
-}
 
-/* Mobile Small - до 480px */
-@media (max-width: 480px) {
   .ourCard {
-    margin-top: 50px; /* Додаємо відступ зверху для малих мобільних пристроїв */
-    padding-top: 20px; /* Зменшуємо padding-top */
+    margin-top: -70px;
+    padding-top: 70px;
   }
-  
-  .ourCardTitle {
-    font-size: 24px;
-    line-height: 30px;
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-top: 0;
-    margin-bottom: 25px;
-    text-align: center;
-    position: relative;
-    z-index: 10;
-  }
-  
-  /* Переміщуємо заголовок на початок сторінки */
-  .visitingCardPage {
-    position: relative;
-  }
-  
-  .ourCardTitle {
-    position: absolute;
-    top: 35px; /* Опускаємо заголовок нижче для малих мобільних пристроїв */
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 30px);
-    margin: 0;
-    z-index: 100;
-  }
-  
-  .ourCardContent {
-    margin-left: 15px;
-    margin-right: 15px;
-    margin-top: 70px; /* Додаємо відступ зверху для малих мобільних пристроїв */
-  }
-  
-  .ourCardImageContainer {
-    height: 200px;
-  }
-  
-  .infoContent h2 {
-    font-size: 14px;
-  }
-  
-  .infoLogo {
-    width: 60px;
-    height: 60px;
-  }
-  
-  .infoBlockH3 {
-    font-size: 16px;
-  }
-  
-  .infoBlockP {
-    font-size: 12px;
-  }
-  
-  .serviceAreaTitle {
-    font-size: 24px;
-  }
-  
-  .serviceAreaContent {
-    padding: 15px;
-  }
-  
-  .addressBlockP {
-    font-size: 12px;
-  }
-  
-  .staffTitle {
-    font-size: 24px;
-    margin: 0 0 30px 0;
-  }
-  
+
   .staffContent {
-    padding: 20px 15px;
-  }
-  
-  .staffName {
-    font-size: 18px;
-  }
-  
-  .staffDescription {
-    font-size: 13px;
-  }
-  
-  .facilitiesTitle {
-    font-size: 22px;
-    margin: 40px 0 15px;
-  }
-  
-  .facilitiesImage {
-    height: 250px;
-  }
-  
-  .facilitiesSubtitle {
-    font-size: 16px;
-    margin-bottom: 15px;
-  }
-  
-  .facilitiesList {
-    gap: 15px;
-  }
-  
-  .facilityItem {
-    gap: 15px;
-  }
-  
-  .facilityItemP {
-    font-size: 13px;
+    padding: 30px 30px 20px;
   }
 }
-

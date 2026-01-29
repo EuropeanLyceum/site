@@ -14,7 +14,7 @@ export default function UsefulFunctions() {
                 {t("usefulFunctions")}
             </Typography>
 
-            <Typography className="section-subtitle" sx={{p: "5px"}}>
+            <Typography className="section-subtitle" sx={{pb: "15px"}}>
                 {t("recommendTry")}
             </Typography>
 
