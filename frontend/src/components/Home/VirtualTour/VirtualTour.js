@@ -65,7 +65,7 @@ const icons = {
 };
 
 const VirtualTour = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("virtual");
   const [currentLocation, setCurrentLocation] = useState("entrance");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);

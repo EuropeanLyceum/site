@@ -64,9 +64,9 @@ const Header = () => {
               <span>{t("lyceum")}</span>
             </Link>
             <div className={styles.dropdownContent}>
-              <Link href="/visitingcard">{t("ourCard")}</Link>
-              <Link href="/history">{t("history")}</Link>
-              <Link href="/innovative">{t("innovation")}</Link>
+              <Link href="/about-lyceum/visiting-card">{t("ourCard")}</Link>
+              <Link href="/about-lyceum/history">{t("history")}</Link>
+              <Link href="/about-lyceum/innovative">{t("innovation")}</Link>
             </div>
           </div>
 
@@ -75,7 +75,7 @@ const Header = () => {
           </Link>
 
           <div className={styles.navItem}>
-            <Link className={styles.navLink} href="/teachingStaff">
+            <Link className={styles.navLink} href="/teaching-staff">
               <span>{t("teaching")}</span>
               <span>{t("staff")}</span>
             </Link>
@@ -87,9 +87,9 @@ const Header = () => {
               <span>{t("management")}</span>
             </Link>
             <div className={styles.dropdownContent}>
-              <Link href="/regulatoryDocuments">{t("regulatoryDocuments")}</Link>
-              <Link href="/financialreports">{t("financialReports")}</Link>
-              <Link href="/publicinformation">{t("publicInformation")}</Link>
+              <Link href="/transparency-managment/regulatory-documents">{t("regulatoryDocuments")}</Link>
+              <Link href="/transparency-managment/financial-reports">{t("financialReports")}</Link>
+              <Link href="/transparency-managment/public-information">{t("publicInformation")}</Link>
             </div>
           </div>
 
@@ -99,15 +99,15 @@ const Header = () => {
               <span>{t("process")}</span>
             </Link>
             <div className={styles.dropdownContent}>
-              <Link href="/intellect">{t("intellectAndTalent")}</Link>
-              <Link href="/studentselfgovernment">{t("studentSelfGovernment")}</Link>
-              <Link href="/projectresearch">{t("projectResearch")}</Link>
-              <Link href="/patrioticeducation">{t("patrioticEducation")}</Link>
-              <Link href="/evaluationcriteria">{t("evaluationCriteria")}</Link>
-              <Link href="/clubsstudios">{t("clubsAndStudios")}</Link>
-              <Link href="/sportlife">{t("sportLife")}</Link>
-              <Link href="/psychologicalsupport">{t("psychologicalSupport")}</Link>
-              <Link href="/antibullying">{t("antiBullying")}</Link>
+              <Link href="/educational-process/intellect">{t("intellectAndTalent")}</Link>
+              <Link href="/educational-process/student-self-government">{t("studentSelfGovernment")}</Link>
+              <Link href="/educational-process/project-research">{t("projectResearch")}</Link>
+              <Link href="/educational-process/patriotical-education">{t("patrioticEducation")}</Link>
+              <Link href="/educational-process/evaluation-criteria">{t("evaluationCriteria")}</Link>
+              <Link href="/educational-process/clubs-studios">{t("clubsAndStudios")}</Link>
+              <Link href="/educational-process/sportlife">{t("sportLife")}</Link>
+              <Link href="/educational-process/psychological-support">{t("psychologicalSupport")}</Link>
+              <Link href="/educational-process/anti-bullying">{t("antiBullying")}</Link>
             </div>
           </div>
 
@@ -117,10 +117,10 @@ const Header = () => {
               <span>{t("work")}</span>
             </Link>
             <div className={styles.dropdownContent}>
-              <Link href="/teacherHelp">{t("teacherHelp")}</Link>
-              <Link href="/qualificationimprovement">{t("qualificationImprovement")}</Link>
-              <Link href="/teachercertification">{t("teacherCertification")}</Link>
-              <Link href="/methodicalevents">{t("methodicalEvents")}</Link>
+              <Link href="/methodical-work/teacher-support">{t("teacherHelp")}</Link>
+              <Link href="/methodical-work/qualification-improvement">{t("qualificationImprovement")}</Link>
+              <Link href="/methodical-work/teacher-certification">{t("teacherCertification")}</Link>
+              <Link href="/methodical-work/methodical-events">{t("methodicalEvents")}</Link>
             </div>
           </div>
 
@@ -130,8 +130,8 @@ const Header = () => {
               <span>{t("page")}</span>
             </Link>
             <div className={styles.dropdownContent}>
-              <Link href="/parents">{t("parents")}</Link>
-              <Link href="/students">{t("students")}</Link>
+              <Link href="/inforamtion-page/parents">{t("parents")}</Link>
+              <Link href="/inforamtion-page/students">{t("students")}</Link>
             </div>
           </div>
 

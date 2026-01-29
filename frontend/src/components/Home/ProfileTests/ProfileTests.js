@@ -6,7 +6,7 @@ import styles from "./ProfileTests.module.css";
 import { useTranslation } from "@/contexts/TranslationProvider.jsx";
 
 const ProfileTests = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("test");
   const router = useRouter();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState([]);

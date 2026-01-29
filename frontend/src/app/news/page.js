@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import styles from "@/styles/news.module.css";
+import styles from "@/app/news/news.module.css";
 import { useEffect, useState } from "react";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import { apiUrl, assetUrl } from "@/utils/api";

@@ -20,7 +20,7 @@ export default function UsefulFunctions() {
 
             <Box className="cards-container">
                 <FunctionCard
-                    href="/virtual-tour"
+                    href="/features/virtual-tour"
                     image={virtualImg}
                     title={t("virtualTour")}
                     wide
@@ -28,7 +28,7 @@ export default function UsefulFunctions() {
 
                 <Box className="cards-row">
                     <FunctionCard
-                        href="/profile-tests"
+                        href="/features/profile-tests"
                         image={testImage}
                         title={t("profileTests")}
                     />
