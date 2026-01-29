@@ -1,8 +1,8 @@
 'use client';
 
-import instagramImage from "../../assets/Instagram.png";
-import youTubeImage from "../../assets/YouTube.png";
-import facebookImage from "../../assets/Facebook.png";
+import instagramImage from "@/assets/photos/icons/Instagram-logo.png";
+import youTubeImage from "@/assets/photos/icons/YouTube-logo.png";
+import facebookImage from "@/assets/photos/icons/Facebook-icon.png";
 import Image from "next/image";
 import { useTranslation } from "@/contexts/TranslationProvider";
 

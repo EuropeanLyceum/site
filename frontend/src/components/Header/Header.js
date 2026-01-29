@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Box } from "@mui/material";
 
-import headerLogo from "../../assets/header_lyceum_logo.png";
-import ukrIcon from "../../assets/ukr_lang_change.png";
-import engIcon from "../../assets/eng_lang_change.png";
+import headerLogo from "../../assets/photos/icons/header_lyceum_logo.png";
+import ukrIcon from "../../assets/photos/icons/ukr_lang_change.png";
+import engIcon from "../../assets/photos/icons/eng_lang_change.png";
 import styles from "../../styles/HeaderFooter.module.css";
 import { useTranslation } from "@/contexts/TranslationProvider";
 

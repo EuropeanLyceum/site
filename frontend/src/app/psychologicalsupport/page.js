@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/psychologicalsupport.module.css';
 import Image from 'next/image';
-import kogutPhoto from '@/assets/kogut.jpg';
+import kogutPhoto from '@/assets/photos/kogut.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl } from '@/utils/api';
 

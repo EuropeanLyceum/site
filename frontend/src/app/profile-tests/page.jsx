@@ -1,4 +1,4 @@
-import ProfileTests from "@/components/ProfileTests/ProfileTests";
+import ProfileTests from "@/components/Home/ProfileTests/ProfileTests";
 
 export default function ProfileTestsPage() {
   return (

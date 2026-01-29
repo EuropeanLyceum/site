@@ -10,6 +10,11 @@ import Providers from '@/components/layout/Providers';
 //   fallback: ['system-ui', 'arial'],
 // });
 
+export const metadata = {
+    title: "European Lyceum Admin",
+    description: "European Lyceum Admin Panel",
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="uk">

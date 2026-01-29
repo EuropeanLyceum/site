@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import firebird from '@/assets/firebird2.png';
+import firebird from '@/assets/photos/firebird/firebird2.png';
 import styles from '@/styles/students.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';

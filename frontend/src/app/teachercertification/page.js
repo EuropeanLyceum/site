@@ -7,22 +7,22 @@ import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
 
 // Імпортуємо зображення
-import attest1 from '@/assets/attest1.jpg';
-import attest2 from '@/assets/attest2.jpg';
-import attest3 from '@/assets/attest3.jpg';
-import attest4 from '@/assets/attest4.jpg';
-import attest5 from '@/assets/attest5.jpg';
-import attest6 from '@/assets/attest6.jpg';
-import attest7 from '@/assets/attest7.jpg';
-import attest8 from '@/assets/attest8.jpg';
-import attest9 from '@/assets/attest9.jpg';
-import attest10 from '@/assets/attest10.jpg';
-import attest11 from '@/assets/attest11.jpg';
-import attest12 from '@/assets/attest12.jpg';
-import attest13 from '@/assets/attest13.jpg';
-import attest14 from '@/assets/attest14.jpg';
-import attest15 from '@/assets/attest15.jpg';
-import attest16 from '@/assets/attest16.jpg';
+import attest1 from '@/assets/photos/attest/attest1.jpg';
+import attest2 from '@/assets/photos/attest/attest2.jpg';
+import attest3 from '@/assets/photos/attest/attest3.jpg';
+import attest4 from '@/assets/photos/attest/attest4.jpg';
+import attest5 from '@/assets/photos/attest/attest5.jpg';
+import attest6 from '@/assets/photos/attest/attest6.jpg';
+import attest7 from '@/assets/photos/attest/attest7.jpg';
+import attest8 from '@/assets/photos/attest/attest8.jpg';
+import attest9 from '@/assets/photos/attest/attest9.jpg';
+import attest10 from '@/assets/photos/attest/attest10.jpg';
+import attest11 from '@/assets/photos/attest/attest11.jpg';
+import attest12 from '@/assets/photos/attest/attest12.jpg';
+import attest13 from '@/assets/photos/attest/attest13.jpg';
+import attest14 from '@/assets/photos/attest/attest14.jpg';
+import attest15 from '@/assets/photos/attest/attest15.jpg';
+import attest16 from '@/assets/photos/attest/attest16.jpg';
 
 export default function TeacherCertificationPage() {
   const { t, locale } = useTranslation();

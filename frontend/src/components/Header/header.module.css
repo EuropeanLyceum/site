@@ -92,53 +92,21 @@
         max-width: 95%;
         padding: 0 20px;
     }
-    
+
     .navLinks {
         gap: 40px;
     }
-    
+
     .navLink {
         font-size: 16px;
     }
-    
+
     .logo {
         margin-right: 40px;
     }
-    
+
     .languageSwitcher {
         margin-left: 40px;
-    }
-}
-
-/* Mobile Large - до 768px */
-@media (max-width: 768px) {
-    .header {
-        height: 60px;
-    }
-    
-    .navContainer {
-        height: 58px;
-        padding: 0 15px;
-    }
-    
-    .navLinks {
-        gap: 25px;
-    }
-    
-    .navLink {
-        font-size: 14px;
-    }
-    
-    .logo {
-        width: 45px;
-        height: 45px;
-        margin-right: 25px;
-    }
-    
-    .languageSwitcher {
-        width: 28px;
-        height: 32px;
-        margin-left: 25px;
     }
 }
 

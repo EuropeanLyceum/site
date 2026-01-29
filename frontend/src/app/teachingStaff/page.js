@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import styles from '@/styles/teachingstaff.module.css';
-import derkachPhoto from '@/assets/derkach.jpg';
+import derkachPhoto from '@/assets/photos/history/derkach.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
 import { sanitizeTextWithLineBreaks } from '@/utils/sanitize';

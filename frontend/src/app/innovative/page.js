@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from '@/styles/innovative.module.css';
-import newProjectImg from '@/assets/new_project.jpg';
-import healthCircleImg from '@/assets/health_circle.jpg';
-import healthProjectImg from '@/assets/health_prjct.jpg';
+import newProjectImg from '@/assets/photos/new_project.jpg';
+import healthCircleImg from '@/assets/photos/health_circle.jpg';
+import healthProjectImg from '@/assets/photos/health_prjct.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
 

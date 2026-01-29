@@ -1,4 +1,4 @@
-import VirtualTour from "@/components/VirtualTour/VirtualTour";
+import VirtualTour from "@/components/Home/VirtualTour/VirtualTour";
 
 export default function VirtualTourPage() {
   return (

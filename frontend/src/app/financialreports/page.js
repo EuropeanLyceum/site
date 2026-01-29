@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import styles from '@/styles/financialreports.module.css';
 import Image from 'next/image';
-import firebird3 from '@/assets/firebird3.png';
+import firebird3 from '@/assets/photos/firebird/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
 
