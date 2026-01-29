@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material";
 import FunctionCard from "./FunctionCard";
-import virtualImg from "@/assets/photos/virtual.jpg";
-import testImage from "@/assets/photos/test.jpg";
-import faqImg from "@/assets/photos/FAQ.jpg";
+import virtualImg from "@/assets/photos/home/virtual.jpg";
+import testImage from "@/assets/photos/home/test.jpg";
+import faqImg from "@/assets/photos/home/FAQ.jpg";
 import { useTranslation } from "@/contexts/TranslationProvider";
 
 export default function UsefulFunctions() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("home");
 
     return (
         <Box className="useful-functions">

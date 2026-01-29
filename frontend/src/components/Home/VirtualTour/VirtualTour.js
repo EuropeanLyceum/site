@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import styles from "./VirtualTour.module.css";
 import { useTranslation } from "@/contexts/TranslationProvider.jsx";
-import schoolPhoto from "../../../assets/photos/school.jpg";
+import schoolPhoto from "../../../assets/photos/building/school.jpg";
 import gymPhoto from "@/assets/photos/building/gym.jpg";
 import danceHallPhoto from "@/assets/photos/building/dance_hall.jpg";
 import foyerPhoto from "@/assets/photos/building/foyer.jpg";

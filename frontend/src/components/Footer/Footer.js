@@ -9,7 +9,7 @@ import { useTranslation } from "@/contexts/TranslationProvider";
 import styles from "./footer.module.css";
 
 const Footer = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("footer");
   return (
     <section className="container">
       <footer className={styles.footer}>

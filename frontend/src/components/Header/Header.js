@@ -15,7 +15,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isHeaderHidden, setIsHeaderHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const { t, locale, changeLanguage } = useTranslation();
+  const { t, locale, changeLanguage } = useTranslation("header");
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -197,7 +197,7 @@ const Header = () => {
           <div className={styles.mobileNavItem}>
             <Link
               className={styles.mobileNavLink}
-              href="/index"
+              href="/"
               onClick={closeMobileMenu}
             >
               {t("aboutLyceumFull")}

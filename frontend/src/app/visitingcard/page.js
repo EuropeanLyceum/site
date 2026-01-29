@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import teachers from '@/assets/photos/teachers.jpg';
 import logoPictureVisitCard from '@/assets/photos/icons/logo_picture_visit_card.jpg';
-import materialBasis from '@/assets/photos/material_basis.jpg';
+import materialBasis from '@/assets/photos/building/material_basis.jpg';
 import galochka from '@/assets/photos/icons/galochka-icon.png';
 import styles from '@/styles/visitingcard.module.css';
 import { useTranslation } from '@/contexts/TranslationProvider';
 import { apiUrl, assetUrl } from '@/utils/api';
 
 export default function VisitingCardPage() {
-  const { t, locale } = useTranslation();
+  const { t, locale } = useTranslation("visiting");
   const [dynamicData, setDynamicData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 

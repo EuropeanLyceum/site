@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-
+import { createContext, useContext, useEffect, useState } from "react";
 import { translations } from "@/locales";
 
 const DEFAULT_LOCALE = "uk";
@@ -39,8 +33,12 @@ export const TranslationProvider = ({ children }) => {
     localStorage.setItem("locale", newLocale);
   };
 
-  const t = (key) => {
-    return translations[locale]?.[key] ?? key;
+  // 🔥 ГОЛОВНА МАГІЯ ТУТ
+  const t = (namespace) => (key) => {
+    return (
+        translations[locale]?.[namespace]?.[key] ??
+        `❌ ${namespace}.${key}`
+    );
   };
 
   if (!isInitialized) return null;
@@ -60,12 +58,17 @@ export const TranslationProvider = ({ children }) => {
   );
 };
 
-export const useTranslation = () => {
+export const useTranslation = (namespace) => {
   const context = useContext(TranslationContext);
+
   if (!context) {
     throw new Error(
         "useTranslation must be used within TranslationProvider"
     );
   }
-  return context;
+
+  return {
+    ...context,
+    t: context.t(namespace),
+  };
 };

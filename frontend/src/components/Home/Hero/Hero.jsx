@@ -4,7 +4,7 @@ import logo from "@/assets/photos/icons/logo_without_background.ico.png";
 import {useTranslation} from "@/contexts/TranslationProvider";
 
 export default function Hero() {
-    const {t} = useTranslation();
+    const {t} = useTranslation("home");
 
     return (
         <Box className="container">

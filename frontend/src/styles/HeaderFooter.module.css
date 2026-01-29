@@ -273,7 +273,7 @@
 /* Responsive adjustments */
 @media (max-width: 1200px) {
     .navLinks {
-        gap: 20px;
+        gap: 10px;
     }
 
     .navLink {
@@ -282,22 +282,7 @@
     }
 }
 
-@media (max-width: 992px) {
-    .navLinks {
-        gap: 15px;
-    }
-
-    .navLink {
-        font-size: 14px;
-        padding: 8px 10px;
-    }
-
-    .dropdownContent {
-        min-width: 200px;
-    }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1155px) {
     .hamburger {
         display: flex;
     }

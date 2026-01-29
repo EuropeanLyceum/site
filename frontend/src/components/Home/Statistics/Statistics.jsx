@@ -4,7 +4,7 @@ import { animateNumber } from "./useAnimatedCounters";
 import { useTranslation } from "@/contexts/TranslationProvider";
 
 export default function Statistics() {
-    const { t } = useTranslation();
+    const { t } = useTranslation("home");
     const ref = useRef(null);
     const [visible, setVisible] = useState(false);
     const [counters, setCounters] = useState([0, 0, 0, 0]);

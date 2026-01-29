@@ -8,7 +8,7 @@ import firebirdImg from "@/assets/photos/firebird/firebird.png";
 import { useTranslation } from "@/contexts/TranslationProvider";
 
 export default function MainPage() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("home");
 
   return (
       <>

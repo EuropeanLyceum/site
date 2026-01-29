@@ -11,6 +11,8 @@ const FAQSection = ({
 }) => {
   const [activeIndex, setActiveIndex] = useState(null);
 
+  console.log(options)
+
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
