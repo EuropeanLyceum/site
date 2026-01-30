@@ -14,18 +14,17 @@ export default function BusinessCard({t}) {
             <Grid container spacing={3} className={styles.ourCardContent}>
                 <Grid item size={{xs: 12, md: 12, lg: 6}}>
                     <h1 className={styles.ourCardTitle}>{t('ourCardTitle')}</h1>
-                    <Box className={styles.ourCardImageContainer}>
+                    <Box className={"ImageContainerFull"}>
                         <Image
                             src={teachers}
                             alt={t('teachersTeamAlt')}
-                            className={styles.ourCardImage}
+                            className={"ImageFull"}
                             fill
                         />
                     </Box>
                 </Grid>
                 <Grid item size={{xs: 12, md: 12, lg: 6}}>
                     <Grid container spacing={3}>
-                        {/* === ГОЛОВНА КАРТКА === */}
                         <Grid item size={{xs: 12, md: 8}}>
                             <Box className={`${styles.infoBlock} ${styles.mainInfo}`}>
                                 <Box>

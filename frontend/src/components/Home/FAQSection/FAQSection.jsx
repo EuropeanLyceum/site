@@ -1,55 +1,103 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
+import {
+  Box,
+  Grid,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const FAQSection = ({
-  options = [],
-  title = "FAQ (поширені запитання)",
-  image = null,
-  imageAlt = "FAQ Image",
-}) => {
-  const [activeIndex, setActiveIndex] = useState(null);
-
-  console.log(options)
-
-  const toggleAccordion = (index) => {
-    setActiveIndex(activeIndex === index ? null : index);
-  };
-
+                      options = [],
+                      title = "FAQ (поширені запитання)",
+                      image,
+                      imageAlt = "FAQ Image",
+                    }) => {
   return (
-    <section id="faq-section" className="faq-section">
-      {image && (
-        <div className="faq-image">
-          <Image src={image} alt={imageAlt} className="firebird-image" />
-        </div>
-      )}
-      <div className="faq-container">
-        <div className="faq-content">
-          <h2 className="faq-title">{title}</h2>
-
-          <div className="accordion">
-            {options.map((item, index) => (
-              <div
-                key={index}
-                className={`accordion-item ${activeIndex === index ? "active" : ""}`}
+      <Box sx={{ py: { xs: 5, md: 8 } }}>
+        <Grid
+            container
+            spacing={6}
+            alignItems="center"
+            mx="auto"
+        >
+          {/* Image column */}
+          {image && (
+              <Grid
+                  item
+                  size={{xs: 0, md: 5}}
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    pl: "-20px"
+                  }}
               >
-                <button
-                  className="accordion-button"
-                  onClick={() => toggleAccordion(index)}
+                <Box className={"ImageContainerBird"}>
+                  <Image
+                      src={image}
+                      alt={imageAlt}
+                      fill
+                      className={"ImageBird"}
+                  />
+                </Box>
+              </Grid>
+          )}
+
+          {/* FAQ column */}
+          <Grid item size={{xs: 12, md: 7}}>
+            <Typography
+                variant="h3"
+                sx={{
+                  fontFamily: "Montserrat Alternates",
+                  color: "#182BA1",
+                  mb: 4,
+                }}
+            >
+              {title}
+            </Typography>
+
+            {options.map((item, index) => (
+                <Accordion
+                    key={index}
+                    sx={{
+                      mb: 2,
+                      borderRadius: 3,
+                      backgroundColor: "#F8F8F8",
+                      "&:before": { display: "none" },
+                      m: 2
+                    }}
                 >
-                  <span>{item.label}</span>
-                  <div className="arrow"></div>
-                </button>
-                <div className="accordion-content">
-                  <p>{item.text}</p>
-                </div>
-              </div>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography
+                        sx={{
+                          fontFamily: "Montserrat Alternates",
+                          fontWeight: 500,
+                          color: "#FF5700",
+                        }}
+                    >
+                      {item.label}
+                    </Typography>
+                  </AccordionSummary>
+
+                  <AccordionDetails>
+                    <Typography
+                        sx={{
+                          fontFamily: "Montserrat Alternates",
+                          color: "#6B7280",
+                          lineHeight: 1.6,
+                        }}
+                    >
+                      {item.text}
+                    </Typography>
+                  </AccordionDetails>
+                </Accordion>
             ))}
-          </div>
-        </div>
-      </div>
-    </section>
+          </Grid>
+        </Grid>
+      </Box>
   );
 };
 

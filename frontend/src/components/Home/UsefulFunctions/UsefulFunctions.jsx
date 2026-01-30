@@ -9,16 +9,47 @@ export default function UsefulFunctions() {
     const { t } = useTranslation("home");
 
     return (
-        <Box className="useful-functions">
-            <Typography variant="h2" className="section-title">
+        <Box
+            sx={{
+                py: 5,
+                maxWidth: 1172,
+                mx: "auto",
+                px: 2,
+            }}
+        >
+            <Typography
+                sx={{
+                    fontFamily: "'Montserrat Alternates', sans-serif",
+                    fontSize: 34,
+                    fontWeight: 700,
+                    textAlign: "center",
+                    mb: 3,
+                }}
+            >
                 {t("usefulFunctions")}
             </Typography>
 
-            <Typography className="section-subtitle" sx={{pb: "15px"}}>
+            <Typography
+                sx={{
+                    fontFamily: "'Montserrat Alternates', sans-serif",
+                    fontSize: 18,
+                    color: "#4B555C",
+                    textAlign: "center",
+                    mb: 5,
+                }}
+            >
                 {t("recommendTry")}
             </Typography>
 
-            <Box className="cards-container">
+            {/* Cards */}
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 5,
+                }}
+            >
+                {/* Wide card */}
                 <FunctionCard
                     href="/features/virtual-tour"
                     image={virtualImg}
@@ -26,7 +57,15 @@ export default function UsefulFunctions() {
                     wide
                 />
 
-                <Box className="cards-row">
+                {/* Bottom row */}
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 5,
+                        justifyContent: "center",
+                        flexWrap: "wrap",
+                    }}
+                >
                     <FunctionCard
                         href="/features/profile-tests"
                         image={testImage}
