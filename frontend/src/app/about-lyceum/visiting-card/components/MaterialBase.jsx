@@ -1,52 +1,97 @@
 'use client';
-import {Box, Grid, Typography} from "@mui/material"
-import styles from '@/app/about-lyceum/visiting-card/visiting-card.module.css';
-import galochka from '@/assets/photos/icons/galochka-icon.png';
-import materialBasis from '@/assets/photos/building/material_basis.jpg';
-import Image from 'next/image';
-import teachers from "@/assets/photos/teachers.jpg";
 
-export default function MaterialBase({t}) {
+import { Box, Grid, Typography } from "@mui/material";
+import Image from "next/image";
+import galochka from "@/assets/photos/icons/galochka-icon.png";
+import materialBasis from "@/assets/photos/building/material_basis.jpg";
 
+export default function MaterialBase({ t }) {
     return (
-        <Box id="facilities" className={styles.section}>
-            <h1 className={styles.facilitiesTitle}>{t('facilitiesTitle')}</h1>
-            <Grid container spacing={3} className={styles.facilitiesContent}>
-                <Grid item size={{xs: 12, md: 12, lg: 6}} className={styles.facilitiesImageContainer}>
-                    <Image
-                        src={materialBasis}
-                        alt={t('facilitiesPhotoAlt')}
-                        className={styles.facilitiesImage}
-                        fill
-                    />
+        <Box sx={{mb: 5}}>
+            {/* Title */}
+            <Typography
+                component="h1"
+                sx={{
+                    fontFamily: "'Montserrat Alternates', sans-serif",
+                    fontSize: { xs: 32, md: 45 },
+                    fontWeight: 700,
+                    color: "#182BA1",
+                    textAlign: "center",
+                    mt: "100px",
+                    mb: "40px",
+                }}
+            >
+                {t("facilitiesTitle")}
+            </Typography>
+
+            {/* Content */}
+            <Grid
+                container
+                spacing={3}
+                sx={{
+                    width: "100%",
+                    mx: "auto",
+                    alignItems: "flex-start",
+                    px: "10px"
+                }}
+            >
+                {/* Image */}
+                <Grid item size={{xs: 12, md: 12, lg: 6}}>
+                    <Box className="ImageContainerFull">
+                        <Image
+                            src={materialBasis}
+                            alt={t("facilitiesPhotoAlt")}
+                            className="ImageFull"
+                            fill
+                        />
+                    </Box>
                 </Grid>
-                <Grid item size={{xs: 12, md: 12, lg: 6}} className={styles.facilitiesInfo}>
-                    <h2 className={styles.facilitiesSubtitle}>{t('threeFloorBuildingTitle')}</h2>
-                    <Box className={styles.facilitiesList}>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('classrooms26Description')}</Typography>
-                        </Box>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('englishCabinets10Description')}</Typography>
-                        </Box>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('modernCabinetsDescription')}</Typography>
-                        </Box>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('resourceCenterDescription')}</Typography>
-                        </Box>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('hallsDescription')}</Typography>
-                        </Box>
-                        <Box className={styles.facilityItem}>
-                            <Image src={galochka} alt={t('checkmarkAlt')} className={styles.checkIcon} width={24} height={24} />
-                            <Typography>{t('multimediaCenterDescription')}</Typography>
-                        </Box>
+
+                {/* Info */}
+                <Grid item size={{xs: 12, md: 12, lg: 6}}>
+                    <Typography
+                        component="h2"
+                        sx={{
+                            fontSize: 20,
+                            color: "#000",
+                            mb: "36px",
+                        }}
+                    >
+                        {t("threeFloorBuildingTitle")}
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "20px",
+                        }}
+                    >
+                        {[
+                            "classrooms26Description",
+                            "englishCabinets10Description",
+                            "modernCabinetsDescription",
+                            "resourceCenterDescription",
+                            "hallsDescription",
+                            "multimediaCenterDescription",
+                        ].map((key) => (
+                            <Box
+                                key={key}
+                                sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "32px",
+                                }}
+                            >
+                                <Image
+                                    src={galochka}
+                                    alt={t("checkmarkAlt")}
+                                    width={21}
+                                    height={21}
+                                />
+                                <Typography>{t(key)}</Typography>
+                            </Box>
+                        ))}
                     </Box>
                 </Grid>
             </Grid>

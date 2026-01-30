@@ -62,7 +62,7 @@ export default function Hero() {
                     pt: { xs: 4, md: 8 },
                     pb: { xs: 8, md: 18 },
                     color: "#fff",
-                    mt: 10
+                    mt: 8
                 }}
             >
                 <Box
@@ -83,13 +83,13 @@ export default function Hero() {
                     <Typography
                         variant="h1"
                         sx={{
-                            fontSize: { sm: 34, md: 42, lg: 80 },
+                            fontSize: { xs: 28, sm: 34, md: 42, lg: 80 },
                             fontWeight: 600,
                             mb: { xs: 2, md: 5 },
                             textAlign: { xs: "center", md: "left" },
                             textShadow: "0 2px 4px rgba(0,0,0,0.4)",
                             letterSpacing: "0.5px",
-                            ml: 1
+                            ml: 2
                         }}
                     >
                         {t("welcome")}
@@ -103,7 +103,7 @@ export default function Hero() {
                             textShadow: "0 1px 3px rgba(0,0,0,0.3)",
                             whiteSpace: "pre-line",
                             textAlign: "justify",
-                            ml: 1
+                            ml: 2
                         }}
                     >
                         {t("welcomeDescription")}
