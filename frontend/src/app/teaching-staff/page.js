@@ -1,71 +1,38 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useEffect, useRef } from 'react';
-import styles from '@/app/teaching-staff/teaching-staff.module.css';
-import derkachPhoto from '@/assets/photos/history/derkach.jpg';
+import { useState, useEffect } from 'react';
+import { Box, Typography, Button, Menu, MenuItem, CircularProgress, Grid } from '@mui/material';
 import { useTranslation } from '@/contexts/TranslationProvider';
-import { apiUrl, assetUrl } from '@/utils/api';
-import { sanitizeTextWithLineBreaks } from '@/utils/sanitize';
+import StaffCard from "@/app/teaching-staff/components/StaffCard.jsx";
+
 
 export default function TeachingStaffPage() {
-  const { t, locale } = useTranslation();
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('');
+  const { t, locale } = useTranslation("teachers");
   const [staffData, setStaffData] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const dropdownRef = useRef(null);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Діагностика перекладу
-  console.log('TeachingStaff - Current locale:', locale);
-  console.log('TeachingStaff - Translation test:', t('pedagogicalTeam'));
+  const open = Boolean(anchorEl);
 
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (staff) => {
-    if (locale === 'en') {
-      return {
-        fullName: staff.fullNameEn || staff.fullName, // fallback до української
-        description: staff.descriptionEn || staff.description
-      };
-    }
-    return {
-      fullName: staff.fullName,
-      description: staff.description
-    };
-  };
+  const getLocalizedCategoryName = (category) =>
+      locale === 'en' ? category.nameEn || category.name : category.name;
 
-  // Функція для отримання локалізованої назви категорії
-  const getLocalizedCategoryName = (category) => {
-    if (locale === 'en') {
-      return category.nameEn || category.name; // fallback до української
-    }
-    return category.name;
-  };
-
-  // Отримання категорій та вчителів
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Отримуємо категорії
         const categoriesResponse = await fetch('/api/staff-categories');
-        if (categoriesResponse.ok) {
-          const categoriesData = await categoriesResponse.json();
-          setCategories(categoriesData);
-          
-          // Встановлюємо першу категорію як обрану за замовчуванням
-          if (categoriesData.length > 0 && !selectedItem) {
-            const firstCategoryName = getLocalizedCategoryName(categoriesData[0]);
-            setSelectedItem(firstCategoryName);
-          }
+        const categoriesData = await categoriesResponse.json();
+        setCategories(categoriesData);
+
+        if (categoriesData.length > 0) {
+          setSelectedItem(getLocalizedCategoryName(categoriesData[0]));
         }
 
-        // Отримуємо всіх вчителів
         const staffResponse = await fetch('/api/staff');
-        if (staffResponse.ok) {
-          const staffData = await staffResponse.json();
-          setStaffData(staffData);
-        }
+        const staffData = await staffResponse.json();
+        setStaffData(staffData);
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -74,159 +41,69 @@ export default function TeachingStaffPage() {
     };
 
     fetchData();
-  }, []);
+  }, [locale]);
 
-  // Оновлюємо обрану категорію при зміні мови
-  useEffect(() => {
-    if (categories.length > 0 && selectedItem) {
-      // Знаходимо категорію за поточною обраною назвою
-      const currentCategory = categories.find(cat => 
-        cat.name === selectedItem || cat.nameEn === selectedItem
-      );
-      
-      if (currentCategory) {
-        const localizedName = getLocalizedCategoryName(currentCategory);
-        if (localizedName !== selectedItem) {
-          setSelectedItem(localizedName);
-        }
-      }
-    }
-  }, [locale, categories]);
-
-  const toggleDropdown = (e) => {
-    e.stopPropagation();
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleDropdownClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+  const handleSelect = (category) => {
+    setSelectedItem(getLocalizedCategoryName(category));
+    handleClose();
   };
 
-  const handleItemSelect = (category) => {
-    const localizedName = getLocalizedCategoryName(category);
-    setSelectedItem(localizedName);
-    setIsDropdownOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsDropdownOpen(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-
-  // Фільтрація вчителів за категорією
   const getStaffByCategory = (selectedCategoryName) => {
-    // Знаходимо категорію за локалізованою назвою
-    const category = categories.find(cat => 
-      getLocalizedCategoryName(cat) === selectedCategoryName
-    );
-    
+    const category = categories.find(cat => getLocalizedCategoryName(cat) === selectedCategoryName);
     if (!category) return [];
-    
     return staffData.filter(staff => staff.categoryId === category.id);
   };
 
-  // Отримуємо вчителів для поточної категорії
   const currentStaff = getStaffByCategory(selectedItem);
 
   return (
-    <div className={styles.teachingStaffPage} lang={locale}>
-      <main>
-        <div className={styles.titleSection}>
-          <h1 className={styles.pedagogicalTitle}>{t("pedagogicalTeam")}</h1>
-          <div className={styles.yearSelector} ref={dropdownRef}>
-            <button className={`${styles.yearButton} ${isDropdownOpen ? styles.active : ''}`} onClick={toggleDropdown}>
-              <span className={styles.yearText}>{selectedItem || t("loading")}</span>
-              <span className={styles.yearArrow}></span>
-            </button>
-            <div className={`${styles.yearDropdownContent} ${isDropdownOpen ? styles.active : ''}`}>
-              {categories.map((category) => {
-                const localizedName = getLocalizedCategoryName(category);
-                return (
-                  <a 
-                    key={category.id}
-                    href="#" 
-                    className={selectedItem === localizedName ? styles.selected : ''}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleItemSelect(category);
-                    }}
-                  >
-                    {localizedName}
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        </div>
+      <Box sx={{ width: '100%', minHeight: '100vh', background: 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)', py: 8, mt: 4 }}>
+        <Box sx={{ maxWidth: 1200, mx: 'auto', textAlign: 'center', mb: 6 }}>
+          <Typography variant="h3" sx={{ fontWeight: 700, color: '#182BA1', mb: 3 }}>
+            {t('pedagogicalTeam')}
+          </Typography>
+          <Button
+              variant="contained"
+              onClick={handleDropdownClick}
+              sx={{
+                background: 'linear-gradient(145deg, #f97316 0%, #ea580c 100%)',
+                borderRadius: 3,
+                px: 4,
+                py: 1.5,
+                color: '#fff',
+                fontWeight: 600
+              }}
+          >
+            {selectedItem || t('loading')}
+          </Button>
+          <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
+            {categories.map((cat) => (
+                <MenuItem key={cat.id} selected={getLocalizedCategoryName(cat) === selectedItem} onClick={() => handleSelect(cat)}>
+                  {getLocalizedCategoryName(cat)}
+                </MenuItem>
+            ))}
+          </Menu>
+        </Box>
 
-        <div className={styles.adminCardsContainer}>
-
-          {/* Динамічний контент з адмін-панелі */}
-          {!isLoading && currentStaff.length > 0 && currentStaff.map((staff) => {
-            const localized = getLocalizedContent(staff);
-            
-            return (
-              <div key={staff.id} className={styles.adminCard}>
-                <div className={styles.adminPhoto}>
-                  {staff.photoUrl ? (
-                    <img
-                      src={staff.photoUrl}
-                      alt={localized.fullName}
-                      style={{ borderRadius: '10px' }}
-                      onError={(e) => {
-                        console.error('Помилка завантаження зображення:', staff.photoUrl);
-                        console.log('Full URL:', staff.photoUrl);
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  ) : (
-                    <div style={{
-                      width: '220px',
-                      height: '310px',
-                      backgroundColor: '#f0f0f0',
-                      borderRadius: '10px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: '#666',
-                      fontSize: '14px'
-                    }}>
-                      {t("photoMissing")}
-                    </div>
-                  )}
-                </div>
-                <div className={styles.adminInfo}>
-                  <div className={styles.adminName}>{localized.fullName}</div>
-                  <div className={styles.adminBio}>
-                    {/* Використовуємо dangerouslySetInnerHTML для підтримки переносів рядків */}
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeTextWithLineBreaks(localized.description)
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {/* Повідомлення, якщо немає вчителів у категорії */}
-          {!isLoading && currentStaff.length === 0 && selectedItem && (
-            <div style={{
-              textAlign: 'center',
-              padding: '40px',
-              color: '#666',
-              fontSize: '18px'
-            }}>
-              {t("noTeachersInCategory").replace("{category}", selectedItem)}
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+        {isLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+              <CircularProgress />
+            </Box>
+        ) : currentStaff.length === 0 ? (
+            <Typography sx={{ textAlign: 'center', py: 10, color: '#666', fontSize: 18 }}>
+              {t('noTeachersInCategory').replace('{category}', selectedItem)}
+            </Typography>
+        ) : (
+            <Grid container spacing={4} justifyContent="center" sx={{ maxWidth: 1200, mx: 'auto' }}>
+              {currentStaff.map((staff) => (
+                  <Grid item size={{xs: 12, sm: 12, md: 6, lg: 6, xl: 4}} key={staff.id}>
+                    <StaffCard staff={staff} locale={locale} />
+                  </Grid>
+              ))}
+            </Grid>
+        )}
+      </Box>
   );
 }
