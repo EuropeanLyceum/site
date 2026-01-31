@@ -1,91 +1,72 @@
-import { Box, Typography } from "@mui/material";
+'use client';
+import { Box, Typography, Grid, Container } from "@mui/material";
 import FunctionCard from "./FunctionCard";
 import virtualImg from "@/assets/photos/home/virtual.jpg";
 import testImage from "@/assets/photos/home/test.jpg";
 import faqImg from "@/assets/photos/home/FAQ.jpg";
-import { useTranslation } from "@/contexts/TranslationProvider";
 
-export default function UsefulFunctions({t}) {
+export default function UsefulFunctions({ t }) {
+    const handleFaqClick = (e) => {
+        if (!document.getElementById("faq-section")) return;
+        e.preventDefault();
+        const el = document.getElementById("faq-section");
+        const offset = el.offsetTop - 100;
+        window.scrollTo({ top: offset, behavior: "smooth" });
+    };
 
     return (
-        <Box
-            sx={{
-                py: 5,
-                maxWidth: 1172,
-                mx: "auto",
-                px: 2,
-            }}
-        >
-            <Typography
-                sx={{
-                    fontFamily: "'Montserrat Alternates', sans-serif",
-                    fontSize: 34,
-                    fontWeight: 700,
-                    textAlign: "center",
-                    mb: 3,
-                }}
-            >
-                {t("usefulFunctions")}
-            </Typography>
+        <Box component="section" sx={{ width: '100%', py: { xs: 6, md: 10 } }}>
+            <Container maxWidth="lg">
+                <Box sx={{ textAlign: "center", mb: 6 }}>
+                    <Typography sx={{
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        fontSize: { xs: 28, md: 42 },
+                        fontWeight: 900,
+                        color: "#0c1865",
+                        mb: 2,
+                    }}>
+                        {t("usefulFunctions")}
+                    </Typography>
 
-            <Typography
-                sx={{
-                    fontFamily: "'Montserrat Alternates', sans-serif",
-                    fontSize: 18,
-                    color: "#4B555C",
-                    textAlign: "center",
-                    mb: 5,
-                }}
-            >
-                {t("recommendTry")}
-            </Typography>
-
-            {/* Cards */}
-            <Box
-                sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 5,
-                }}
-            >
-                {/* Wide card */}
-                <FunctionCard
-                    href="/features/virtual-tour"
-                    image={virtualImg}
-                    title={t("virtualTour")}
-                    wide
-                />
-
-                {/* Bottom row */}
-                <Box
-                    sx={{
-                        display: "flex",
-                        gap: 5,
-                        justifyContent: "center",
-                        flexWrap: "wrap",
-                    }}
-                >
-                    <FunctionCard
-                        href="/features/profile-tests"
-                        image={testImage}
-                        title={t("profileTests")}
-                    />
-
-                    <FunctionCard
-                        image={faqImg}
-                        title={t("faq")}
-                        onClick={() => {
-                            const el = document.getElementById("faq-section");
-                            if (el) {
-                                window.scrollTo({
-                                    top: el.offsetTop,
-                                    behavior: "smooth",
-                                });
-                            }
-                        }}
-                    />
+                    <Typography sx={{
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        fontSize: { xs: 16, md: 19 },
+                        color: "#64748B",
+                        maxWidth: 600,
+                        mx: "auto"
+                    }}>
+                        {t("recommendTry")}
+                    </Typography>
                 </Box>
-            </Box>
+
+                <Grid container spacing={4} sx={{ width: '100%', m: 0 }}>
+                    {/* Wide card */}
+                    <Grid item size={{xs: 12}} sx={{ pl: '0 !important', pt: '0 !important' }}>
+                        <FunctionCard
+                            href="/features/virtual-tour"
+                            image={virtualImg}
+                            title={t("virtualTour")}
+                        />
+                    </Grid>
+
+                    {/* Bottom row */}
+                    <Grid item size={{xs: 12, md: 6}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
+                        <FunctionCard
+                            href="/features/profile-tests"
+                            image={testImage}
+                            title={t("profileTests")}
+                        />
+                    </Grid>
+
+                    <Grid item size={{xs: 12, md: 6}} sx={{ pl: { xs: '0 !important', md: '32px !important' } }}>
+                        <FunctionCard
+                            image={faqImg}
+                            title={t("faq")}
+                            onClick={handleFaqClick}
+                        />
+                    </Grid>
+                </Grid>
+            </Container>
         </Box>
     );
 }

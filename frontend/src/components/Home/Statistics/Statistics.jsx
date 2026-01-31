@@ -1,110 +1,60 @@
-"use client";
-
-import { Box, Typography, Grid } from "@mui/material";
+'use client';
+import { Box, Typography, Grid, Container, alpha } from "@mui/material";
 import { useEffect, useState } from "react";
 import { animateNumber } from "./useAnimatedCounters";
-import { useTranslation } from "@/contexts/TranslationProvider";
 import imagebg from "../../../assets/photos/geometric_ornament.svg";
 
-export default function Statistics({t}) {
-
+export default function Statistics({ t }) {
     const [counters, setCounters] = useState([0, 0, 0, 0]);
-
     const finalValues = [780, 60, 46, 6];
-    const SECTION_ID = "statistics-section";
 
     useEffect(() => {
-        if (!("IntersectionObserver" in window)) return;
-
-        const target = document.getElementById(SECTION_ID);
-        if (!target) return;
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (!entry.isIntersecting) return;
-
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
                 finalValues.forEach((value, i) => {
-                    animateNumber(0, value, 2000, (current) => {
-                        setCounters((prev) => {
-                            const next = [...prev];
-                            next[i] = current;
-                            return next;
+                    animateNumber(0, value, 2000, (curr) => {
+                        setCounters(prev => {
+                            const n = [...prev]; n[i] = curr; return n;
                         });
                     });
                 });
-
                 observer.disconnect();
-            },
-            { threshold: 0.3 }
-        );
-
-        observer.observe(target);
+            }
+        }, { threshold: 0.3 });
+        const el = document.getElementById("stats");
+        if (el) observer.observe(el);
         return () => observer.disconnect();
     }, []);
 
     return (
-        <Box
-            id={SECTION_ID}
-            component="section"
-            sx={{
-                position: "relative",
-                py: { xs: 8, md: 12 },
-                backgroundImage: `url(${imagebg.src})`,
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
-        >
-            {/* overlay */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    inset: 0,
-                    backgroundColor: "rgba(12, 24, 101, 0.85)",
-                    backdropFilter: "blur(7px)",
-                }}
-            />
+        <Box id="stats" sx={{
+            position: "relative", py: 12,
+            backgroundImage: `url(${imagebg.src})`,
+            backgroundSize: "cover", backgroundAttachment: "fixed"
+        }}>
+            <Box sx={{ position: "absolute", inset: 0, bgcolor: alpha("#0c1865", 0.9) }} />
 
-            <Grid
-                container
-                spacing={{ xs: 2, md: 4 }}
-                justifyContent="center"
-                maxWidth="1200px"
-                mx="auto"
-                position="relative"
-            >
-                {[
-                    t("studentsCount"),
-                    t("teachersCount"),
-                    t("flexWinners"),
-                    t("examResults"),
-                ].map((label, i) => (
-                    <Grid item xs={12} md={6} lg={3} key={i}>
-                        <Box textAlign="center" sx={{maxWidth: "270px"}}>
-                            <Typography
-                                sx={{
-                                    fontWeight: 700,
-                                    color: "#fff",
-                                    mb: 2,
-                                    fontSize: 48,
-                                }}
-                            >
-                                {counters[i].toLocaleString()}
-                            </Typography>
-
-                            <Typography
-                                sx={{
-                                    color: "#D1D5DB",
-                                    fontSize: 18 ,
-                                    lineHeight: 1.4,
-                                }}
-                            >
-                                {label}
-                            </Typography>
-                        </Box>
-                    </Grid>
-                ))}
-            </Grid>
+            <Container maxWidth="lg" sx={{ position: "relative" }}>
+                <Grid container spacing={3}>
+                    {[t("studentsCount"), t("teachersCount"), t("flexWinners"), t("examResults")].map((label, i) => (
+                        <Grid item size={{xs: 12, sm: 6, md: 3}} key={i}>
+                            <Box sx={{
+                                textAlign: "center", p: 4,
+                                background: alpha("#fff", 0.05),
+                                borderRadius: 6, border: `1px solid ${alpha("#fff", 0.1)}`,
+                                backdropFilter: "blur(10px)"
+                            }}>
+                                <Typography sx={{ fontSize: 54, fontWeight: 900, color: "#f97316", mb: 1 }}>
+                                    {counters[i]}+
+                                </Typography>
+                                <Typography sx={{ color: "#fff", fontWeight: 500, opacity: 0.8 }}>
+                                    {label}
+                                </Typography>
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
         </Box>
     );
 }

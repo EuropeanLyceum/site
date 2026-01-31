@@ -1,58 +1,70 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, alpha, Chip } from "@mui/material";
 import Image from "next/image";
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
     const localized = locale === "en"
         ? { title: item.titleEn || item.title, text: item.textEn || item.text }
         : { title: item.title, text: item.text };
 
-    const getObjectPosition = (pos) => {
-        switch (pos) {
-            case "top": return "center top";
-            case "bottom": return "center bottom";
-            case "center":
-            default: return "center center";
-        }
-    };
-
-    // Визначаємо, скільки фото показувати
-    // Якщо розгорнуто — до 3-х фото, якщо ні — тільки одне.
+    // Визначаємо кількість фото: 1 якщо згорнуто, до 3 якщо розгорнуто
     const displayImages = isExpanded ? item.images.slice(0, 3) : item.images.slice(0, 1);
 
     return (
         <Box
             sx={{
+                my: 3,
+                mx: "auto",
                 display: 'flex',
                 flexDirection: { xs: 'column-reverse', md: 'row' },
-                background: 'linear-gradient(135deg, rgba(12,24,101,0.95), rgba(56,75,194,0.95))',
-                borderRadius: 2,
+                background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
+                borderRadius: { xs: 6, md: 8 },
                 overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
-                transition: 'all 0.3s ease',
+                boxShadow: '0 20px 50px rgba(12, 24, 101, 0.15)',
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                '&:hover': {
+                    transform: { md: 'translateY(-8px) scale(1.01)' },
+                    boxShadow: '0 30px 60px rgba(12, 24, 101, 0.25)',
+                }
             }}
         >
-            {/* Content Section */}
+            {/* Текстова частина */}
             <Box
                 sx={{
-                    width: { xs: '100%', md: '65%' },
-                    p: { xs: 3, md: 4 },
-                    boxSizing: 'border-box',
+                    width: { xs: '100%', md: '60%' },
+                    p: { xs: 4, md: 6 },
                     display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'center',
-                    minHeight: { md: 300 }
+                    position: 'relative',
+                    zIndex: 2
                 }}
             >
+                {/* Дата публікації (фейкова або з бази) */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                    <Chip
+                        icon={<CalendarTodayIcon sx={{ fontSize: '14px !important', color: '#f97316 !important' }} />}
+                        label="31 Jan 2026"
+                        sx={{
+                            bgcolor: alpha('#fff', 0.1),
+                            color: '#fff',
+                            fontWeight: 600,
+                            backdropFilter: 'blur(4px)',
+                            border: `1px solid ${alpha('#fff', 0.1)}`
+                        }}
+                    />
+                </Box>
+
                 <Typography
-                    component="h3"
+                    variant="h3"
                     sx={{
-                        fontSize: { xs: 18, sm: 20, md: 24 },
+                        fontSize: { xs: 24, md: 34 },
                         color: '#fff',
-                        fontWeight: 700,
-                        mb: 2,
-                        lineHeight: 1.3,
-                        pl: { md: 2 },
-                        borderLeft: { md: '2px solid #fff' },
+                        fontWeight: 900,
+                        mb: 3,
+                        lineHeight: 1.1,
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        letterSpacing: '-0.03em'
                     }}
                 >
                     {localized.title}
@@ -60,16 +72,17 @@ function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
 
                 <Typography
                     sx={{
-                        fontSize: { xs: 14, sm: 15, md: 16 },
-                        lineHeight: 1.6,
-                        color: 'rgba(255,255,255,0.9)',
-                        mb: 3,
+                        fontSize: { xs: 15, md: 17 },
+                        lineHeight: 1.8,
+                        color: alpha('#fff', 0.7),
+                        mb: 5,
                         display: '-webkit-box',
                         overflow: 'hidden',
                         WebkitLineClamp: isExpanded ? 'unset' : 3,
                         WebkitBoxOrient: 'vertical',
                         whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
+                        transition: 'all 0.5s ease',
+                        fontWeight: 400
                     }}
                 >
                     {localized.text}
@@ -78,86 +91,103 @@ function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
                 <Box sx={{ mt: 'auto' }}>
                     <Button
                         onClick={() => onReadMore(item.id)}
+                        variant="contained"
                         sx={{
-                            px: 3,
-                            py: 1,
-                            color: '#0c1865',
-                            backgroundColor: '#e1e5eb',
+                            px: 5,
+                            py: 1.5,
+                            bgcolor: isExpanded ? alpha('#fff', 0.1) : '#f97316',
+                            color: '#fff',
+                            borderRadius: 4,
                             textTransform: 'none',
-                            fontWeight: 600,
-                            '&:hover': { backgroundColor: '#fff', transform: 'translateX(4px)' },
+                            fontWeight: 800,
+                            boxShadow: isExpanded ? 'none' : '0 10px 20px rgba(249, 115, 22, 0.3)',
+                            '&:hover': {
+                                bgcolor: isExpanded ? '#fff' : '#ea580c',
+                                color: isExpanded ? '#0c1865' : '#fff',
+                                transform: 'translateY(-2px)'
+                            },
                             transition: 'all 0.3s'
                         }}
-                        endIcon={<span>{isExpanded ? '↑' : '→'}</span>}
                     >
                         {isExpanded ? t('collapse') : t('readMore')}
                     </Button>
                 </Box>
             </Box>
 
-            {/* Multi-Image Section */}
-            {item.images.length > 0 && (
-                <Box
-                    sx={{
-                        width: { xs: '100%', md: '35%' },
-                        display: 'flex',
-                        flexDirection: 'column', // Фото йдуть одне під одним на десктопі
-                        gap: 0.5, // Невеликий проміжок між фото
-                        backgroundColor: 'rgba(0,0,0,0.1)',
-                        maxHeight: isExpanded ? { md: 800 } : { md: 450 }, // Збільшуємо ліміт висоти при розгортанні
-                        overflow: 'hidden',
-                        transition: 'max-height 0.4s ease-in-out'
-                    }}
-                >
-                    {displayImages.map((img, index) => (
-                        <Box
-                            key={index}
-                            onClick={() => onImageClick(item.images, index)}
-                            sx={{
-                                position: 'relative',
-                                cursor: 'pointer',
-                                // Якщо фото одне — воно на всю висоту. Якщо декілька — ділять місце порівну.
-                                flex: 1,
-                                minHeight: { xs: 240, md: isExpanded ? 200 : 300 },
-                                overflow: 'hidden',
-                                '&:hover img': { transform: 'scale(1.08)' },
-                                '&:hover .overlay': { opacity: 1 },
+            {/* Секція Зображень */}
+            <Box
+                sx={{
+                    width: { xs: '100%', md: '40%' },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.5,
+                    bgcolor: '#000',
+                    // ВИПРАВЛЕННЯ: на мобайлі даємо чітку висоту, щоб блок не зникав
+                    height: {
+                        xs: isExpanded ? '500px' : '300px',
+                        md: 'auto'
+                    },
+                    // Мінімальна висота для md, щоб картка не схлопувалась
+                    minHeight: { md: isExpanded ? 600 : 450 },
+                    position: 'relative',
+                    transition: 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+                    flexShrink: 0,
+                    zIndex: 1
+                }}
+            >
+                {displayImages.map((img, index) => (
+                    <Box
+                        key={index}
+                        onClick={() => onImageClick(item.images, index)}
+                        sx={{
+                            position: 'relative',
+                            cursor: 'pointer',
+                            // Розподіляємо місце між фото всередині фіксованого контейнера
+                            flex: index === 0 ? 2 : 1,
+                            width: '100%',
+                            overflow: 'hidden',
+                            '&:hover img': { transform: 'scale(1.1)' },
+                            '&:hover .overlay': { opacity: 1 },
+                        }}
+                    >
+                        <Image
+                            src={img}
+                            alt="News"
+                            fill
+                            sizes="(max-width: 900px) 100vw, 40vw"
+                            style={{
+                                objectFit: 'cover',
+                                transition: 'all 0.8s ease'
                             }}
-                        >
-                            <Image
-                                src={img}
-                                alt={`${localized.title} - ${index + 1}`}
-                                fill
-                                sizes="(max-width: 768px) 100vw, 35vw"
-                                style={{
-                                    objectFit: 'cover',
-                                    objectPosition: getObjectPosition(item.imagePosition),
-                                    transition: 'transform 0.5s ease',
-                                }}
-                            />
+                        />
 
-                            {/* Overlay (тільки для першого фото або коли не розгорнуто, щоб не "смітити") */}
-                            <Box
-                                className="overlay"
-                                sx={{
-                                    position: 'absolute',
-                                    inset: 0,
-                                    backgroundColor: 'rgba(0,0,0,0.3)',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    opacity: 0,
-                                    transition: 'opacity 0.3s',
-                                }}
-                            >
-                                <Typography sx={{ color: '#fff', border: '1px solid #fff', px: 2, py: 0.5, borderRadius: 4, fontSize: 12 }}>
-                                    {t('viewMore')}
-                                </Typography>
-                            </Box>
+                        {/* Градієнтна маска */}
+                        <Box sx={{
+                            position: 'absolute', inset: 0,
+                            background: {
+                                xs: 'linear-gradient(to top, rgba(12,24,101,0.5), transparent)',
+                                md: 'linear-gradient(to right, rgba(12,24,101,0.5), transparent)'
+                            },
+                            pointerEvents: 'none'
+                        }} />
+
+                        <Box className="overlay" sx={{
+                            position: 'absolute', inset: 0,
+                            bgcolor: alpha('#182BA1', 0.6),
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            opacity: 0, transition: '0.4s', backdropFilter: 'blur(8px)'
+                        }}>
+                            <Typography sx={{
+                                color: '#fff', border: '2px solid #fff', px: 3, py: 1,
+                                borderRadius: 10, fontWeight: 900, fontSize: 12,
+                                textTransform: 'uppercase', letterSpacing: 2
+                            }}>
+                                {t('viewMore')}
+                            </Typography>
                         </Box>
-                    ))}
-                </Box>
-            )}
+                    </Box>
+                ))}
+            </Box>
         </Box>
     );
 }

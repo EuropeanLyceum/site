@@ -1,42 +1,42 @@
-import { Paper, Box, Typography } from "@mui/material";
+import { Paper, Box, Typography, alpha, Divider } from "@mui/material";
 import Image from "next/image";
 import { sanitizeTextWithLineBreaks } from "@/utils/sanitize";
 
 function StaffCard({ staff, locale, t }) {
-    // Локалізація контенту
-    const { fullName, description } =
-        locale === "en"
-            ? { fullName: staff.fullNameEn || staff.fullName, description: staff.descriptionEn || staff.description }
-            : { fullName: staff.fullName, description: staff.description };
+    const { fullName, description } = locale === "en"
+        ? { fullName: staff.fullNameEn || staff.fullName, description: staff.descriptionEn || staff.description }
+        : { fullName: staff.fullName, description: staff.description };
 
     return (
         <Paper
-            elevation={6}
+            elevation={0}
             sx={{
-                m: 2,
+                p: { xs: 2, md: 3 },
+                borderRadius: 5,
                 display: "flex",
-                flexDirection: { xs: "column", md: "row" },
-                padding: 3,
-                borderRadius: 3,
-                minHeight: 250,
-                gap: 3,
-                position: "relative",
-                overflow: "hidden",
-                background: "linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: { xs: 3, md: 4 },
+                transition: "all 0.3s ease",
+                border: "1px solid #E2E8F0",
+                background: "#fff",
+                height: "100%",
+                '&:hover': {
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 15px 40px rgba(24, 43, 161, 0.08)",
+                    borderColor: alpha("#182BA1", 0.2)
+                }
             }}
         >
-            {/* Фото */}
+            {/* Фото секція */}
             <Box
-                className="ImageContainerProfile"
                 sx={{
-                    borderRadius: 2,
-                    overflow: "hidden",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-                    backgroundColor: "#f8f9fa",
+                    width: { xs: "100%", sm: 180, md: 220 },
+                    height: { xs: 240, sm: 240, md: 280 },
                     flexShrink: 0,
-                    width: { xs: "100%", md: 220 },
-                    height: { xs: 250, md: 310 },
+                    borderRadius: 4,
+                    overflow: "hidden",
                     position: "relative",
+                    bgcolor: "#F1F5F9"
                 }}
             >
                 {staff.photoUrl ? (
@@ -44,60 +44,40 @@ function StaffCard({ staff, locale, t }) {
                         src={staff.photoUrl}
                         alt={fullName}
                         fill
-                        className="ImageProfile"
-                        onError={(e) => (e.currentTarget.style.display = "none")}
+                        style={{ objectFit: "cover", objectPosition: "center top" }}
                     />
                 ) : (
-                    <Box
-                        sx={{
-                            width: "100%",
-                            height: "100%",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            color: "#666",
-                            fontSize: 14,
-                            textAlign: "center",
-                            p: 1,
-                        }}
-                    >
-                        {t("photoMissing")}
+                    <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94A3B8' }}>
+                        <Typography variant="caption">{t("photoMissing")}</Typography>
                     </Box>
                 )}
             </Box>
 
-            {/* Інформація */}
-            <Box
-                sx={{
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    position: "relative",
-                }}
-            >
+            {/* Текстова секція */}
+            <Box sx={{ flex: 1, py: 1 }}>
                 <Typography
                     variant="h5"
                     sx={{
-                        fontWeight: 700,
-                        mb: 2,
-                        textAlign: { xs: "center", md: "left" },
+                        fontWeight: 800,
                         color: "#1e293b",
+                        mb: 2,
+                        fontSize: { xs: 20, md: 24 },
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        lineHeight: 1.2
                     }}
                 >
                     {fullName}
                 </Typography>
 
+                <Divider sx={{ mb: 2, width: 40, height: 3, bgcolor: '#182BA1', borderRadius: 1 }} />
+
                 <Box
                     sx={{
-                        "& p": {
-                            fontWeight: 500,
-                            fontSize: 15,
-                            lineHeight: 1.6,
-                            color: "#374151",
-                            textAlign: "justify",
-                            hyphens: "auto",
-                        },
+                        color: "#475569",
+                        fontSize: { xs: 14, md: 15 },
+                        lineHeight: 1.6,
+                        textAlign: "justify",
+                        "& p": { m: 0 }
                     }}
                     dangerouslySetInnerHTML={{ __html: sanitizeTextWithLineBreaks(description) }}
                 />

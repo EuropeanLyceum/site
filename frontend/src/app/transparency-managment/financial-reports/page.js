@@ -13,123 +13,123 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 import firebird3 from '@/assets/photos/firebird/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 
-// const FINANCIAL_DATA = [
-//   {
-//     id: 1,
-//     title: "Фінансова звітність за 2024 рік",
-//     titleEn: "Financial Reporting 2024",
-//     documents: [
-//       {
-//         name: "Річний фінансовий план",
-//         nameEn: "Annual Financial Plan",
-//         url: "https://example.com/plan2024.pdf",
-//         description: "Затверджений план видатків на поточний рік",
-//         descriptionEn: "Approved expenditure plan for the current year"
-//       }
-//     ],
-//     subReports: [
-//       {
-//         id: "1-1",
-//         title: "I Квартал",
-//         titleEn: "Q1 Report",
-//         description: "Звіти за січень - березень",
-//         documents: [
-//           {
-//             name: "Звіт про надходження коштів (Q1)",
-//             nameEn: "Revenue Report (Q1)",
-//             url: "https://example.com/q1-revenue.pdf"
-//           },
-//           {
-//             name: "Витрати на господарські потреби",
-//             nameEn: "Operational Expenses",
-//             url: "https://example.com/q1-expenses.pdf"
-//           }
-//         ]
-//       },
-//       {
-//         id: "1-2",
-//         title: "II Квартал",
-//         titleEn: "Q2 Report",
-//         documents: [
-//           {
-//             name: "Звіт про використання благодійних внесків",
-//             nameEn: "Charity Funds Usage Report",
-//             url: "https://example.com/q2-charity.pdf"
-//           }
-//         ]
-//       }
-//     ]
-//   },
-//   {
-//     id: 2,
-//     title: "Публічні закупівлі (Тендери)",
-//     titleEn: "Public Procurement (Tenders)",
-//     documents: [],
-//     subReports: [
-//       {
-//         id: "2-1",
-//         title: "Закупівля комп'ютерного обладнання",
-//         titleEn: "Computer Equipment Procurement",
-//         documents: [
-//           {
-//             name: "Тендерна документація",
-//             nameEn: "Tender Documentation",
-//             url: "https://example.com/tender-specs.docx"
-//           },
-//           {
-//             name: "Договір з постачальником",
-//             nameEn: "Supplier Agreement",
-//             url: "https://example.com/contract.pdf"
-//           }
-//         ]
-//       }
-//     ]
-//   },
-//   {
-//     id: 3,
-//     title: "Інші офіційні документи",
-//     titleEn: "Other Official Documents",
-//     documents: [
-//       {
-//         name: "Статут організації",
-//         nameEn: "Organization Charter",
-//         url: "https://example.com/charter.pdf",
-//         description: "Офіційний установчий документ",
-//         descriptionEn: "Official constitutive document"
-//       }
-//     ],
-//     subReports: []
-//   }
-// ];
+const FINANCIAL_DATA = [
+  {
+    id: 1,
+    title: "Фінансова звітність за 2024 рік",
+    titleEn: "Financial Reporting 2024",
+    documents: [
+      {
+        name: "Річний фінансовий план",
+        nameEn: "Annual Financial Plan",
+        url: "https://example.com/plan2024.pdf",
+        description: "Затверджений план видатків на поточний рік",
+        descriptionEn: "Approved expenditure plan for the current year"
+      }
+    ],
+    subReports: [
+      {
+        id: "1-1",
+        title: "I Квартал",
+        titleEn: "Q1 Report",
+        description: "Звіти за січень - березень",
+        documents: [
+          {
+            name: "Звіт про надходження коштів (Q1)",
+            nameEn: "Revenue Report (Q1)",
+            url: "https://example.com/q1-revenue.pdf"
+          },
+          {
+            name: "Витрати на господарські потреби",
+            nameEn: "Operational Expenses",
+            url: "https://example.com/q1-expenses.pdf"
+          }
+        ]
+      },
+      {
+        id: "1-2",
+        title: "II Квартал",
+        titleEn: "Q2 Report",
+        documents: [
+          {
+            name: "Звіт про використання благодійних внесків",
+            nameEn: "Charity Funds Usage Report",
+            url: "https://example.com/q2-charity.pdf"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 2,
+    title: "Публічні закупівлі (Тендери)",
+    titleEn: "Public Procurement (Tenders)",
+    documents: [],
+    subReports: [
+      {
+        id: "2-1",
+        title: "Закупівля комп'ютерного обладнання",
+        titleEn: "Computer Equipment Procurement",
+        documents: [
+          {
+            name: "Тендерна документація",
+            nameEn: "Tender Documentation",
+            url: "https://example.com/tender-specs.docx"
+          },
+          {
+            name: "Договір з постачальником",
+            nameEn: "Supplier Agreement",
+            url: "https://example.com/contract.pdf"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 3,
+    title: "Інші офіційні документи",
+    titleEn: "Other Official Documents",
+    documents: [
+      {
+        name: "Статут організації",
+        nameEn: "Organization Charter",
+        url: "https://example.com/charter.pdf",
+        description: "Офіційний установчий документ",
+        descriptionEn: "Official constitutive document"
+      }
+    ],
+    subReports: []
+  }
+];
 
 const FinancialReportsPage = () => {
   const { t, locale } = useTranslation("financial");
-  const [reports, setReports] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [reports, setReports] = useState(FINANCIAL_DATA);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await fetch('/api/financial-reports');
-        if (res.ok) {
-          const data = await res.json();
-          // Очікуємо структуру: { id, title, titleEn, subReports: [ { title, titleEn, documents: [...] } ], documents: [...] }
-          setReports(data);
-        }
-      } catch (e) {
-        console.error('Error fetching reports:', e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchReports();
-  }, []);
+  // useEffect(() => {
+  //   const fetchReports = async () => {
+  //     try {
+  //       const res = await fetch('/api/financial-reports');
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         // Очікуємо структуру: { id, title, titleEn, subReports: [ { title, titleEn, documents: [...] } ], documents: [...] }
+  //         setReports(data);
+  //       }
+  //     } catch (e) {
+  //       console.error('Error fetching reports:', e);
+  //     } finally {
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   fetchReports();
+  // }, []);
 
   // Допоміжна функція для локалізації
   const l = (uk, en) => (locale === 'en' ? en || uk : uk);
 
   return (
-      <Container maxWidth="lg" sx={{ mt: 12, mb: 1, minHeight: "450px" }}>
+      <Container maxWidth="lg" sx={{ py: 2, mb: 1, minHeight: "450px" }}>
         {/* Header із зображенням */}
         <Box
             sx={{
@@ -142,7 +142,7 @@ const FinancialReportsPage = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              minHeight: { md: '300px' }
+              minHeight: { xs: "150px",  md: '300px' }
             }}
         >
           {/* Текстовий блок */}

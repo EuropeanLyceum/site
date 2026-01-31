@@ -40,7 +40,7 @@ const PublicInformationPage = () => {
   const l = (uk, en) => (locale === 'en' ? en || uk : uk);
 
   return (
-      <Container maxWidth="lg" sx={{ mt: 12, mb: 1, minHeight: "450px" }}>
+      <Container maxWidth="lg" sx={{ py: 2, mb: 1, minHeight: "450px" }}>
         {/* Header із зображенням */}
           <Box
               sx={{
@@ -53,7 +53,7 @@ const PublicInformationPage = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  minHeight: { md: '300px' }
+                  minHeight: { xs: "150px",  md: '300px' }
               }}
           >
               {/* Текстовий блок */}

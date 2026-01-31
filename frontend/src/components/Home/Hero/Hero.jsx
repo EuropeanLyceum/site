@@ -1,114 +1,84 @@
-"use client";
-
-import { Box, Typography } from "@mui/material";
+'use client';
+import { Box, Typography, Container, alpha } from "@mui/material";
 import Image from "next/image";
 import logo from "@/assets/photos/icons/logo_without_background.ico.png";
-import { useTranslation } from "@/contexts/TranslationProvider";
 
-export default function Hero({t}) {
-
+export default function Hero({ t }) {
     return (
-        <Box sx={{ position: "relative", overflow: "hidden" }}>
-            {/* Background */}
-            <Box
-                sx={{
-                    position: "absolute",
-                    inset: 0,
-                    zIndex: 0,
-                }}
-            >
-                {/* Gradient */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                            "linear-gradient(180deg, #182ba1 0%, #8e99dd 84%, #9ea8e5 100%)",
-                    }}
-                />
+        <Box sx={{
+            position: "relative",
+            minHeight: { xs: "auto", md: "80vh" },
+            display: "flex",
+            alignItems: "center",
+            background: "linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)",
+            overflow: "hidden",
+            pt: { xs: 8, md: 5 },
+            pb: { xs: 8, md: 8 }
+        }}>
 
-                {/* Logo background */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        top: 0,
-                        right: { xs: "-80px", md: "-180px" },
-                        width: "100%",
-                        height: { xs: "100%", md: "133%" },
-                        zIndex: 1,
-                        filter: "blur(8px)",
-                        opacity: 0.8,
-                        display: { xs: "none", sm: "block" },
-                    }}
-                >
-                    <Image
-                        src={logo}
-                        alt="Background Logo"
-                        fill
-                        style={{ objectFit: "cover" }}
-                    />
-                </Box>
+            <Box sx={{
+                position: "absolute",
+                top: { xs: "0%", md: "-10%" },
+                right: { xs: "-20%", md: "-5%" },
+                width: { xs: "80%", md: "50%" },
+                height: "120%",
+                zIndex: 1,
+                opacity: 0.4,
+                filter: "blur(8px)",
+                userSelect: "none",
+                pointerEvents: "none"
+            }}>
+                <Image
+                    src={logo}
+                    alt="Background Accent"
+                    fill
+                    style={{ objectFit: "contain" }}
+                    priority
+                />
             </Box>
 
-            {/* Content */}
-            <Box
-                sx={{
-                    position: "relative",
-                    zIndex: 2,
-                    maxWidth: 1400,
-                    mx: "auto",
-                    px: { xs: 2, sm: 4, md: 9 },
-                    pt: { xs: 4, md: 8 },
-                    pb: { xs: 8, md: 18 },
-                    color: "#fff",
-                    mt: 8
-                }}
-            >
-                <Box
-                    sx={{
-                        position: "relative",
-                        pl: { xs: 0, md: 4 },
-                        "&::before": {
-                            content: '""',
-                            position: "absolute",
-                            left: { xs: 0, md: -25 },
-                            top: 40,
-                            bottom: 40,
-                            width: { xs: 2, md: 3 },
-                            background: "rgba(255,255,255,0.9)",
-                        },
-                    }}
-                >
-                    <Typography
-                        variant="h1"
-                        sx={{
-                            fontSize: { xs: 28, sm: 34, md: 42, lg: 80 },
-                            fontWeight: 600,
-                            mb: { xs: 2, md: 5 },
-                            textAlign: { xs: "center", md: "left" },
-                            textShadow: "0 2px 4px rgba(0,0,0,0.4)",
-                            letterSpacing: "0.5px",
-                            ml: 2
-                        }}
-                    >
+            {/* Додаткове тепле світло для балансу */}
+            <Box sx={{
+                position: "absolute", bottom: "-20%", left: "-10%",
+                width: "40%", height: "60%",
+                background: "radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%)",
+                filter: "blur(80px)", zIndex: 1
+            }} />
+
+            <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
+                <Box sx={{
+                    maxWidth: 800,
+                    borderLeft: "6px solid #f97316",
+                    pl: { xs: 3, md: 6 },
+                    py: 2,
+                    // Додаємо легку тінь тексту, щоб він "відірвався" від фонової букви
+                    textShadow: "0 10px 30px rgba(0,0,0,0.5)"
+                }}>
+                    <Typography variant="h1" sx={{
+                        fontSize: { xs: 36, sm: 48, md: 72 },
+                        fontWeight: 900,
+                        color: "#fff",
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        lineHeight: 1.1,
+                        mb: 4,
+                        textTransform: "uppercase",
+                        letterSpacing: "-0.02em"
+                    }}>
                         {t("welcome")}
                     </Typography>
 
-                    <Typography
-                        sx={{
-                            fontSize: { sm: 16, md: 18 },
-                            lineHeight: 1.7,
-                            fontFamily: "'Montserrat Alternates', sans-serif",
-                            textShadow: "0 1px 3px rgba(0,0,0,0.3)",
-                            whiteSpace: "pre-line",
-                            textAlign: "justify",
-                            ml: 2
-                        }}
-                    >
+                    <Typography sx={{
+                        fontSize: { xs: 16, md: 20 },
+                        color: alpha("#fff", 0.9),
+                        lineHeight: 1.8,
+                        fontFamily: "'Montserrat Alternates', sans-serif",
+                        textAlign: "justify",
+                        maxWidth: 700
+                    }}>
                         {t("welcomeDescription")}
                     </Typography>
                 </Box>
-            </Box>
+            </Container>
         </Box>
     );
 }

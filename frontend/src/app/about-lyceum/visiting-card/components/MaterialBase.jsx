@@ -1,100 +1,52 @@
 'use client';
-
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Container, alpha } from "@mui/material";
 import Image from "next/image";
-import galochka from "@/assets/photos/icons/galochka-icon.png";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import materialBasis from "@/assets/photos/building/material_basis.jpg";
 
 export default function MaterialBase({ t }) {
+    const items = [
+        "classrooms26Description", "englishCabinets10Description", "modernCabinetsDescription",
+        "resourceCenterDescription", "hallsDescription", "multimediaCenterDescription",
+    ];
+
     return (
-        <Box sx={{mb: 5}}>
-            {/* Title */}
-            <Typography
-                component="h1"
-                sx={{
-                    fontFamily: "'Montserrat Alternates', sans-serif",
-                    fontSize: { xs: 32, md: 45 },
-                    fontWeight: 700,
-                    color: "#182BA1",
-                    textAlign: "center",
-                    mt: "100px",
-                    mb: "40px",
-                }}
-            >
-                {t("facilitiesTitle")}
-            </Typography>
+        <Container maxWidth="xl" sx={{ mb: 10 }}>
+            <Box sx={{ background: '#0c1865', borderRadius: 8, overflow: 'hidden', color: '#fff' }}>
+                <Grid container>
+                    <Grid item size={{xs: 12, lg: 6}} sx={{ position: 'relative', minHeight: 400 }}>
+                        <Image src={materialBasis} alt="basis" fill style={{ objectFit: 'cover' }} />
+                        <Box sx={{
+                            position: 'absolute', inset: 0,
+                            background: 'linear-gradient(to right, transparent, #0c1865)',
+                            display: { xs: 'none', lg: 'block' }
+                        }} />
+                    </Grid>
 
-            {/* Content */}
-            <Grid
-                container
-                spacing={3}
-                sx={{
-                    width: "100%",
-                    mx: "auto",
-                    alignItems: "flex-start",
-                    px: "10px"
-                }}
-            >
-                {/* Image */}
-                <Grid item size={{xs: 12, md: 12, lg: 6}}>
-                    <Box className="ImageContainerFull">
-                        <Image
-                            src={materialBasis}
-                            alt={t("facilitiesPhotoAlt")}
-                            className="ImageFull"
-                            fill
-                        />
-                    </Box>
+                    <Grid item size={{xs: 12, lg: 6}} sx={{ p: { xs: 4, md: 8 } }}>
+                        <Typography sx={{
+                            fontFamily: 'Montserrat Alternates', fontWeight: 900,
+                            fontSize: { xs: 28, md: 42 }, mb: 2
+                        }}>
+                            {t("facilitiesTitle")}
+                        </Typography>
+                        <Typography sx={{ color: alpha('#fff', 0.7), mb: 5, fontSize: 18 }}>
+                            {t("threeFloorBuildingTitle")}
+                        </Typography>
+
+                        <Grid container spacing={3}>
+                            {items.map((key) => (
+                                <Grid item size={{xs: 12, sm: 6}} key={key}>
+                                    <Box sx={{ display: 'flex', gap: 2 }}>
+                                        <CheckCircleIcon sx={{ color: '#f97316' }} />
+                                        <Typography sx={{ fontWeight: 500 }}>{t(key)}</Typography>
+                                    </Box>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Grid>
                 </Grid>
-
-                {/* Info */}
-                <Grid item size={{xs: 12, md: 12, lg: 6}}>
-                    <Typography
-                        component="h2"
-                        sx={{
-                            fontSize: 20,
-                            color: "#000",
-                            mb: "36px",
-                        }}
-                    >
-                        {t("threeFloorBuildingTitle")}
-                    </Typography>
-
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "20px",
-                        }}
-                    >
-                        {[
-                            "classrooms26Description",
-                            "englishCabinets10Description",
-                            "modernCabinetsDescription",
-                            "resourceCenterDescription",
-                            "hallsDescription",
-                            "multimediaCenterDescription",
-                        ].map((key) => (
-                            <Box
-                                key={key}
-                                sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "32px",
-                                }}
-                            >
-                                <Image
-                                    src={galochka}
-                                    alt={t("checkmarkAlt")}
-                                    width={21}
-                                    height={21}
-                                />
-                                <Typography>{t(key)}</Typography>
-                            </Box>
-                        ))}
-                    </Box>
-                </Grid>
-            </Grid>
-        </Box>
+            </Box>
+        </Container>
     );
 }

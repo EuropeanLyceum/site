@@ -301,7 +301,7 @@ const en = {
 
 
     header: {
-        aboutLyceum: "About",
+        aboutLyceum: "About Lyceum",
         lyceum: "Lyceum",
         aboutLyceumFull: "About lyceum",
         ourCard: "Our business card",
@@ -363,6 +363,7 @@ const en = {
         address: "Address",
         addressText: "37500 Lubny, Poltava region, Monastyrska St, 36",
         contacts: "Contacts",
+        lyceumName: "Academic European Lyceum LMR"
     },
 
 
@@ -433,7 +434,7 @@ const en = {
     },
 
     history: {
-        historyPageTitle: "Institution history",
+        historyTitle: "Institution history",
         foundersTitle: "Founders",
         foundersDescription: "School No. 6 was founded in 1947 on the basis of Secondary School No. 3, with Yakiv O. Oranskyi heading the new institution. Eight elementary classes were taken along with teachers: Lidia O. Lychko, Lidia V. Frolova, Nadiya M. Milikova, Oleksandra D. Borysenko, Maria M. Oranska, Maria O. Novikova, Yelyzaveta M. Panchenko.",
         foundersImageAlt: "Founding teachers of the school",
@@ -522,6 +523,7 @@ const en = {
         innovativeImageAlt: "Professional orientation in the new Ukrainian school",
         innovativeDescription: "One of the priority areas of work of Lubny Specialized School No. 6 is research and experimental, project and innovation activities. In May of this year, the school joined a nationwide experiment on \"Professional Orientation in the New Ukrainian School\". The experiment is conducted within the EU4Skills project, implemented by the European Union and its member states: Germany, Finland, Poland and Estonia, and is designed for 2021-2026.",
         downloading: "Downloading...",
+        learnMore: "Learn more"
     },
 
 
@@ -553,9 +555,7 @@ const en = {
 
     teachers: {
         pedagogicalTeam: "Teaching staff",
-        administration: "Administration",
-        primaryClasses: "Primary Classes",
-        humanitarianSocial: "Humanitarian and Social Disciplines",
+        choose: "Choose category",
         loading: "Loading...",
         noTeachersInCategory: "No teachers in category \"{category}\" yet",
         photoMissing: "Photo missing",

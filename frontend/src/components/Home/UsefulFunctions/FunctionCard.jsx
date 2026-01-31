@@ -1,79 +1,68 @@
-import { Box, Card, CardActionArea, Typography } from "@mui/material";
+'use client';
+import { Box, Typography } from "@mui/material";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function FunctionCard({
-                                         href,
-                                         image,
-                                         title,
-                                         onClick,
-                                         wide = false,
-                                     }) {
+export default function FunctionCard({ href, image, title, onClick }) {
     const Wrapper = href ? Link : "div";
 
     return (
-        <Card
+        <Box
+            onClick={onClick}
+            component={Wrapper}
+            href={href || undefined}
             sx={{
                 position: "relative",
-                height: 331,
-                width: wide ? "100%" : 514,
+                display: "block",
+                height: { xs: 280, md: 350 },
+                width: "100%",
+                borderRadius: 8,
                 overflow: "hidden",
-                transition: "transform 0.3s ease",
+                cursor: "pointer",
+                textDecoration: "none",
+                zIndex: 1, // Щоб не "провалювалася" під фон
+                transition: "0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                 "&:hover": {
-                    transform: "scale(1.02)",
+                    transform: "translateY(-10px)",
+                    boxShadow: "0 20px 40px rgba(12, 24, 101, 0.25)"
                 },
+                "&:hover .card-img": { transform: "scale(1.1)" }
             }}
         >
-            <CardActionArea
-                component={Wrapper}
-                href={href}
-                onClick={onClick}
-                sx={{ height: "100%" }}
-            >
-                {/* Image */}
-                <Box sx={{ position: "absolute", inset: 0 }}>
-                    <Image
-                        src={image}
-                        alt={title}
-                        fill
-                        style={{ objectFit: "cover" }}
-                    />
-                </Box>
-
-                {/* Gradient */}
-                <Box
-                    sx={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                            "linear-gradient(to top, rgba(24,43,161,1) 0%, rgba(255,255,255,0.1) 100%)",
-                        transition: "background 0.3s ease",
-                        ".MuiCard-root:hover &": {
-                            background:
-                                "linear-gradient(to top, rgba(24,43,161,0.9) 0%, rgba(255,255,255,0.05) 100%)",
-                        },
-                    }}
+            {image && (
+                <Image
+                    src={image}
+                    alt={title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1172px"
+                    style={{ objectFit: 'cover', transition: '0.8s' }}
+                    className="card-img"
+                    priority={title === "virtualTour"} // Пріоритет для головної картки
                 />
+            )}
 
-                {/* Title */}
-                <Typography
-                    sx={{
-                        position: "absolute",
-                        bottom: 40,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        color: "#fff",
-                        fontSize: 24,
-                        fontWeight: 500,
-                        fontFamily: "'Montserrat Alternates', sans-serif",
-                        textAlign: "center",
-                        width: "100%",
-                        zIndex: 1,
-                    }}
-                >
+            <Box
+                className="card-overlay"
+                sx={{
+                    position: "absolute",
+                    inset: 0,
+                    zIndex: 2,
+                    background: "linear-gradient(to top, rgba(12, 24, 101, 0.9) 0%, transparent 60%)",
+                    display: "flex",
+                    alignItems: "flex-end",
+                    p: { xs: 3, md: 5 },
+                }}
+            >
+                <Typography sx={{
+                    color: "#fff",
+                    fontSize: { xs: 22, md: 32 },
+                    fontWeight: 800,
+                    fontFamily: "Montserrat Alternates",
+                    lineHeight: 1.2
+                }}>
                     {title}
                 </Typography>
-            </CardActionArea>
-        </Card>
+            </Box>
+        </Box>
     );
 }
