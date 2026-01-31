@@ -11,22 +11,6 @@ import {apiUrl, assetUrl} from '@/utils/api.js';
 
 export default function InnovativePage() {
     const {t, locale} = useTranslation('innovative');
-    const [dynamicData, setDynamicData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    const colorSchemes = [
-        {background: '#f8f9ff', accent: '#3b82f6', text: '#1e40af'},
-        {background: '#fff7ed', accent: '#f97316', text: '#c2410c'},
-        {background: '#faf5ff', accent: '#8b5cf6', text: '#6b21a8'},
-        {background: '#f0f9ff', accent: '#0ea5e9', text: '#0369a1'},
-        {background: '#fefce8', accent: '#eab308', text: '#a16207'},
-        {background: '#fdf4ff', accent: '#c084fc', text: '#9333ea'}
-    ];
-
-    const getColorScheme = (index) => colorSchemes[index % colorSchemes.length];
-
-    const formatText = (text) => text; // Тут можна робити розмітку
-    const getLocalizedContent = (item) => item; // Тут локалізація, якщо треба
 
     return (
         <Box component="main" sx={{mt: "30px", width: '100%', minHeight: '100vh', py: {xs: 2, sm: 4}}} lang={locale}>
