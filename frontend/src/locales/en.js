@@ -544,12 +544,10 @@ const en = {
 
 
     news: {
-        newsStream: "News feed",
+        pageTitle: "News feed",
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
-        loadingNews: "Loading news...",
-        noNewsFound: "No news found",
     },
 
 
@@ -563,16 +561,39 @@ const en = {
 
 
     intellect: {
-        intellectTalent: "Intellect and talent",
-        noEventsFound: "No events found",
-        loadingEvents: "Loading events...",
+        pageTitle: "Intellect and talent",
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
     },
 
     government: {
-        studentGovernment: "Student self-government",
+        pageTitle: "Student self-government",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+    },
+
+    sportLife: {
+        pageTitle: "SportLife",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+    },
+
+    patrioticEducation: {
+        pageTitle: "National-patriotic education",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+    },
+
+    // Сторінка клубів та студій
+    clubsStudios: {
+        pageTitle: "Clubs and studios",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
     },
 
 
@@ -580,16 +601,17 @@ const en = {
         methodicalEventsTitle: "Main methodological events",
         loadingMethodicalEvents: "Loading methodological events...",
         noMethodicalEvents: "Methodological events have not been added yet",
+        viewMore: "View more",
         readMore: "Read more",
         collapse: "Read less",
     },
 
-
-    some: {
-        // Students page
+    students: {
         loadingStudents: "Loading additional materials...",
         photoForStudents: "photo",
+    },
 
+    some: {
         // Section titles
         howToControlYourself: "How to control yourself",
         becomeStrongerAndBeautiful: "You can become stronger and more beautiful!",
@@ -848,14 +870,7 @@ const en = {
         projectMethodBenefit4: "make independent decisions;",
         projectMethodBenefit5: "learn to work in a team, performing different social roles.",
 
-        // Patriotic education page
-        patrioticEducation: "National-patriotic education",
 
-        // Clubs and studios page
-        clubsStudios: "Clubs and studios",
-
-        // SportLife page
-        sportLife: "SportLife",
 
         // Evaluation criteria page
         evaluationCriteria: "Evaluation criteria",

@@ -2,12 +2,11 @@ import { Box, Typography, Button, alpha, Chip } from "@mui/material";
 import Image from "next/image";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
-function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
+function UndefinedNewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
     const localized = locale === "en"
         ? { title: item.titleEn || item.title, text: item.textEn || item.text }
         : { title: item.title, text: item.text };
 
-    // Визначаємо кількість фото: 1 якщо згорнуто, до 3 якщо розгорнуто
     const displayImages = isExpanded ? item.images.slice(0, 3) : item.images.slice(0, 1);
 
     return (
@@ -44,7 +43,7 @@ function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
                     <Chip
                         icon={<CalendarTodayIcon sx={{ fontSize: '14px !important', color: '#f97316 !important' }} />}
-                        label="31 Jan 2026"
+                        label={item.date || "31.01.2026"}
                         sx={{
                             bgcolor: alpha('#fff', 0.1),
                             color: '#fff',
@@ -192,4 +191,4 @@ function NewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
     );
 }
 
-export default NewsCard;
+export default UndefinedNewsCard;

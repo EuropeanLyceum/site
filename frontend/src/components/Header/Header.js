@@ -75,7 +75,7 @@ const Header = () => {
         { label: t("intellectAndTalent"), href: "/educational-process/intellect" },
         { label: t("studentSelfGovernment"), href: "/educational-process/student-self-government" },
         { label: t("projectResearch"), href: "/educational-process/project-research" },
-        { label: t("patrioticEducation"), href: "/educational-process/patriotical-education" },
+        { label: t("patrioticEducation"), href: "/educational-process/patriotic-education" },
         { label: t("evaluationCriteria"), href: "/educational-process/evaluation-criteria" },
         { label: t("clubsAndStudios"), href: "/educational-process/clubs-studios" },
         { label: t("sportLife"), href: "/educational-process/sportlife" },

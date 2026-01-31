@@ -542,12 +542,10 @@ const uk = {
 
 
     news: {
-        newsStream: "Стрічка новин",
+        pageTitle: "Стрічка новин",
         readMore: "Читати далі",
         collapse: "Згорнути",
         viewMore: "Переглянути більше",
-        loadingNews: "Завантаження новин...",
-        noNewsFound: "Новини не знайдено",
     },
 
 
@@ -561,16 +559,39 @@ const uk = {
 
 
     intellect: {
-        intellectTalent: "Інтелект та обдарованість",
-        noEventsFound: "Події не знайдено",
-        loadingEvents: "Завантаження подій...",
+        pageTitle: "Інтелект та обдарованість",
         readMore: "Читати далі",
         collapse: "Згорнути",
         viewMore: "Переглянути більше",
     },
 
     government: {
-        studentGovernment: "Учнівське самоврядування",
+        pageTitle: "Учнівське самоврядування",
+        readMore: "Читати далі",
+        collapse: "Згорнути",
+        viewMore: "Переглянути більше",
+    },
+
+    sportLife: {
+        pageTitle: "СпортLife",
+        readMore: "Читати далі",
+        collapse: "Згорнути",
+        viewMore: "Переглянути більше",
+    },
+
+    patrioticEducation: {
+        pageTitle: "Національно-патріотичне виховання",
+        readMore: "Читати далі",
+        collapse: "Згорнути",
+        viewMore: "Переглянути більше",
+    },
+
+    // Сторінка клубів та студій
+    clubsStudios: {
+        pageTitle: "Клуби та студії",
+        readMore: "Читати далі",
+        collapse: "Згорнути",
+        viewMore: "Переглянути більше",
     },
 
     some: {
@@ -851,13 +872,10 @@ const uk = {
         projectMethodBenefit5: "навчитись працювати в команді, виконуючи різні соціальні ролі.",
 
         // Сторінка національно-патріотичного виховання
-        patrioticEducation: "Національно-патріотичне виховання",
 
-        // Сторінка клубів та студій
-        clubsStudios: "Клуби та студії",
 
         // Сторінка СпортLife
-        sportLife: "СпортLife",
+
 
         // Сторінка критеріїв оцінювання
         evaluationCriteria: "Критерії оцінювання",
