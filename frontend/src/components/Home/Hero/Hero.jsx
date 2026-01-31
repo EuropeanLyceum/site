@@ -5,8 +5,7 @@ import Image from "next/image";
 import logo from "@/assets/photos/icons/logo_without_background.ico.png";
 import { useTranslation } from "@/contexts/TranslationProvider";
 
-export default function Hero() {
-    const { t } = useTranslation("home");
+export default function Hero({t}) {
 
     return (
         <Box sx={{ position: "relative", overflow: "hidden" }}>

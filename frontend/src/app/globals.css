@@ -32,6 +32,20 @@
   border-radius: 20px;
 }
 
+
+.ImageContainerOld {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.ImageOld {
+  object-fit: cover;
+  border-radius: 20px;
+}
+
 .ImageContainerBird {
   position: relative;
   width: 100%;

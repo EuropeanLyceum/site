@@ -1,139 +1,168 @@
 'use client';
 
 import Image from 'next/image';
-import styles from '@/app/about-lyceum/history/history.module.css';
-import kochergina from "@/assets/photos/history/kochergina.jpg";
-import dribna from "@/assets/photos/history/dribna.jpg";
-import kapishevska from "@/assets/photos/history/kapishevska.jpg";
-import bova from "@/assets/photos/history/bova.jpg";
-import vorozhbyt from "@/assets/photos/history/vorozhbyt.jpg";
+import {Box, Typography, Grid, Card} from '@mui/material';
+
+import kochergina from '@/assets/photos/history/kochergina.jpg';
+import dribna from '@/assets/photos/history/dribna.jpg';
+import kapishevska from '@/assets/photos/history/kapishevska.jpg';
+import bova from '@/assets/photos/history/bova.jpg';
+import vorozhbyt from '@/assets/photos/history/vorozhbyt.jpg';
+
+const teachers = [
+    {
+        key: 'dribna',
+        image: dribna,
+        alt: 'Дрібна Надія Микитівна',
+        name: 'dribnaName',
+        descriptions: [
+            'dribnaDescription1',
+            'dribnaDescription2',
+            'dribnaDescription3',
+        ],
+    },
+    {
+        key: 'kapishevska',
+        image: kapishevska,
+        alt: 'Капішевська Фаїна Федорівна',
+        name: 'kapishevskaName',
+        descriptions: [
+            'kapishevskaDescription1',
+            'kapishevskaDescription2',
+        ],
+    },
+    {
+        key: 'bova',
+        image: bova,
+        alt: 'Бова Лідія Олексіївна',
+        name: 'bovaName',
+        descriptions: [
+            'bovaDescription1',
+            'bovaDescription2',
+            'bovaDescription3',
+        ],
+    },
+    {
+        key: 'vorozhbyt',
+        image: vorozhbyt,
+        alt: 'Ворожбит Ніна Миколаївна',
+        name: 'vorozhbytName',
+        descriptions: [
+            'vorozhbytDescription1',
+            'vorozhbytDescription2',
+            'vorozhbytDescription3',
+            'vorozhbytDescription4',
+            'vorozhbytDescription5',
+        ],
+    },
+    {
+        key: 'kochergina',
+        image: kochergina,
+        alt: 'Кочергіна Світлана Олександрівна',
+        name: 'kocherginaTeacherName',
+        descriptions: [
+            'kocherginaTeacherDescription1',
+            'kocherginaTeacherDescription2',
+            'kocherginaTeacherDescription3',
+        ],
+    },
+];
 
 export default function Teachers({t}) {
-
     return (
-        <section className={styles.historySection}>
-            <h2 className={styles.sectionTitle}>{t('teachersTitle')}</h2>
-            <div className={styles.historyBlock}>
-                <div className={styles.historyText}>
-                    {/* Дрібна Надія Микитівна */}
-                    <div style={{overflow: "hidden", marginBottom: "20px"}}>
-                        <div className={styles.historyImage} style={{float: "right", margin: "0 0 10px 20px", width: "300px"}}>
-                            <Image
-                                src={dribna}
-                                alt="Дрібна Надія Микитівна"
-                                width={300}
-                                height={400}
-                                style={{objectFit: "cover"}}
-                            />
-                        </div>
-                        <h3 style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '24px', marginBottom: '15px', marginTop: '30px' }}>{t('dribnaName')}</h3>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('dribnaDescription1')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('dribnaDescription2')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('dribnaDescription3')}
-                        </p>
-                    </div>
+        <Box sx={{mb: 10}}>
+            {/* Заголовок */}
+            <Typography
+                variant="h2"
+                sx={{
+                    fontFamily: 'Montserrat Alternates',
+                    fontWeight: 700,
+                    fontSize: {xs: 24, sm: 32, md: 42},
+                    color: '#182BA1',
+                    textAlign: 'center',
+                    mb: 6,
+                }}
+            >
+                {t('teachersTitle')}
+            </Typography>
 
-                    {/* Капішевська Фаїна Федорівна */}
-                    <div style={{overflow: "hidden", marginBottom: "20px"}}>
-                        <div className={styles.historyImage} style={{float: "right", margin: "0 0 10px 20px", width: "300px"}}>
-                            <Image
-                                src={kapishevska}
-                                alt="Капішевська Фаїна Федорівна"
-                                width={300}
-                                height={400}
-                                style={{objectFit: "cover"}}
-                            />
-                        </div>
-                        <h3 style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '24px', marginBottom: '15px', marginTop: '30px' }}>{t('kapishevskaName')}</h3>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('kapishevskaDescription1')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('kapishevskaDescription2')}
-                        </p>
-                    </div>
+            {/* Контент */}
+            <Box
+                sx={{
+                    backgroundColor: 'rgba(24, 43, 161, 0.5)',
+                    borderRadius: 4,
+                    px: {xs: 2, sm: 4},
+                    pt: {xs: 2, sm: 4},
+                    pb: 1
+                }}
+            >
+                {teachers.map((teacher) => (
+                    <Box key={teacher.key}>
+                        <Card
+                            sx={{
+                                height: '100%',
+                                textAlign: 'center',
+                                background: 'rgba(255,255,255,0.1)',
+                                borderRadius: 4,
+                                mb: 5,
+                                p: 2,
 
-                    {/* Бова Лідія Олексіївна */}
-                    <div style={{overflow: "hidden", marginBottom: "20px"}}>
-                        <div className={styles.historyImage} style={{float: "right", margin: "0 0 10px 20px", width: "300px"}}>
-                            <Image
-                                src={bova}
-                                alt="Бова Лідія Олексіївна"
-                                width={300}
-                                height={400}
-                                style={{objectFit: "cover"}}
-                            />
-                        </div>
-                        <h3 style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '24px', marginBottom: '15px', marginTop: '30px' }}>{t('bovaName')}</h3>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('bovaDescription1')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('bovaDescription2')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('bovaDescription3')}
-                        </p>
-                    </div>
+                            }}
+                        >
+                            <Grid
+                                container
+                                spacing={4}
+                            >
 
-                    {/* Ворожбит Ніна Миколаївна */}
-                    <div style={{overflow: "hidden", marginBottom: "20px"}}>
-                        <div className={styles.historyImage} style={{float: "right", margin: "0 0 10px 20px", width: "300px"}}>
-                            <Image
-                                src={vorozhbyt}
-                                alt="Ворожбит Ніна Миколаївна"
-                                width={300}
-                                height={400}
-                                style={{objectFit: "cover", borderBottomLeftRadius: "15px", borderBottomRightRadius: "15px"}}
-                            />
-                        </div>
-                        <h3 style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '24px', marginBottom: '15px', marginTop: '30px' }}>{t('vorozhbytName')}</h3>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('vorozhbytDescription1')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('vorozhbytDescription2')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('vorozhbytDescription3')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('vorozhbytDescription4')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('vorozhbytDescription5')}
-                        </p>
-                    </div>
+                                {/* Фото */}
+                                <Grid size={{xs: 12, md: 5}}>
+                                    <Box
+                                        className={"ImageContainerProfile"}
+                                    >
+                                        <Image
+                                            src={teacher.image}
+                                            alt={teacher.alt}
+                                            fill
+                                            className={"ImageProfile"}
+                                        />
+                                    </Box>
+                                </Grid>
 
-                    {/* Кочергіна Світлана Олександрівна */}
-                    <div style={{overflow: "hidden", marginBottom: "20px"}}>
-                        <div className={styles.historyImage} style={{float: "right", margin: "0 0 10px 20px", width: "300px"}}>
-                            <Image
-                                src={kochergina}
-                                alt="Кочергіна Світлана Олександрівна"
-                                width={300}
-                                height={400}
-                                style={{objectFit: "cover"}}
-                            />
-                        </div>
-                        <h3 style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '24px', marginBottom: '15px', marginTop: '30px' }}>{t('kocherginaTeacherName')}</h3>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('kocherginaTeacherDescription1')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('kocherginaTeacherDescription2')}
-                        </p>
-                        <p style={{ color: 'white', fontFamily: 'Montserrat Alternates, sans-serif', fontSize: '18px', lineHeight: '1.6', marginBottom: '20px' }}>
-                            {t('kocherginaTeacherDescription3')}
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+                                {/* Текст */}
+                                <Grid size={{xs: 12, md: 7}}>
+                                    <Typography
+                                        variant="h3"
+                                        sx={{
+                                            fontFamily: 'Montserrat Alternates',
+                                            fontSize: 24,
+                                            color: 'white',
+                                            mb: 2,
+                                        }}
+                                    >
+                                        {t(teacher.name)}
+                                    </Typography>
+
+                                    {teacher.descriptions.map((desc) => (
+                                        <Typography
+                                            key={desc}
+                                            sx={{
+                                                fontFamily: 'Montserrat Alternates',
+                                                fontSize: {xs: 14, sm: 16, md: 18},
+                                                lineHeight: 1.7,
+                                                color: 'white',
+                                                my: 1,
+                                                textAlign: 'justify',
+                                            }}
+                                        >
+                                            {t(desc)}
+                                        </Typography>
+                                    ))}
+                                </Grid>
+                            </Grid>
+                        </Card>
+                    </Box>
+                ))}
+            </Box>
+        </Box>
     );
 }

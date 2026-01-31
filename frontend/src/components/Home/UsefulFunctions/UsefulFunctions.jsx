@@ -5,8 +5,7 @@ import testImage from "@/assets/photos/home/test.jpg";
 import faqImg from "@/assets/photos/home/FAQ.jpg";
 import { useTranslation } from "@/contexts/TranslationProvider";
 
-export default function UsefulFunctions() {
-    const { t } = useTranslation("home");
+export default function UsefulFunctions({t}) {
 
     return (
         <Box

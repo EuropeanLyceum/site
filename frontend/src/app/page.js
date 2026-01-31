@@ -12,9 +12,9 @@ export default function MainPage() {
 
   return (
       <>
-        <Hero />
-        <UsefulFunctions />
-        <Statistics />
+        <Hero t={t}/>
+        <UsefulFunctions t={t}/>
+        <Statistics t={t}/>
 
         <FAQSection
             options={t("faqData")}

@@ -6,8 +6,8 @@ import { animateNumber } from "./useAnimatedCounters";
 import { useTranslation } from "@/contexts/TranslationProvider";
 import imagebg from "../../../assets/photos/geometric_ornament.svg";
 
-export default function Statistics() {
-    const { t } = useTranslation("home");
+export default function Statistics({t}) {
+
     const [counters, setCounters] = useState([0, 0, 0, 0]);
 
     const finalValues = [780, 60, 46, 6];
