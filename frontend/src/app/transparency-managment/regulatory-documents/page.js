@@ -1,238 +1,203 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import styles from '@/app/transparency-managment/regulatory-documents/regulatory-documents.module.css';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
+import {
+  Box, Typography, Link, Container, Stack,
+  Accordion, AccordionSummary, AccordionDetails,
+  CircularProgress, Divider, Paper
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+
 import firebird3 from '@/assets/photos/firebird/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import { apiUrl, assetUrl } from '@/utils/api.js';
 
-export default function RegulatoryDocuments() {
-  const { t, locale } = useTranslation();
-  const [documentsData, setDocumentsData] = useState([]);
+const RegDocsPage = () => {
+  const { t, locale } = useTranslation("regdocs");
+  const [reports, setReports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [renderKey, setRenderKey] = useState(0);
 
-  // Діагностика перекладу
-  console.log('RegulatoryDocuments - Current locale:', locale);
-  console.log('RegulatoryDocuments - Translation test:', t('regulatoryDocumentsTitle'));
-  console.log('RegulatoryDocuments - Component rendered at:', new Date().toISOString());
-
-  // Відстеження змін мови
   useEffect(() => {
-    console.log('RegulatoryDocuments - Language changed to:', locale);
-    setRenderKey(prev => prev + 1);
-  }, [locale]);
-
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (document) => {
-    if (locale === 'en') {
-      return {
-        title: document.titleEn || document.title, // fallback до української
-        content: document.contentEn || document.content,
-        linkText: document.linkTextEn || document.linkText // fallback до української
-      };
-    }
-    return {
-      title: document.title,
-      content: document.content,
-      linkText: document.linkText
-    };
-  };
-
-  // Отримання документів з адмін-панелі
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchReports = async () => {
       try {
-        const response = await fetch('/api/regulatory-documents');
-        if (response.ok) {
-          const data = await response.json();
-          // старі зверху, нові знизу
-          data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-          setDocumentsData(data);
+        const res = await fetch('/api/regulatory-documents');
+        if (res.ok) {
+          const data = await res.json();
+          // Очікуємо структуру: { id, title, titleEn, subReports: [ { title, titleEn, documents: [...] } ], documents: [...] }
+          setReports(data);
         }
-      } catch (error) {
-        console.error('Error fetching regulatory documents:', error);
+      } catch (e) {
+        console.error('Error fetching reports:', e);
       } finally {
         setIsLoading(false);
       }
     };
-
-    fetchData();
+    fetchReports();
   }, []);
 
-  // Форматування тексту з переносами рядків
-  const formatText = (text) => {
-    if (!text) return '';
-    return text.split('\n').map((line, index) => (
-      <span key={index}>
-        {line}
-        {index < text.split('\n').length - 1 && <br />}
-      </span>
-    ));
-  };
+  // Допоміжна функція для локалізації
+  const l = (uk, en) => (locale === 'en' ? en || uk : uk);
 
   return (
-    <>
-      <div className={styles.pageContainer} key={`${locale}-${renderKey}`}>
-        <div className="container" lang={locale}>
-          <div className="background">
-            <div className="gradientBg"></div>
-          </div>
-          
-          <main className={styles.regulatoryDocumentsMain}>
-            <h2 className={styles.regulatoryDocumentsTitle}>
-              {t('regulatoryDocumentsTitle')}
-              <Image src={firebird3} alt={t('firebirdAlt')} className={styles.firebirdImage} />
-            </h2>
+      <Container maxWidth="lg" sx={{ mt: 12, mb: 1, minHeight: "450px" }}>
+        {/* Header із зображенням */}
+        <Box
+            sx={{
+              position: 'relative',
+              mb: { xs: 4, md: 6 },
+              p: { xs: 2, md: 6 },
+              borderRadius: 4,
+              overflow: 'hidden',
+              background: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: { md: '300px' }
+            }}
+        >
+          {/* Текстовий блок */}
+          <Typography
+              variant="h1"
+              sx={{
+                fontFamily: 'Montserrat Alternates, sans-serif',
+                fontWeight: 800,
+                fontSize: { xs: '26px', sm: '36px', md: '52px' },
+                color: '#182BA1',
+                zIndex: 2,
+                position: 'relative',
+                maxWidth: { md: '60%' },
+                textAlign: 'center',
+                lineHeight: 1.2
+              }}
+          >
+            {t('regulatoryDocumentsTitle')}
+          </Typography>
 
-            <div className={styles.documentsSections}>
-              {/* Корисна інформація */}
-              <section className={styles.usefulInfoSection}>
-                <h2 className={styles.sectionTitle}>{t('usefulInfoTitle')}</h2>
-                <div className={styles.linksContainer}>
-                  <a href="https://drive.google.com/file/d/1SwYB8RHXm14vYTbYj83fLa9XbUE_QKQJ/view" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('statuteLink')}</a>
-                  <a href="https://drive.google.com/file/d/1LakFeplNYfPwEFCEmsrK3IocЗxrtDa0I/view" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('edrExtractLink')}</a>
-                  <a href="https://drive.google.com/file/d/1HE2ib8ThVe0zJJ2g8vCrd08Eaqce-fhy/view" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('derkachAppointmentLink')}</a>
-                  <a href="https://drive.google.com/file/d/1OKBBJpasb7KgSwWbxDc4grImgNyxcIXl/view" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('licenseReissueLink')}</a>
-                  <a href="https://drive.google.com/file/d/165qNwaV3sKhmCr3ThX5GVx_81prA-aRU/view" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('attestationResultsLink')}</a>
-                  <a href="https://zakon.rada.gov.ua/laws/show/z0566-11#Text" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('evaluationCriteriaLink1')}</a>
-                  <a href="https://ru.osvita.ua/legislation/Ser_osv/2357/" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('evaluationCriteriaLink2')}</a>
-                </div>
-              </section>
+          {/* Фенікс (Firebird) */}
+          <Box sx={{
+            position: 'absolute',
+            right: { xs: '-10%', md: '-5%' },
+            width: { xs: '180px', sm: '300px' },
+            height: 'auto',
+            opacity: 0.2,
+            zIndex: 1,
+            pointerEvents: 'none',
+            transform: 'rotate(-10deg)',
+          }}>
+            <Image
+                src={firebird3}
+                alt=""
+                priority
+                style={{ width: '100%', height: 'auto', filter: 'grayscale(30%)' }}
+            />
+          </Box>
+        </Box>
 
-              {/* 2024-2025 */}
-              <section className={styles.yearSection}>
-                <h2 className={styles.sectionTitle}>{t('academicYear2024Title')}</h2>
-                <div className={styles.linksContainer}>
-                  <a href="https://docs.google.com/document/d/1yuaR41nDv4SiMAlrx1S9mCuLD53aHwhw/edit" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t('educationalProgramLink')}</a>
-                </div>
-              </section>
-
-              {/* Динамічний контент з адмін-панелі */}
-              {!isLoading && documentsData.length > 0 && (
-                <section className={styles.dynamicSection}>
-                  {documentsData.map((document) => {
-                    const localized = getLocalizedContent(document);
-                    
-                    return (
-                      <div 
-                        key={document.id} 
-                        className={styles.dynamicDocument}
-                      >
-                        <div className={styles.documentContent}>
-                          {/* Заголовок */}
-                          {localized.title && (
-                            <h3 style={{
-                              fontFamily: 'Montserrat Alternates, sans-serif',
-                              fontSize: '34px',
-                              color: '#000000',
-                              marginBottom: '15px'
-                            }}>
-                              {localized.title}
-                            </h3>
-                          )}
-
-                          {/* Текст */}
-                          {localized.content && (
-                            <div
-                              style={{
-                                color: '#000000',
-                                fontSize: '18px',
-                                paddingLeft: '20px',
-                                marginBottom: '15px',
-                                lineHeight: '1.6'
-                              }}
-                            >
-                              {formatText(localized.content)}
-                            </div>
-                          )}
-
-                          {/* Посилання як текст (linkText) */}
-                          {document.url && (
-                            <div style={{ position: 'relative', paddingLeft: '20px' }}>
-                              <a 
-                                href={document.url} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: 'block',
-                                  textDecoration: 'underline',
-                                  color: '#182BA1',
-                                  transition: 'color 0.3s ease',
-                                  fontSize: '18px',
-                                  fontFamily: 'Montserrat Alternates, sans-serif',
-                                  lineHeight: '1.5',
-                                  padding: '8px 0',
-                                  width: '100%',
-                                  maxWidth: '800px',
-                                  whiteSpace: 'normal',
-                                  wordWrap: 'break-word',
-                                  position: 'relative',
-                                  paddingLeft: '20px'
-                                }}
-                                onMouseEnter={(e) => { e.target.style.color = '#2a41d1'; }}
-                                onMouseLeave={(e) => { e.target.style.color = '#182BA1'; }}
-                              >
-                                {localized.linkText || document.url}
-                              </a>
-                              <span style={{
-                                content: '"•"',
-                                position: 'absolute',
-                                left: '0',
-                                color: '#182BA1',
-                                fontSize: '20px',
-                                lineHeight: '1',
-                                top: '50%',
-                                transform: 'translateY(-50%)'
-                              }}>
-                                •
-                              </span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Фото справа - три в горизонтальний рядок по ширині */}
-                        {document.photoUrls && (() => {
-                          try {
-                            const photoArray = JSON.parse(document.photoUrls);
-                            return Array.isArray(photoArray) && photoArray.length > 0;
-                          } catch (e) {
-                            return false;
-                          }
-                        })() && (
-                          <div className={styles.documentPhotos}>
-                            <div className={styles.photosRow}>
-                              {(() => {
-                                try {
-                                  return JSON.parse(document.photoUrls).map((url, photoIndex) => (
-                                    <div key={photoIndex} className={styles.photoItem}>
-                                      <img
-                                        src={url}
-                                        alt={`${t('documentPhotoAlt')} ${photoIndex + 1}`}
-                                        onError={(e) => {
-                                          console.error('Помилка завантаження зображення:', url);
-                                          e.target.style.display = 'none';
-                                        }}
-                                      />
-                                    </div>
-                                  ));
-                                } catch (e) {
-                                  return null;
-                                }
-                              })()}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </section>
-              )}
-            </div>
-          </main>
-        </div>
-      </div>
-    </>
+        {isLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+              <CircularProgress sx={{ color: '#182BA1' }} />
+            </Box>
+        ) : (
+            <Stack spacing={4}>
+              {reports.map((report) => (
+                  <ReportSection key={report.id} report={report} l={l} />
+              ))}
+            </Stack>
+        )}
+      </Container>
   );
-}
+};
+
+// Компонент секції (Заголовок + Підзаголовки + Документи)
+const ReportSection = ({ report, l }) => {
+  return (
+      <Paper elevation={0} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, bgcolor: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+        <Typography variant="h4" sx={{
+          fontWeight: 700,
+          color: '#182BA1',
+          mb: 3,
+          fontSize: { xs: 20, md: 28 },
+          borderLeft: '4px solid #182BA1',
+          pl: 2
+        }}>
+          {l(report.title, report.titleEn)}
+        </Typography>
+
+        {/* 1. Прямі документи заголовку (якщо є) */}
+        {report.documents?.length > 0 && (
+            <DocumentList documents={report.documents} l={l} />
+        )}
+
+        {/* 2. Підзаголовки (якщо є) */}
+        {report.subReports?.map((sub) => (
+            <Accordion
+                key={sub.id}
+                elevation={0}
+                sx={{
+                  bgcolor: 'transparent',
+                  '&:before': { display: 'none' },
+                  borderBottom: '1px solid #CBD5E1'
+                }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography sx={{ fontWeight: 600, fontSize: { xs: 16, md: 19 } }}>
+                  {l(sub.title, sub.titleEn)}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                {sub.description && (
+                    <Typography sx={{ mb: 2, fontSize: 14, color: '#475569' }}>
+                      {l(sub.description, sub.descriptionEn)}
+                    </Typography>
+                )}
+                <DocumentList documents={sub.documents} l={l} />
+              </AccordionDetails>
+            </Accordion>
+        ))}
+      </Paper>
+  );
+};
+
+// Компонент списку документів
+const DocumentList = ({ documents, l }) => (
+    <Stack spacing={1.5} sx={{ my: 2 }}>
+      {documents.map((doc, idx) => (
+          <Box
+              key={idx}
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 2,
+                p: 1.5,
+                borderRadius: 2,
+                transition: '0.2s',
+                '&:hover': { bgcolor: 'rgba(24, 43, 161, 0.04)' }
+              }}
+          >
+            <InsertDriveFileIcon sx={{ color: '#182BA1', mt: 0.5 }} />
+            <Box>
+              <Link
+                  href={doc.fileUrl || doc.url}
+                  target="_blank"
+                  sx={{
+                    fontWeight: 600,
+                    color: '#182BA1',
+                    textDecoration: 'none',
+                    '&:hover': { textDecoration: 'underline' }
+                  }}
+              >
+                {l(doc.name, doc.nameEn)}
+              </Link>
+              {doc.description && (
+                  <Typography sx={{ fontSize: 13, color: '#64748B', mt: 0.5 }}>
+                    {l(doc.description, doc.descriptionEn)}
+                  </Typography>
+              )}
+            </Box>
+          </Box>
+      ))}
+    </Stack>
+);
+
+export default RegDocsPage;
