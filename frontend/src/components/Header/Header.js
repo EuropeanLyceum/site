@@ -176,15 +176,31 @@ const Header = () => {
                                     display: 'none',
                                     position: 'absolute',
                                     top: '80%',
-                                    left: '50%',
-                                    transform: 'translateX(-50%) translateY(10px)',
+                                    // Якщо це один з останніх двох пунктів, притискаємо до правого краю
+                                    ...(idx >= navStructure.length - 2 ? {
+                                      right: 0,
+                                      left: 'auto',
+                                      transform: 'translateY(10px)',
+                                    } : {
+                                      left: '30%',
+                                      transform: 'translateX(-50%) translateY(10px)',
+                                    }),
                                     background: '#fff',
                                     minWidth: 250,
                                     borderRadius: 2,
                                     boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
                                     py: 1,
                                     zIndex: 100,
-                                    transition: '0.3s opacity ease, 0.3s transform ease'
+                                    transition: '0.3s opacity ease, 0.3s transform ease',
+                                    // Додаємо невидимий "місток", щоб мишка не втрачала фокус при переході
+                                    '&::before': {
+                                      content: '""',
+                                      position: 'absolute',
+                                      top: -20,
+                                      left: 0,
+                                      right: 0,
+                                      height: 20,
+                                    }
                                   }}
                               >
                                 {item.sub.map((subItem, sIdx) => (
@@ -201,6 +217,7 @@ const Header = () => {
                                           textDecoration: 'none',
                                           fontSize: '14px',
                                           fontWeight: 500,
+                                          whiteSpace: 'nowrap', // Щоб текст не переносився
                                           '&:hover': { background: '#f8f9fa', color: '#f97316' }
                                         }}
                                     >
