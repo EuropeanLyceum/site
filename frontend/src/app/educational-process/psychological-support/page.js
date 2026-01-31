@@ -1,292 +1,221 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import styles from '@/app/educational-process/psychological-support/psychological-support.module.css';
+import {
+  Box, Typography, Container, Grid, Paper, Avatar,
+  Button, Accordion, AccordionSummary, AccordionDetails,
+  Divider, alpha, CircularProgress, Link as MuiLink
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import PersonIcon from '@mui/icons-material/Person';
+import SchoolIcon from '@mui/icons-material/School';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
+import LaunchIcon from '@mui/icons-material/Launch';
 import Image from 'next/image';
+
 import kogutPhoto from '@/assets/photos/kogut.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import { apiUrl } from '@/utils/api.js';
+
+// СТАТИЧНІ ДАНІ (Те що раніше було в розмітці)
+const PSYCHOLOGIST_DATA = {
+  photo: kogutPhoto,
+  principles: [
+    "principleConfidentiality",
+    "principleNonJudgmental",
+    "principleCompetence"
+  ],
+  directions: [
+    "directionLearning",
+    "directionEmotional",
+    "directionInterpersonal",
+    "directionSelfDiscovery"
+  ],
+  staticResources: [
+    { key: "pedagogicalPractice", url: "https://docs.google.com/document/d/12j01IFFezy-2L8ApwAOyFbDsqN8VMCOy/edit#bookmark=id.mxi12wl6tkex" },
+    { key: "adaptationAdvice56", url: "https://docs.google.com/document/d/1xFEVzA5ECo0_C6NCLXrXeX24mTEr_FqZ/edit" },
+    { key: "adaptationRecommendations10", url: "https://docs.google.com/document/d/1wWtFj2L1Rp2QfXMaw0FwB6ELzt6vpsZy/edit?usp=drivesdk" },
+    { key: "childrenInShelter", url: "https://docs.google.com/document/d/1FU4BnN4c00ZJ2eKHV7COM_ToBzLKDHJ0/edit" },
+    { key: "mentalHealthProgram", url: "https://howareu.com/" }
+  ]
+};
 
 export default function PsychologicalSupport() {
-  const { t, locale } = useTranslation();
-  const [openAccordion, setOpenAccordion] = useState(null);
+  const { t, locale } = useTranslation("psychological");
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [renderKey, setRenderKey] = useState(0);
 
-  // Діагностика перекладу
-  console.log('PsychologicalSupport - Current locale:', locale);
-  console.log('PsychologicalSupport - Translation test:', t('psychologicalSupport'));
+  const getLocalized = (item) => ({
+    title: locale === 'en' ? (item.titleEn || item.title) : item.title,
+    content: locale === 'en' ? (item.contentEn || item.content) : item.content,
+    text: locale === 'en' ? (item.textEn || item.text) : item.text,
+    linkText: locale === 'en' ? (item.linkTextEn || item.linkText) : item.linkText
+  });
 
-  // Відстеження змін мови
   useEffect(() => {
-    console.log('PsychologicalSupport - Language changed to:', locale);
-    setRenderKey(prev => prev + 1);
-  }, [locale]);
-
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (item) => {
-    if (locale === 'en') {
-      return {
-        title: item.titleEn || item.title, // fallback до української
-        content: item.contentEn || item.content,
-        text: item.textEn || item.text,
-        linkText: item.linkTextEn || item.linkText
-      };
-    }
-    return {
-      title: item.title,
-      content: item.content,
-      text: item.text,
-      linkText: item.linkText
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/psychological-support");
+        if (response.ok) {
+          const data = await response.json();
+          setArticles(data.sort((a, b) => b.id - a.id));
+        }
+      } catch (err) { console.error(err); }
+      finally { setIsLoading(false); }
     };
-  };
-
-  const toggleAccordion = (index) => {
-    setOpenAccordion(openAccordion === index ? null : index);
-  };
-
-  const loadArticles = async () => {
-    try {
-      setIsLoading(true);
-      console.log(" --- start ---");
-
-      const response = await fetch("/api/psychological-support");
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Articles loaded:", data);
-
-      // Сортуємо за ID (новіші зверху)
-      const sortedArticles = data.sort((a, b) => b.id - a.id);
-      setArticles(sortedArticles);
-      return data;
-    } catch (error) {
-      console.error("Error loading articles:", error);
-      setArticles([]);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadArticles();
+    loadData();
   }, []);
 
-  // Розділяємо динамічні елементи на акордеони та елементи для синього фону
-  const accordionItems = articles.filter(item => {
-    const localized = getLocalizedContent(item);
-    return localized.title && localized.content && !localized.text && !item.link;
-  });
-  
-  // Елементи для відображення на синьому фоні (текст та посилання)
-  const blueBackgroundItems = articles.filter(item => {
-    const localized = getLocalizedContent(item);
-    return localized.text || item.link;
-  }).sort((a, b) => a.id - b.id); // Сортуємо за ID в прямому порядку (старіші зверху)
-
-  // Функція для відображення тексту з пропущеними рядками
-  const renderTextWithLineBreaks = (text) => {
-    if (!text) return null;
-    
-    // Розділяємо текст на абзаци за подвійними пропущеними рядками
-    const paragraphs = text.split('\n\n');
-    
-    return paragraphs.map((paragraph, index) => (
-      <p key={index}>
-        {paragraph.split('\n').map((line, lineIndex) => (
-          <span key={lineIndex}>
-            {line}
-            {lineIndex < paragraph.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-    ));
-  };
+  const accordionItems = articles.filter(item => item.content && !item.text);
+  const blueBackgroundItems = articles.filter(item => item.text || item.link);
 
   return (
-    <div className={styles.psychologicalSupportPage} lang={locale} key={`${locale}-${renderKey}`}>
-      <div className={styles.intellectContent}>
-        <h1 className={styles.intellectTitle}>{t("psychologicalSupport")}</h1>
-        
-        {/* Психолог секція */}
-        <div className={styles.psychologistSection}>
-          <div className={styles.psychologistInfo}>
-            <Image 
-                src={kogutPhoto} 
-                alt={t("psychologistName")}
-                width={300}
-                height={400}
-                priority
-                className={styles.psychologistImage}
-              />
-            <div className={styles.psychologistDetails}>
-              <h2 className={styles.psychologistName}>{t("psychologistName")}</h2>
-              <p className={styles.psychologistTitle}>{t("psychologistTitle")}</p>
-              <p className={styles.psychologistDescription}>{t("psychologistDescription")}</p>
-              <p className={styles.psychologistGoal}>{t("psychologistGoal")}</p>
-              
-              <div className={styles.psychologistPrinciples}>
-                <h3>{t("psychologistPrinciples")}</h3>
-                <ul>
-                  <li>{t("principleConfidentiality")}</li>
-                  <li>{t("principleNonJudgmental")}</li>
-                  <li>{t("principleCompetence")}</li>
-                </ul>
-              </div>
-              
-              <div className={styles.workDirections}>
-                <h3>{t("workDirections")}</h3>
-                <ul>
-                  <li>{t("directionLearning")}</li>
-                  <li>{t("directionEmotional")}</li>
-                  <li>{t("directionInterpersonal")}</li>
-                  <li>{t("directionSelfDiscovery")}</li>
-                </ul>
-              </div>
-              
-              <div className={styles.contactInfo}>
-                <h3>{t("howToContact")}</h3>
-                <p>{t("contactDescription")}</p>
-                <p><strong>{t("personalConsultation")}</strong></p>
-                <p><strong>{t("workSchedule")}</strong></p>
-                <p><strong>{t("officeNumber")}</strong></p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#fff', pb: 10 }}>
+        {/* Background Gradient */}
+        <Box sx={{
+          position: 'absolute', top: 0, left: 0, right: 0, height: 600,
+          background: 'linear-gradient(180deg, rgba(24, 43, 161, 0.05) 0%, rgba(255,255,255,0) 100%)',
+          zIndex: 0
+        }} />
 
-        {/* Фон з посиланнями - тут додаємо динамічні елементи для синього фону */}
-        <div className={styles.resourcesSection}>
-          <div className={styles.resourcesContainer}>
-            <div className={styles.resourcesLinks}>
-              <a 
-                href="https://docs.google.com/document/d/12j01IFFezy-2L8ApwAOyFbDsqN8VMCOy/edit#bookmark=id.mxi12wl6tkex" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.resourceLink}
-              >
-                {t("pedagogicalPractice")}
-              </a>
-              <a 
-                href="https://docs.google.com/document/d/1xFEVzA5ECo0_C6NCLXrXeX24mTEr_FqZ/edit" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.resourceLink}
-              >
-                {t("adaptationAdvice56")}
-              </a>
-              <a 
-                href="https://docs.google.com/document/d/1wWtFj2L1Rp2QfXMaw0FwB6ELzt6vpsZy/edit?usp=drivesdk&ouid=105927083664009103834&rtpof=true&sd=true" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.resourceLink}
-              >
-                {t("adaptationRecommendations10")}
-              </a>
-              <a 
-                href="https://docs.google.com/document/d/1FU4BnN4c00ZJ2eKHV7COM_ToBzLKDHJ0/edit" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.resourceLink}
-              >
-                {t("childrenInShelter")}
-              </a>
-              <a 
-                href="https://howareu.com/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.resourceLink}
-              >
-                {t("mentalHealthProgram")}
-              </a>
-            </div>
+        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1, pt: 8 }}>
+          <Typography variant="h1" sx={{
+            fontSize: { xs: 34, md: 54 },
+            color: '#182BA1',
+            fontWeight: 900,
+            textAlign: 'center',
+            mb: 6,
+            fontFamily: "'Montserrat Alternates', sans-serif"
+          }}>
+            {t("psychologicalSupport")}
+          </Typography>
 
-            {/* Динамічні елементи для синього фону - аналогічно до сторінки "На допомогу вчителю" */}
-            {blueBackgroundItems.length > 0 && (
-              <>
-                <div className={styles.divider}></div>
-                <div className={styles.documentsBlock}>
-                  {blueBackgroundItems.map((item, index) => {
-                    const localized = getLocalizedContent(item);
-                    
-                    return (
-                      <div key={item.id}>
-                        {/* Горизонтальна лінія та більший відступ перед текстом, якщо це не перший запис */}
-                        {localized.text && index > 0 && (
-                          <>
-                            <div className={styles.divider}></div>
-                            <div style={{ marginTop: '40px' }}></div>
-                          </>
-                        )}
-                        
-                        {/* Текст, якщо є */}
-                        {localized.text && (
-                          <div className={styles.documentsText}>
-                            {renderTextWithLineBreaks(localized.text)}
-                          </div>
-                        )}
-                        
-                        {/* Посилання, якщо є */}
-                        {item.link && (
-                          <div className={styles.documentsList}>
-                            <a 
-                              href={item.link} 
-                              className={styles.documentLink} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              {localized.linkText || item.link}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-        
-        <h2 className={styles.articlesTitle}>{t("usefulArticles")}</h2>
-        
-        {/* Динамічні акордеони додаються зверху */}
-        {isLoading ? (
-          <div className={styles.accordionContainer}>
-            <div className={styles.loadingMessage}>Завантаження додаткових матеріалів...</div>
-          </div>
-        ) : accordionItems.length > 0 ? (
-          accordionItems.map((item, index) => {
-            const localized = getLocalizedContent(item);
-            
-            return (
-              <div key={item.id} className={styles.accordionItem}>
-                <button
-                  className={`${styles.accordionHeader} ${openAccordion === index ? styles.active : ''}`}
-                  onClick={() => toggleAccordion(index)}
-                >
-                  <span className={styles.accordionTitle}>{localized.title}</span>
-                  <span className={styles.accordionIcon}>
-                    {openAccordion === index ? '−' : '+'}
-                  </span>
-                </button>
-                
-                <div className={`${styles.accordionContent} ${openAccordion === index ? styles.open : ''}`}>
-                  <div className={styles.accordionText}>
-                    {/* Відображаємо тільки основний текст акордеону */}
-                    {renderTextWithLineBreaks(localized.content)}
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        ) : null}
-      </div>
-    </div>
+          {/* Секція Психолога */}
+          <Paper elevation={0} sx={{
+            borderRadius: 8, overflow: 'hidden', bgcolor: '#fff',
+            border: '1px solid', borderColor: alpha('#182BA1', 0.1),
+            boxShadow: '0 20px 40px rgba(0,0,0,0.05)', mb: 8
+          }}>
+            <Grid container>
+              <Grid item size={{xs: 12, md: 4}}>
+                <Box sx={{ position: 'relative', height: { xs: 400, md: '100%' }, minHeight: 400 }}>
+                  <Image
+                      src={PSYCHOLOGIST_DATA.photo}
+                      alt="Psychologist"
+                      fill
+                      style={{ objectFit: 'cover' }}
+                  />
+                </Box>
+              </Grid>
+              <Grid item size={{xs: 12, md: 8}} sx={{ p: { xs: 3, md: 6 } }}>
+                <Typography variant="h4" sx={{ fontWeight: 800, color: '#182BA1', mb: 1 }}>
+                  {t("psychologistName")}
+                </Typography>
+                <Typography variant="subtitle1" sx={{ color: '#f97316', fontWeight: 600, mb: 3, fontStyle: 'italic' }}>
+                  {t("psychologistTitle")}
+                </Typography>
+                <Typography sx={{ mb: 3, lineHeight: 1.7, color: '#444' }}>
+                  {t("psychologistDescription")}
+                </Typography>
+
+                <Grid container spacing={4}>
+                  <Grid item size={{xs: 12, sm: 6}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <SchoolIcon sx={{ color: '#f97316' }} />
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{t("workDirections")}</Typography>
+                    </Box>
+                    {PSYCHOLOGIST_DATA.directions.map(key => (
+                        <Typography key={key} sx={{ display: 'flex', gap: 1, mb: 1, fontSize: 14 }}>
+                          <Box component="span" sx={{ color: '#f97316' }}>•</Box> {t(key)}
+                        </Typography>
+                    ))}
+                  </Grid>
+                  <Grid item size={{xs: 12, sm: 6}}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                      <ContactSupportIcon sx={{ color: '#f97316' }} />
+                      <Typography variant="h6" sx={{ fontWeight: 700 }}>{t("howToContact")}</Typography>
+                    </Box>
+                    <Typography sx={{ fontSize: 14, mb: 1 }}>{t("contactDescription")}</Typography>
+                    <Typography sx={{ fontSize: 14, fontWeight: 700, color: '#182BA1' }}>{t("personalConsultation")}</Typography>
+                    <Typography sx={{ fontSize: 14 }}>{t("workSchedule")}</Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Секція Ресурсів (Синій фон) */}
+          <Box sx={{
+            bgcolor: alpha('#182BA1', 0.05),
+            borderRadius: 8, p: { xs: 4, md: 6 }, mb: 8,
+            border: '1px dashed', borderColor: alpha('#182BA1', 0.2)
+          }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 4, color: '#182BA1' }}>
+              📚 {t("usefulResources")}
+            </Typography>
+
+            <Grid container spacing={2}>
+              {/* Статичні посилання */}
+              {PSYCHOLOGIST_DATA.staticResources.map((res, idx) => (
+                  <Grid item size={{xs: 12, sm: 6}} key={idx}>
+                    <MuiLink href={res.url} target="_blank" sx={{
+                      display: 'flex', alignItems: 'center', gap: 1,
+                      color: '#182BA1', textDecoration: 'none', fontWeight: 600,
+                      '&:hover': { color: '#f97316' }
+                    }}>
+                      <LaunchIcon sx={{ fontSize: 16 }} /> {t(res.key)}
+                    </MuiLink>
+                  </Grid>
+              ))}
+
+              {/* Динамічні посилання з бази */}
+              {blueBackgroundItems.map((item) => {
+                const loc = getLocalized(item);
+                return (
+                    <Grid item size={{xs: 12}} key={item.id}>
+                      {loc.text && <Typography sx={{ mt: 2, mb: 1, fontWeight: 500 }}>{loc.text}</Typography>}
+                      {item.link && (
+                          <MuiLink href={item.link} target="_blank" sx={{ color: '#f97316', fontWeight: 700 }}>
+                            {loc.linkText || item.link}
+                          </MuiLink>
+                      )}
+                    </Grid>
+                );
+              })}
+            </Grid>
+          </Box>
+
+          {/* Секція Статей (Акордеони) */}
+          <Typography variant="h4" sx={{
+            textAlign: 'center', fontWeight: 900, mb: 4,
+            color: '#182BA1', fontFamily: "'Montserrat Alternates', sans-serif"
+          }}>
+            {t("usefulArticles")}
+          </Typography>
+
+          {isLoading ? <Box sx={{ textAlign: 'center' }}><CircularProgress /></Box> : (
+              <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+                {accordionItems.map((item) => {
+                  const loc = getLocalized(item);
+                  return (
+                      <Accordion key={item.id} sx={{
+                        mb: 2, borderRadius: '16px !important', boxShadow: 'none',
+                        border: '1px solid #eee', '&::before': { display: 'none' }
+                      }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#f97316' }} />}>
+                          <Typography sx={{ fontWeight: 700, color: '#1e2b8d' }}>{loc.title}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography sx={{ whiteSpace: 'pre-wrap', lineHeight: 1.8, color: '#555' }}>
+                            {loc.content}
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                  );
+                })}
+              </Box>
+          )}
+        </Container>
+      </Box>
   );
 }

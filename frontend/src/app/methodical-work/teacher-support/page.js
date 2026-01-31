@@ -1,425 +1,237 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import styles from '@/app/methodical-work/teacher-support/teacher-help.module.css';
+import {
+  Box, Typography, Container, Accordion, AccordionSummary,
+  AccordionDetails, Grid, Paper, Link as MuiLink,
+  CircularProgress, alpha
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SchoolIcon from '@mui/icons-material/School';
+import LaptopMacIcon from '@mui/icons-material/LaptopMac';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import { apiUrl } from '@/utils/api.js';
+
+// ВИНЕСЕНА ІНФОРМАЦІЯ (Конструктор контенту)
+const STATIC_METHODICAL_DATA = {
+  // Список ігор (ID відповідають ключам у перекладах game{N}Name/Description)
+  games: [1, 2],
+
+  // Критерії ефективності уроку
+  effectivenessPoints: [1, 2],
+
+  // Правила дисципліни
+  disciplineRules: [1, 2],
+
+  // Ресурси цифрової грамотності
+  digitalLinks: [
+    { key: "cyberHygiene", url: "https://osvita.diia.gov.ua/courses/cyber-hygiene" },
+    { key: "cybernanny", url: "https://osvita.diia.gov.ua/courses/cybernanny" },
+    { key: "digitalCommunities", url: "https://osvita.diia.gov.ua/courses/digital-communities" },
+    { key: "digitalSignature", url: "https://osvita.diia.gov.ua/courses/digital-signature" }
+  ],
+
+  // Посилання на академічну доброчесність
+  integrityLinks: [
+    { key: "academicIntegrityEducation", url: "https://docs.google.com/document/d/15j7N4paWcXiuUZbIzFW9z7Lna6OYW_nD/edit" },
+    { key: "academicIntegrityComplete", url: "https://docs.google.com/document/d/1OqnzljmdKG2-TejHKAoy_89NLU8_xp2P/edit" },
+    { key: "academicIntegritySchool", url: "https://docs.google.com/document/d/1-ofGwJUyxhkO45aGJmvl6ElM_pf_7Jpu/edit" }
+  ]
+};
 
 export default function TeacherHelpPage() {
-  const { t, locale } = useTranslation();
-  const [activeSections, setActiveSections] = useState([]);
+  const { t, locale } = useTranslation("teacherHelp");
   const [dynamicItems, setDynamicItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [renderKey, setRenderKey] = useState(0);
 
-  // Діагностика перекладу
-  console.log('TeacherHelp - Current locale:', locale);
-  console.log('TeacherHelp - Translation test:', t('teacherHelp'));
+  // Логіка локалізації для динамічних даних з БД
+  const getLocalized = (item) => ({
+    title: locale === 'en' ? (item.titleEn || item.title) : item.title,
+    content: locale === 'en' ? (item.contentEn || item.content) : item.content,
+    text: locale === 'en' ? (item.textEn || item.text) : item.text,
+    linkText: locale === 'en' ? (item.linkTextEn || item.linkText) : item.linkText
+  });
 
-  // Відстеження змін мови
   useEffect(() => {
-    console.log('TeacherHelp - Language changed to:', locale);
-    setRenderKey(prev => prev + 1);
-  }, [locale]);
-
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (item) => {
-    if (locale === 'en') {
-      return {
-        title: item.titleEn || item.title, // fallback до української
-        content: item.contentEn || item.content,
-        text: item.textEn || item.text,
-        linkText: item.linkTextEn || item.linkText
-      };
-    }
-    return {
-      title: item.title,
-      content: item.content,
-      text: item.text,
-      linkText: item.linkText
+    const loadData = async () => {
+      try {
+        const response = await fetch('/api/help-teacher');
+        if (response.ok) {
+          const data = await response.json();
+          setDynamicItems(data);
+        }
+      } catch (err) { console.error("Fetch error:", err); }
+      finally { setIsLoading(false); }
     };
-  };
-
-  useEffect(() => {
-    fetchDynamicItems();
+    loadData();
   }, []);
 
-  const fetchDynamicItems = async () => {
-    try {
-      // Змінюємо URL на порт 3000, де знаходиться API
-      const response = await fetch('/api/help-teacher');
-      if (response.ok) {
-        const data = await response.json();
-        setDynamicItems(data);
-      }
-    } catch (error) {
-      console.error('Error fetching dynamic items:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const toggleSection = (index) => {
-    setActiveSections(prev => 
-      prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
-  // Розділяємо динамічні елементи на акордеони та елементи для рожевого фону
-  const accordionItems = dynamicItems.filter(item => {
-    const localized = getLocalizedContent(item);
-    return localized.title && localized.content;
-  });
-  
-  // Елементи для відображення на рожевому фоні (текст та посилання)
-  const pinkBackgroundItems = dynamicItems.filter(item => {
-    const localized = getLocalizedContent(item);
-    // Текст без заголовка та контенту акордеону (може бути з посиланням або без)
-    return (localized.text && !localized.title && !localized.content) ||
-           // Посилання без заголовка та контенту акордеону
-           (item.link && !localized.title && !localized.content);
-  });
-  
-  // Розділяємо на текст та посилання для рожевого фону
-  const textItems = pinkBackgroundItems.filter(item => {
-    const localized = getLocalizedContent(item);
-    return localized.text && !localized.title && !localized.content;
-  });
-  const linkItems = pinkBackgroundItems.filter(item => {
-    const localized = getLocalizedContent(item);
-    return item.link && !localized.title && !localized.content;
-  });
-
-  // Функція для відображення тексту з пропущеними рядками
-  const renderTextWithLineBreaks = (text) => {
-    if (!text) return null;
-    
-    // Розділяємо текст на абзаци за подвійними пропущеними рядками
-    const paragraphs = text.split('\n\n');
-    
-    return paragraphs.map((paragraph, index) => (
-      <p key={index}>
-        {paragraph.split('\n').map((line, lineIndex) => (
-          <span key={lineIndex}>
-            {line}
-            {lineIndex < paragraph.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-    ));
-  };
+  const accordionItems = dynamicItems.filter(item => item.title && item.content);
+  const footerItems = dynamicItems.filter(item => !item.title && (item.text || item.link));
 
   return (
-    <div className={styles.teacherHelpPage} lang={locale} key={`${locale}-${renderKey}`}>
-      <main className={styles.teacherHelpMain}>
-        <div className={styles.titleContainer}>
-          <h2 className={styles.teacherHelpTitle}>{t("teacherHelp")}</h2>
-        </div>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#fff', pb: 10 }}>
+        {/* Header */}
+        <Box sx={{
+          py: 5, bgcolor: alpha('#182BA1', 0.03),
+          borderBottom: '1px solid', borderColor: alpha('#182BA1', 0.1)
+        }}>
+          <Container maxWidth="md">
+            <Typography variant="h1" sx={{
+              fontSize: { xs: 32, md: 48 }, color: '#182BA1',
+              fontWeight: 900, textAlign: 'center',
+              fontFamily: "'Montserrat Alternates', sans-serif"
+            }}>
+              {t("teacherHelp")}
+            </Typography>
+          </Container>
+        </Box>
 
-        {/* Динамічні акордеони додаються зверху */}
-        {accordionItems.map((item, index) => {
-            const localized = getLocalizedContent(item);
-            
-            return (
-              <section key={item.id} className={styles.teacherHelpSection}>
-                <div 
-                  className={`${styles.sectionHeader} ${activeSections.includes(index) ? styles.active : ''}`}
-                  onClick={() => toggleSection(index)}
-                >
-                  <h3 className={styles.sectionTitle}>{localized.title}</h3>
-                  <div className={styles.sectionMarker}></div>
-                </div>
-                
-                <div className={`${styles.sectionContent} ${activeSections.includes(index) ? styles.active : ''}`}>
-                  <div className={styles.detailedDescription}>
-                    {/* Відображаємо текст акордеону з пропущеними рядками */}
-                    {renderTextWithLineBreaks(localized.content)}
-                    
-                    {/* Додатковий текст, якщо є */}
-                    {localized.text && (
-                      <div className={styles.additionalText}>
-                        {renderTextWithLineBreaks(localized.text)}
-                      </div>
-                    )}
-                    
-                    {/* Посилання, якщо є (можна комбінувати з текстом) */}
-                    {item.link && (
-                      <div className={styles.linkSection}>
-                        <a 
-                          href={item.link} 
-                          className={styles.documentLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                        >
-                          {localized.linkText || item.link}
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </section>
-            );
-          })}
-
-        {/* Статичні акордеони */}
-        <section className={styles.teacherHelpSection}>
-          <div 
-            className={`${styles.sectionHeader} ${activeSections.includes(accordionItems.length) ? styles.active : ''}`}
-            onClick={() => toggleSection(accordionItems.length)}
-          >
-            <h3 className={styles.sectionTitle}>{t("activeGamesTitle")}</h3>
-            <div className={styles.sectionMarker}></div>
-          </div>
-          
-          <div className={`${styles.sectionContent} ${activeSections.includes(accordionItems.length) ? styles.active : ''}`}>
-            <div className={styles.detailedDescription}>
-              <p>{t("activeGamesIntro")}</p>
-              <p><span className={styles.gameName}>{t("game1Name")}</span> {t("game1Description")}</p>
-              <p><span className={styles.gameName}>{t("game2Name")}</span> {t("game2Description")}</p>
-              <p><span className={styles.gameName}>{t("game3Name")}</span> {t("game3Description")}</p>
-              <p><span className={styles.gameName}>{t("game4Name")}</span> {t("game4Description")}</p>
-              <p><span className={styles.gameName}>{t("game5Name")}</span> {t("game5Description")}</p>
-              <p>{t("game5Instruction")}</p>
-              <p><span className={styles.gameName}>{t("game6Name")}</span> {t("game6Description")}</p>
-              <p>{t("game6Instruction")}</p>
-              <p><span className={styles.gameName}>{t("game7Name")}</span> {t("game7Description")}</p>
-            </div>
-          </div>
-        </section>
-        
-        <section className={styles.teacherHelpSection}>
-          <div 
-            className={`${styles.sectionHeader} ${activeSections.includes(accordionItems.length + 1) ? styles.active : ''}`}
-            onClick={() => toggleSection(accordionItems.length + 1)}
-          >
-            <h3 className={styles.sectionTitle}>{t("methodologicalRecommendations")}</h3>
-            <div className={styles.sectionMarker}></div>
-          </div>
-          
-          <div className={`${styles.sectionContent} ${activeSections.includes(accordionItems.length + 1) ? styles.active : ''}`}>
-            <div className={styles.detailedDescription}>
-              <p>{t("methodologicalRecommendationsText1")}</p>
-              <p>{t("methodologicalRecommendationsText2")}</p>
-              <p>{t("methodologicalRecommendationsText3")}</p>
-            </div>
-          </div>
-        </section>
-        
-        <section className={styles.teacherHelpSection}>
-          <div 
-            className={`${styles.sectionHeader} ${activeSections.includes(accordionItems.length + 2) ? styles.active : ''}`}
-            onClick={() => toggleSection(accordionItems.length + 2)}
-          >
-            <h3 className={styles.sectionTitle}>{t("lessonEffectivenessTitle")}</h3>
-            <div className={styles.sectionMarker}></div>
-          </div>
-          
-          <div className={`${styles.sectionContent} ${activeSections.includes(accordionItems.length + 2) ? styles.active : ''}`}>
-            <div className={styles.detailedDescription}>
-              <ol className={styles.numberedList}>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint1")}</strong>
-                  <p>{t("lessonEffectivenessText1")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint2")}</strong>
-                  <p>{t("lessonEffectivenessText2")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint3")}</strong>
-                  <p>{t("lessonEffectivenessText3")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint4")}</strong>
-                  <p>{t("lessonEffectivenessText4")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint5")}</strong>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint6")}</strong>
-                  <p>{t("lessonEffectivenessText6")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint7")}</strong>
-                  <p>{t("lessonEffectivenessText7")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint8")}</strong>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint9")}</strong>
-                  <p>{t("lessonEffectivenessText9")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint10")}</strong>
-                  <p>{t("lessonEffectivenessText10")}</p>
-                </li>
-                <li>
-                  <strong>{t("lessonEffectivenessPoint11")}</strong>
-                </li>
-              </ol>
-            </div>
-          </div>
-        </section>
-        
-        <section className={styles.teacherHelpSection}>
-          <div 
-            className={`${styles.sectionHeader} ${activeSections.includes(accordionItems.length + 3) ? styles.active : ''}`}
-            onClick={() => toggleSection(accordionItems.length + 3)}
-          >
-            <h3 className={styles.sectionTitle}>{t("classDisciplineTitle")}</h3>
-            <div className={styles.sectionMarker}></div>
-          </div>
-          
-          <div className={`${styles.sectionContent} ${activeSections.includes(accordionItems.length + 3) ? styles.active : ''}`}>
-            <div className={styles.detailedDescription}>
-              <p>{t("classDisciplineText1")}</p>
-              <p>{t("classDisciplineText2")}</p>
-              <p><strong>{t("classDisciplineRulesTitle")}</strong></p>
-              <ul className={styles.bulletList}>
-                <li>{t("classDisciplineRule1")}</li>
-                <li>{t("classDisciplineRule2")}</li>
-                <li>{t("classDisciplineRule3")}</li>
-                <li>{t("classDisciplineRule4")}</li>
-                <li>{t("classDisciplineRule5")}</li>
-                <li>{t("classDisciplineRule6")}</li>
-                <li>{t("classDisciplineRule7")}</li>
-                <li>{t("classDisciplineRule8")}</li>
-                <li>{t("classDisciplineRule9")}</li>
-                <li>{t("classDisciplineRule10")}</li>
-                <li>{t("classDisciplineRule11")}</li>
-                <li>{t("classDisciplineRule12")}</li>
-                <li>{t("classDisciplineRule13")}</li>
-                <li>{t("classDisciplineRule14")}</li>
-              </ul>
-            </div>
-          </div>
-        </section>
-        
-        <section className={styles.teacherHelpSection}>
-          <div 
-            className={`${styles.sectionHeader} ${activeSections.includes(accordionItems.length + 4) ? styles.active : ''}`}
-            onClick={() => toggleSection(accordionItems.length + 4)}
-          >
-            <h3 className={styles.sectionTitle}>{t("hyperactiveChildrenTitle")}</h3>
-            <div className={styles.sectionMarker}></div>
-          </div>
-          
-          <div className={`${styles.sectionContent} ${activeSections.includes(accordionItems.length + 4) ? styles.active : ''}`}>
-            <div className={styles.detailedDescription}>
-              <p>{t("hyperactiveChildrenText1")}</p>
-              
-              <p><strong>{t("hyperactiveChildrenSymptomsTitle")}</strong></p>
-              <ul className={styles.bulletList}>
-                <li>{t("hyperactiveChildrenSymptom1")}</li>
-                <li>{t("hyperactiveChildrenSymptom2")}</li>
-                <li>{t("hyperactiveChildrenSymptom3")}</li>
-                <li>{t("hyperactiveChildrenSymptom4")}</li>
-                <li>{t("hyperactiveChildrenSymptom5")}</li>
-                <li>{t("hyperactiveChildrenSymptom6")}</li>
-                <li>{t("hyperactiveChildrenSymptom7")}</li>
-                <li>{t("hyperactiveChildrenSymptom8")}</li>
-                <li>{t("hyperactiveChildrenSymptom9")}</li>
-                <li>{t("hyperactiveChildrenSymptom10")}</li>
-                <li>{t("hyperactiveChildrenSymptom11")}</li>
-                <li>{t("hyperactiveChildrenSymptom12")}</li>
-                <li>{t("hyperactiveChildrenSymptom13")}</li>
-                <li>{t("hyperactiveChildrenSymptom14")}</li>
-              </ul>
-
-              <p><strong>{t("hyperactiveChildrenGroupsTitle")}</strong></p>
-              <ul className={styles.bulletList}>
-                <li>{t("hyperactiveChildrenGroup1")}</li>
-                <li>{t("hyperactiveChildrenGroup2")}</li>
-                <li>{t("hyperactiveChildrenGroup3")}</li>
-              </ul>
-
-              <p>{t("hyperactiveChildrenText2")}</p>
-
-              <p><strong>{t("hyperactiveChildrenQuestion")}</strong></p>
-              <p>{t("hyperactiveChildrenStats")}</p>
-
-              <p><strong>{t("hyperactiveChildrenWhyBoys")}</strong></p>
-              <p>{t("hyperactiveChildrenExplanation")}</p>
-            </div>
-          </div>
-        </section>
-        
-        {/* Секція з корисними документами */}
-        <section className={styles.teacherHelpDocuments}>
-          <div className={styles.documentsContainer}>
-            <div className={styles.documentsBlock}>
-              <p className={styles.documentsText}>{t("digitalLiteracyText")}</p>
-              <div className={styles.documentsList}>
-                <a href="https://osvita.diia.gov.ua/courses/cyber-hygiene" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("cyberHygiene")}</a>
-                <a href="https://osvita.diia.gov.ua/courses/cybernanny" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("cybernanny")}</a>
-                <a href="https://osvita.diia.gov.ua/courses/digital-communities" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("digitalCommunities")}</a>
-                <a href="https://osvita.diia.gov.ua/courses/digital-signature" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("digitalSignature")}</a>
-              </div>
-            </div>
-
-            <div className={styles.divider}></div>
-
-            <div className={styles.documentsBlock}>
-              <div className={styles.documentsList}>
-                <a href="https://docs.google.com/document/d/15j7N4paWcXiuUZbIzFW9z7Lna6OYW_nD/edit?tab=t.0" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("academicIntegrityEducation")}</a>
-                <a href="https://docs.google.com/document/d/1OqnzljmdKG2-TejHKAoy_89NLU8_xp2P/edit?tab=t.0" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("academicIntegrityComplete")}</a>
-                <a href="https://docs.google.com/document/d/1-ofGwJUyxhkO45aGJmvl6ElM_pf_7Jpu/edit?tab=t.0" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("academicIntegritySchool")}</a>
-              </div>
-            </div>
-
-          {/* Динамічні елементи для рожевого фону */}
-          {pinkBackgroundItems.length > 0 && (
-            <>
-              <div className={styles.divider}></div>
-              <div className={styles.documentsBlock}>
-                {pinkBackgroundItems.map((item, index) => {
-                  const localized = getLocalizedContent(item);
-                  
+        <Container maxWidth="lg" sx={{ mt: 6 }}>
+          {/* Секція динамічних акордеонів (Верхня частина) */}
+          <Box sx={{ mb: 6 }}>
+            {isLoading ? (
+                <Box sx={{ textAlign: 'center', py: 5 }}><CircularProgress /></Box>
+            ) : (
+                accordionItems.map((item) => {
+                  const loc = getLocalized(item);
                   return (
-                    <div key={item.id}>
-                      {/* Горизонтальна лінія та більший відступ перед текстом, якщо це не перший запис */}
-                      {localized.text && index > 0 && (
-                        <>
-                          <div className={styles.divider}></div>
-                          <div style={{ marginTop: '40px' }}></div>
-                        </>
-                      )}
-                      
-                      {/* Текст, якщо є */}
-                      {localized.text && (
-                        <div className={styles.documentsText}>
-                          {renderTextWithLineBreaks(localized.text)}
-                        </div>
-                      )}
-                      
-                      {/* Посилання, якщо є */}
-                      {item.link && (
-                        <div className={styles.documentsList}>
-                          <a 
-                            key={item.id}
-                            href={item.link} 
-                            className={styles.documentLink} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >
-                            {localized.linkText || item.link}
-                          </a>
-                        </div>
-                      )}
-                    </div>
+                      <Accordion key={item.id} sx={{ mb: 2, borderRadius: '12px !important', boxShadow: 'none', border: '1px solid #eee' }}>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#182BA1' }} />}>
+                          <Typography sx={{ fontWeight: 700, color: '#182BA1' }}>{loc.title}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails sx={{ bgcolor: alpha('#182BA1', 0.01) }}>
+                          <Typography sx={{ whiteSpace: 'pre-wrap', color: '#444', lineHeight: 1.7 }}>
+                            {loc.content}
+                          </Typography>
+                          {item.link && (
+                              <MuiLink href={item.link} target="_blank" sx={{ display: 'block', mt: 2, color: '#f97316', fontWeight: 600 }}>
+                                {loc.linkText || item.link}
+                              </MuiLink>
+                          )}
+                        </AccordionDetails>
+                      </Accordion>
                   );
-                })}
-              </div>
-            </>
-          )}
-          </div>
-        </section>
-      </main>
-    </div>
+                })
+            )}
+          </Box>
+
+          <Typography variant="h4" sx={{ mb: 4, fontWeight: 800, color: '#182BA1', textAlign: 'center' }}>
+            {t("methodologicalRecommendations")}
+          </Typography>
+
+          <Grid container spacing={3}>
+            {/* Картка рухливих ігор */}
+            <Grid item size={{xs: 12, md: 6}}>
+              <Paper elevation={0} sx={{
+                p: 4, height: '100%', borderRadius: 6,
+                bgcolor: alpha('#f97316', 0.05), border: '1px solid', borderColor: alpha('#f97316', 0.1)
+              }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <EmojiEventsIcon sx={{ color: '#f97316', fontSize: 32 }} />
+                  <Typography variant="h5" sx={{ fontWeight: 800 }}>{t("activeGamesTitle")}</Typography>
+                </Box>
+                <Typography variant="body2" sx={{ mb: 2, lineHeight: 1.6 }}>{t("activeGamesIntro")}</Typography>
+
+                {STATIC_METHODICAL_DATA.games.map(num => (
+                    <Box key={num} sx={{ mb: 2 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#f97316' }}>
+                        {t(`game${num}Name`)}
+                      </Typography>
+                      <Typography variant="body2">{t(`game${num}Description`)}</Typography>
+                    </Box>
+                ))}
+              </Paper>
+            </Grid>
+
+            {/* Правила та Дисципліна */}
+            <Grid item size={{xs: 12, md: 6}}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                {/* Акордеон Ефективності */}
+                <Accordion sx={{ borderRadius: '16px !important', border: '1px solid #eee' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 700 }}>{t("lessonEffectivenessTitle")}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Box component="ol" sx={{ pl: 2 }}>
+                      {STATIC_METHODICAL_DATA.effectivenessPoints.map(num => (
+                          <li key={num} style={{ marginBottom: '10px' }}>
+                            <Typography variant="body2" sx={{ fontWeight: 700 }}>{t(`lessonEffectivenessPoint${num}`)}</Typography>
+                            <Typography variant="caption" display="block">{t(`lessonEffectivenessText${num}`)}</Typography>
+                          </li>
+                      ))}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+
+                {/* Акордеон Дисципліни */}
+                <Accordion sx={{ borderRadius: '16px !important', border: '1px solid #eee' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 700 }}>{t("classDisciplineTitle")}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography variant="body2" sx={{ mb: 2 }}>{t("classDisciplineText1")}</Typography>
+                    <Box component="ul" sx={{ pl: 2 }}>
+                      {STATIC_METHODICAL_DATA.disciplineRules.map(num => (
+                          <li key={num}><Typography variant="body2">{t(`classDisciplineRule${num}`)}</Typography></li>
+                      ))}
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
+              </Box>
+            </Grid>
+          </Grid>
+
+          {/* Секція ресурсів (Цифрова освіта та Доброчесність) */}
+          <Box sx={{
+            mt: 8, p: { xs: 4, md: 6 }, borderRadius: 8,
+            bgcolor: alpha('#182BA1', 0.04), border: '1px dashed', borderColor: alpha('#182BA1', 0.3)
+          }}>
+            <Grid container spacing={6}>
+              <Grid item size={{xs: 12, md: 6}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <LaptopMacIcon sx={{ color: '#182BA1' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 800 }}>{t("digitalLiteracyText")}</Typography>
+                </Box>
+                {STATIC_METHODICAL_DATA.digitalLinks.map((link) => (
+                    <MuiLink key={link.key} href={link.url} target="_blank"
+                             sx={{ color: '#182BA1', fontWeight: 600, display: 'block', mb: 1, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+                      • {t(link.key)}
+                    </MuiLink>
+                ))}
+              </Grid>
+
+              <Grid item size={{xs: 12, md: 6}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <SchoolIcon sx={{ color: '#182BA1' }} />
+                  <Typography variant="h6" sx={{ fontWeight: 800 }}>{t("academicIntegrity")}</Typography>
+                </Box>
+                {STATIC_METHODICAL_DATA.integrityLinks.map((link) => (
+                    <MuiLink key={link.key} href={link.url} target="_blank"
+                             sx={{ color: '#182BA1', fontWeight: 600, display: 'block', mb: 1, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
+                      • {t(link.key)}
+                    </MuiLink>
+                ))}
+              </Grid>
+            </Grid>
+
+
+            {footerItems.map((item) => {
+              const loc = getLocalized(item);
+              return (
+                  <Box key={item.id} sx={{ mt: 4, pt: 4, borderTop: '1px solid', borderColor: alpha('#000', 0.1) }}>
+                    {loc.text && <Typography sx={{ mb: 2, fontWeight: 500, color: '#334155' }}>{loc.text}</Typography>}
+                    {item.link && (
+                        <MuiLink href={item.link} target="_blank"
+                                 sx={{ bgcolor: '#f97316', color: '#fff', px: 2, py: 1, borderRadius: 2, display: 'inline-block', textDecoration: 'none', fontWeight: 700, '&:hover': { bgcolor: '#ea580c' } }}>
+                          {loc.linkText || item.link}
+                        </MuiLink>
+                    )}
+                  </Box>
+              );
+            })}
+          </Box>
+        </Container>
+      </Box>
   );
 }

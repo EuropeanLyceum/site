@@ -1,310 +1,232 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import styles from "@/app/educational-process/anti-bullying/anti-bullying.module.css"
+import {
+  Box, Typography, Container, Grid, Paper,
+  Button, Divider, alpha, CircularProgress,
+  Link as MuiLink, Card, CardContent
+} from '@mui/material';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import DescriptionIcon from '@mui/icons-material/Description';
+import GppGoodIcon from '@mui/icons-material/GppGood';
+import LaunchIcon from '@mui/icons-material/Launch';
+import InfoIcon from '@mui/icons-material/Info';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import { apiUrl, assetUrl } from '@/utils/api.js';
+
+// СТАТИЧНІ ДАНІ СТОРІНКИ
+const ANTI_BULLYING_RESOURCES = {
+  chatbot: {
+    link: "http://t.me/ProBullyingBot",
+    handle: "@ProBullyingBot"
+  },
+  documents: [
+    { key: "bullyingReport", url: "https://drive.google.com/file/d/1NOzfllJcpHzTK7ShfKGAyHDCFjnITMSn/view" },
+    { key: "bullyingProcedure", url: "https://drive.google.com/file/d/1_uBWZ8P_eVkUIqA6LfHnBgVbOobdBvaN/view" },
+    { key: "cyberbullyingProtection", url: "https://drive.google.com/file/d/1LQqIU9E79Mun7tM0m3Py3YgbJfXTs9ld/view" },
+    { key: "cyberbullyingGuide", url: "https://docs.google.com/document/d/1LDIjtAUm1wouy6X-76ho1SG6EYemMbf2/edit" }
+  ]
+};
 
 export default function Antibullying() {
-  const { t, locale } = useTranslation();
+  const { t, locale } = useTranslation("anti");
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [renderKey, setRenderKey] = useState(0);
 
-  // Діагностика перекладу
-  console.log('Antibullying - Current locale:', locale);
-  console.log('Antibullying - Translation test:', t('antiBullying'));
+  const getLocalized = (item) => ({
+    title: locale === 'en' ? (item.titleEn || item.title) : item.title,
+    content: locale === 'en' ? (item.contentEn || item.content) : item.content,
+    linkText: locale === 'en' ? (item.linkTextEn || item.linkText) : item.linkText
+  });
 
-  // Відстеження змін мови
   useEffect(() => {
-    console.log('Antibullying - Language changed to:', locale);
-    setRenderKey(prev => prev + 1);
-  }, [locale]);
-
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (item) => {
-    if (locale === 'en') {
-      return {
-        title: item.titleEn || item.title, // fallback до української
-        content: item.contentEn || item.content,
-        linkText: item.linkTextEn || item.linkText
-      };
-    }
-    return {
-      title: item.title,
-      content: item.content,
-      linkText: item.linkText
+    const loadData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch("/api/anti-bullying");
+        if (response.ok) {
+          const data = await response.json();
+          setArticles(data.sort((a, b) => b.id - a.id));
+        }
+      } catch (err) { console.error(err); }
+      finally { setIsLoading(false); }
     };
-  };
-
-  const loadArticles = async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/anti-bullying");
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log("Articles loaded:", data);
-
-      // Сортуємо за ID (новіші зверху)
-      const sortedArticles = data.sort((a, b) => b.id - a.id);
-      setArticles(sortedArticles);
-    } catch (error) {
-      console.error("Error loading articles:", error);
-      setArticles([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadArticles();
+    loadData();
   }, []);
 
-  // Розділяємо динамічні елементи на блоки та елементи для секції документів
-  const blockItems = articles.filter(item => {
-    const localized = getLocalizedContent(item);
-    return localized.title && localized.content;
-  });
-  
-  // Елементи для відображення в секції "Корисні документи та матеріали"
-  const documentItems = articles.filter(item => 
-    item.link
-  ).sort((a, b) => a.id - b.id); // Сортуємо за ID в прямому порядку (старіші зверху)
-
-  // Функція для відображення тексту з пропущеними рядками
-  const renderTextWithLineBreaks = (text) => {
-    if (!text) return null;
-    
-    // Розділяємо текст на абзаци за подвійними пропущеними рядками
-    const paragraphs = text.split('\n\n');
-    
-    return paragraphs.map((paragraph, index) => (
-      <p key={index}>
-        {paragraph.split('\n').map((line, lineIndex) => (
-          <span key={lineIndex}>
-            {line}
-            {lineIndex < paragraph.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-    ));
-  };
+  const blockItems = articles.filter(item => item.title && item.content);
+  const dynamicDocuments = articles.filter(item => item.link && !item.content);
 
   return (
-    <div className={styles.antibullyingPage} lang={locale} key={`${locale}-${renderKey}`}>
-      <div className={styles.intellectContent}>
-        <h1 className={styles.intellectTitle}>{t("antiBullying")}</h1>
-        
-        {/* Шкільний чат-бот секція */}
-        <div className={styles.chatbotSection}>
-          <div className={styles.chatbotContent}>
-              <h2 className={styles.chatbotTitle}>
-                {t("schoolChatbot")} <span className={styles.hashtag}>{t("chatbotHashtag")}</span>
-              </h2>
-            <p className={styles.chatbotDescription}>
-              {t("chatbotDescription")}
-            </p>
-            <p className={styles.chatbotInfo}>
-              {t("chatbotInfo")}{' '}
-              <a 
-                href="http://t.me/ProBullyingBot" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className={styles.telegramLink}
-              >
-                http://t.me/ProBullyingBot
-              </a>
-            </p>
-          </div>
-        </div>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', pb: 10 }}>
+        {/* Header Секція */}
+        <Box sx={{
+          pt: { xs: 6 }, pb: 6, textAlign: 'center',
+          background: 'linear-gradient(180deg, rgba(24, 43, 161, 0.08) 0%, transparent 100%)'
+        }}>
+          <Container maxWidth="md">
+            <Typography variant="h1" sx={{
+              fontSize: { xs: 32, md: 52 },
+              color: '#182BA1',
+              fontWeight: 900,
+              fontFamily: "'Montserrat Alternates', sans-serif",
+              mb: 2
+            }}>
+              {t("antiBullying")}
+            </Typography>
+            <Box sx={{ width: 80, height: 4, bgcolor: '#f97316', mx: 'auto', borderRadius: 2 }} />
+          </Container>
+        </Box>
 
-        {/* Розділювальна лінія */}
-        <div className={styles.divider}></div>
-
-        {/* Посилання на документи */}
-        <div className={styles.documentsSection}>
-           <h3 className={styles.documentsTitle}>{t("usefulDocuments")}</h3>
-          <div className={styles.documentsList}>
-            <a 
-              href="https://drive.google.com/file/d/1NOzfllJcpHzTK7ShfKGAyHDCFjnITMSn/view" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className={styles.documentLink}
-            >
-               {t("bullyingReport")}
-             </a>
-             
-             <a 
-               href="https://drive.google.com/file/d/1_uBWZ8P_eVkUIqA6LfHnBgVbOobdBvaN/view" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={styles.documentLink}
-             >
-               {t("bullyingProcedure")}
-             </a>
-             
-             <a 
-               href="https://drive.google.com/file/d/1LQqIU9E79Mun7tM0m3Py3YgbJfXTs9ld/view" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={styles.documentLink}
-             >
-               {t("cyberbullyingProtection")}
-             </a>
-             
-             <a 
-               href="https://docs.google.com/document/d/1LDIjtAUm1wouy6X-76ho1SG6EYemMbf2/edit" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={styles.documentLink}
-             >
-               {t("cyberbullyingGuide")}
-            </a>
-
-            {/* Динамічні елементи для секції документів */}
-            {documentItems.map((item, index) => {
-              const localized = getLocalizedContent(item);
-              
-              return (
-                <a 
-                  key={item.id}
-                  href={item.link} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={styles.documentLink}
+        <Container maxWidth="lg">
+          {/* Чат-бот блок (Акцентний) */}
+          <Paper elevation={0} sx={{
+            p: { xs: 3, md: 5 }, borderRadius: 6,
+            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+            color: '#fff', mb: 6, position: 'relative', overflow: 'hidden'
+          }}>
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, mb: 3 }}>
+                <SmartToyIcon sx={{ fontSize: 40 }} />
+                <Typography variant="h4" sx={{ fontWeight: 800, fontFamily: "'Montserrat Alternates', sans-serif" }}>
+                  {t("schoolChatbot")}
+                </Typography>
+              </Box>
+              <Typography sx={{ textAlign: 'center', fontSize: '1.1rem', mb: 3, opacity: 0.9 }}>
+                {t("chatbotDescription")}
+              </Typography>
+              <Box sx={{ textAlign: 'center' }}>
+                <Button
+                    variant="contained"
+                    href={ANTI_BULLYING_RESOURCES.chatbot.link}
+                    target="_blank"
+                    sx={{
+                      bgcolor: '#fff', color: '#ea580c', fontWeight: 700, px: 4, py: 1.5,
+                      borderRadius: 10, '&:hover': { bgcolor: alpha('#fff', 0.9) }
+                    }}
                 >
-                  {localized.linkText || item.link}
-                </a>
-              );
-            })}
-          </div>
-        </div>
+                  {ANTI_BULLYING_RESOURCES.chatbot.handle}
+                </Button>
+              </Box>
+            </Box>
+            {/* Декоративний елемент */}
+            <SmartToyIcon sx={{
+              position: 'absolute', right: -20, bottom: -20,
+              fontSize: 150, opacity: 0.1, transform: 'rotate(-15deg)'
+            }} />
+          </Paper>
 
-        {/* Динамічні блоки з адмінки */}
-        {isLoading ? (
-           <div className={styles.loadingMessage}>{t("loadingArticles")}</div>
-        ) : blockItems.length === 0 ? null : (
-          <div className={styles.verticalContent}>
-            {blockItems.map((article, index) => {
-              const localized = getLocalizedContent(article);
-              
-              return (
-                <div key={article.id} className={styles.contentCard}>
-                  <h3 className={styles.contentTitle}>{localized.title}</h3>
-                  <div className={styles.contentText}>
-                    {localized.content.split('\n').map((paragraph, pIndex) => {
-                      if (paragraph.trim().startsWith('•')) {
-                        return (
-                          <ul key={pIndex} className={styles.bulletList}>
-                            <li>{paragraph.trim().substring(1).trim()}</li>
-                          </ul>
-                        );
-                      } else if (paragraph.trim().startsWith('ПОРЯДОК') || 
-                                 paragraph.trim().startsWith('Визначення') ||
-                                 paragraph.trim().startsWith('Основні') ||
-                                 paragraph.trim().startsWith('Подача')) {
-                        return (
-                          <h4 key={pIndex} className={styles.sectionTitle}>
-                            {paragraph}
-                          </h4>
-                        );
-                      } else if (paragraph.trim().startsWith('Загальні') ||
-                                 paragraph.trim().startsWith('Типові') ||
-                                 paragraph.trim().startsWith('Подання') ||
-                                 paragraph.trim().startsWith('Розгляд') ||
-                                 paragraph.trim().startsWith('Відповідальна') ||
-                                 paragraph.trim().startsWith('Комісія') ||
-                                 paragraph.trim().startsWith('Терміни')) {
-                        return (
-                          <h5 key={pIndex} className={styles.subsectionTitle}>
-                            {paragraph}
-                          </h5>
-                        );
-                      } else if (paragraph.trim().startsWith('Булінг') ||
-                                 paragraph.trim().startsWith('Цькування') ||
-                                 paragraph.trim().startsWith('Така ж') ||
-                                 paragraph.trim().startsWith('За булінг')) {
-                        return (
-                          <div key={pIndex} className={styles.definitionBox}>
-                            <p>{paragraph}</p>
-                          </div>
-                        );
-                      } else if (paragraph.trim().startsWith('Заяви щодо')) {
-                        return (
-                          <div key={pIndex} className={styles.contactInfo}>
-                            <p>{paragraph}</p>
-                          </div>
-                        );
-                      } else if (paragraph.trim()) {
-                        return <p key={pIndex}>{paragraph}</p>;
-                      }
-                      return null;
+          <Grid container spacing={4}>
+            {/* Секція документів (Зліва/Зверху) */}
+            <Grid item size={{xs: 12, md: 4}}>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: '#182BA1', mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <DescriptionIcon /> {t("usefulDocuments")}
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {[...ANTI_BULLYING_RESOURCES.documents, ...dynamicDocuments].map((doc, idx) => (
+                    <Paper
+                        key={idx}
+                        component="a"
+                        href={doc.url || doc.link}
+                        target="_blank"
+                        sx={{
+                          p: 2, borderRadius: 3, textDecoration: 'none',
+                          display: 'flex', alignItems: 'center', gap: 2,
+                          border: '1px solid #e2e8f0', transition: '0.3s',
+                          '&:hover': { bgcolor: '#fff', boxShadow: '0 10px 20px rgba(0,0,0,0.05)', borderColor: '#182BA1' }
+                        }}
+                    >
+                      <Box sx={{ bgcolor: alpha('#182BA1', 0.1), p: 1, borderRadius: 2 }}>
+                        <LaunchIcon sx={{ fontSize: 18, color: '#182BA1' }} />
+                      </Box>
+                      <Typography sx={{ color: '#334155', fontWeight: 600, fontSize: 14 }}>
+                        {doc.key ? t(doc.key) : (getLocalized(doc).linkText || doc.link)}
+                      </Typography>
+                    </Paper>
+                ))}
+              </Box>
+            </Grid>
+
+            {/* Секція контенту (Справа/Знизу) */}
+            <Grid item size={{xs: 12, md: 8}}>
+              {isLoading ? (
+                  <Box sx={{ textAlign: 'center', py: 5 }}><CircularProgress /></Box>
+              ) : (
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {blockItems.map((article) => {
+                      const loc = getLocalized(article);
+                      return (
+                          <Card key={article.id} sx={{
+                            borderRadius: 5, boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+                            border: '1px solid #e2e8f0'
+                          }}>
+                            <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                              <Typography variant="h5" sx={{
+                                fontWeight: 800, color: '#182BA1', mb: 3,
+                                borderLeft: '4px solid #f97316', pl: 2
+                              }}>
+                                {loc.title}
+                              </Typography>
+
+                              <Box sx={{ color: '#475569', lineHeight: 1.8 }}>
+                                {loc.content.split('\n').map((para, i) => {
+                                  const text = para.trim();
+                                  if (!text) return null;
+
+                                  // Рендеринг булетів
+                                  if (text.startsWith('•')) {
+                                    return (
+                                        <Box key={i} sx={{ display: 'flex', gap: 1.5, mb: 1, pl: 1 }}>
+                                          <Box sx={{ color: '#f97316', fontWeight: 900 }}>▸</Box>
+                                          <Typography variant="body2">{text.substring(1).trim()}</Typography>
+                                        </Box>
+                                    );
+                                  }
+
+                                  // Рендеринг Важливих боксів (наприклад, визначення)
+                                  if (text.startsWith('Булінг') || text.startsWith('Цькування')) {
+                                    return (
+                                        <Box key={i} sx={{
+                                          bgcolor: alpha('#f97316', 0.05), p: 3, borderRadius: 3,
+                                          border: '1px solid', borderColor: alpha('#f97316', 0.2), my: 2,
+                                          display: 'flex', gap: 2
+                                        }}>
+                                          <InfoIcon sx={{ color: '#f97316' }} />
+                                          <Typography variant="body2" sx={{ fontStyle: 'italic', fontWeight: 500 }}>{text}</Typography>
+                                        </Box>
+                                    );
+                                  }
+
+                                  return <Typography key={i} variant="body1" sx={{ mb: 2 }}>{text}</Typography>;
+                                })}
+                              </Box>
+
+                              {/* Галерея зображень */}
+                              {article.photoUrls && (
+                                  <Grid container spacing={2} sx={{ mt: 3 }}>
+                                    {article.photoUrls.split(',').map((url, imgIdx) => (
+                                        <Grid item size={{xs: 12, sm: 6}} key={imgIdx}>
+                                          <Box
+                                              component="img"
+                                              src={url.trim()}
+                                              sx={{
+                                                width: '100%', height: 220, objectFit: 'cover',
+                                                borderRadius: 4, transition: '0.3s',
+                                                '&:hover': { transform: 'scale(1.02)' }
+                                              }}
+                                          />
+                                        </Grid>
+                                    ))}
+                                  </Grid>
+                              )}
+                            </CardContent>
+                          </Card>
+                      );
                     })}
-                  </div>
-                  {article.photoUrls && (
-                    <div style={{ 
-                      display: 'flex', 
-                      flexWrap: 'wrap', 
-                      gap: '20px',
-                      justifyContent: 'center',
-                      marginTop: '20px',
-                      width: '100%'
-                    }}>
-                      {article.photoUrls.split(',').filter(url => url.trim()).map((url, photoIndex) => (
-                        <div key={photoIndex} style={{ 
-                          flex: '0 0 auto',
-                          maxWidth: 'calc(50% - 10px)',
-                          minWidth: '300px',
-                          borderRadius: '8px',
-                          overflow: 'hidden',
-                          transition: 'transform 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'scale(1.02)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'scale(1)';
-                        }}>
-                          <img
-                            src={url}
-                            alt={`Фото ${photoIndex + 1}`}
-                            style={{ 
-                              width: '100%', 
-                              height: '280px',
-                              objectFit: 'cover',
-                              borderRadius: '8px'
-                            }}
-                            onError={(e) => {
-                              console.error('Помилка завантаження зображення:', url);
-                              e.target.style.display = 'none';
-                            }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                  {article.link && (
-                    <div className={styles.articleLink}>
-                      <a 
-                        href={article.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className={styles.documentLink}
-                      >
-                         {localized.linkText || t("viewDocument")}
-                      </a>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </div>
+                  </Box>
+              )}
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
   );
 }

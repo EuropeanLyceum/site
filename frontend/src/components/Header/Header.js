@@ -158,7 +158,7 @@ const Header = () => {
                               sx={{
                                 color: '#fff',
                                 textDecoration: 'none',
-                                fontSize: { lg: '13px', xl: '15px' },
+                                fontSize: { lg: '15px', xl: '20px' },
                                 fontWeight: 500,
                                 cursor: 'pointer',
                                 textAlign: 'center',

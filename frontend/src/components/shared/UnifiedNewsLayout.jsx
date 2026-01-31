@@ -9,7 +9,8 @@ import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
 export default function UnifiedNewsLayout({
                                               translationKey,
                                               data = [],
-                                              isLoading = false
+                                              isLoading = false,
+                                              children
                                           }) {
     const { t, locale } = useTranslation(translationKey);
     const [expandedItem, setExpandedItem] = useState(null);
@@ -58,6 +59,12 @@ export default function UnifiedNewsLayout({
                 </Box>
             ) : (
                 <Container maxWidth="lg">
+                    {children && (
+                        <Box sx={{ mb: 6 }}>
+                            {children}
+                        </Box>
+                    )}
+
                     <Grid container spacing={2}>
                         {data.map(item => (
                             <Grid item size={{xs: 12}} key={item.id}>

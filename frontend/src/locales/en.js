@@ -588,12 +588,112 @@ const en = {
         viewMore: "View more",
     },
 
-    // Сторінка клубів та студій
     clubsStudios: {
         pageTitle: "Clubs and studios",
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+    },
+
+    projects: {
+        pageTitle: "Project research",
+        projectResearchIntro: "Educational work of each class group at Lubny Specialized School No. 6 is organized in the form of project activities.",
+        projectMethodTitle: "PROJECT METHOD",
+        projectMethodDefinition: "— a set of techniques, actions of students in their certain sequence to achieve the set task – solving a certain problem, significant for students and designed as some final product.",
+        projectMethodAllows: "PROJECT METHOD allows:",
+        projectMethodBenefit1: "learn independent, critical thinking;",
+        projectMethodBenefit2: "reflect, based on knowledge of facts, patterns of science;",
+        projectMethodBenefit3: "make reasoned conclusions;",
+        projectMethodBenefit4: "make independent decisions;",
+        projectMethodBenefit5: "learn to work in a team, performing different social roles.",
+    },
+
+    evaluationCriteria: {
+        evaluationCriteria: "Evaluation criteria",
+        loadingEvaluationCriteria: "Loading evaluation criteria...",
+        noEvaluationCriteriaFound: "No evaluation criteria found",
+    },
+
+    psychological: {
+        psychologicalSupport: "Social-psychological support",
+        psychologistName: "Kateryna Serhiivna Kogut",
+        psychologistTitle: "specialist of the second qualification category",
+        psychologistDescription: "Trainer and facilitator of the educational-interactive exhibition \"Mental Trek\", cognitive-behavioral therapist.",
+        psychologistGoal: "My goal is to help students, teachers and parents create a comfortable and safe educational environment.",
+        psychologistPrinciples: "In my work I follow these principles:",
+        principleConfidentiality: "Confidentiality. Everything discussed during consultations remains between us.",
+        principleNonJudgmental: "Non-judgmental attitude. I accept everyone as they are, without judgment or evaluation.",
+        principleCompetence: "Competence. I constantly improve my knowledge and skills to provide quality psychological help.",
+        workDirections: "Areas of work:",
+        directionLearning: "Learning difficulties. I help overcome exam anxiety, improve motivation and learn to effectively manage time.",
+        directionEmotional: "Emotional state. I work with anxiety, stress, aggression and other emotional manifestations.",
+        directionInterpersonal: "Interpersonal relationships. I help establish communication with peers, parents and teachers, resolve conflicts and find friends.",
+        directionSelfDiscovery: "Self-discovery. I promote the development of self-esteem, self-confidence and potential disclosure.",
+        howToContact: "How to contact me?",
+        contactDescription: "I am open to communication and ready to provide support.",
+        personalConsultation: "Personal consultation: You can make an appointment by phone +380502289817 or by writing to email kogutkaterina322@gmail.com",
+        workSchedule: "Work schedule: Monday - Friday from 9:00 to 17:00",
+        officeNumber: "My office: No. 27",
+        pedagogicalPractice: "Pedagogical practice",
+        adaptationAdvice56: "Advice for parents on adaptation of 5th and 6th grades",
+        adaptationRecommendations10: "Recommendations for adaptation of 10th grades",
+        childrenInShelter: "What to do with children in shelter",
+        mentalHealthProgram: "Mental health program",
+        usefulResources: "Useful resources",
+        usefulArticles: "Useful articles",
+        loadingAdditionalMaterials: "Loading additional materials...",
+    },
+
+    anti: {
+        antiBullying: "Anti-bullying",
+        schoolChatbot: "School chatbot",
+        chatbotHashtag: "#AboutBullying",
+        chatbotDescription: "will help recognize signs of bullying, explain how bullying differs from conflict, what to do when you are being bullied, and where to seek help if you are being offended in cyberspace.",
+        chatbotInfo: "Want to learn more – follow the link",
+        usefulDocuments: "Useful documents and materials",
+        bullyingReport: "Bullying incident report",
+        bullyingProcedure: "Regulation on the procedure for considering bullying (harassment) cases",
+        cyberbullyingProtection: "How to protect a child from cyberbullying",
+        cyberbullyingGuide: "Cyberbullying and cyber grooming: concepts, counteraction, responsibility",
+        loadingArticles: "Loading articles...",
+        viewDocument: "View document",
+    },
+
+    teacherHelp: {
+        teacherHelp: "Teacher help",
+
+        activeGamesTitle: "Active games during breaks",
+        activeGamesIntro: "Optimal motor mode is the main condition for normal growth of the organism. Recommended active games during breaks:",
+        game1Name: "\"Ball to the center\".",
+        game1Description: "Players form three-four circles. In the middle of each circle stands a leader. He takes turns throwing the ball to his players, and the players throw the ball back to the leader. Having received the ball from his last player, the leader raises it up. The team whose ball fell less on the ground and who finished passing the ball earlier than others wins.",
+        game2Name: "\"Cat and mouse\".",
+
+        lessonEffectivenessTitle: "Ways to increase lesson effectiveness",
+        lessonEffectivenessPoint1: "Make the lesson goal the students' goal.",
+        lessonEffectivenessText1: "Explain the life value of the topic for students (not just for tests or exams). Ask students to explain the meaning of tasks or formulate tasks.",
+        lessonEffectivenessPoint2: "Formulate goals focusing on students' needs and interests.",
+        lessonEffectivenessText2: "Use games, movies, demonstrations. Use surveys, student survey results to correct your teaching mistakes. Avoid 'magic words' - phrases that sound beautiful but mean little.",
+
+        classDisciplineTitle: "How to maintain discipline in the classroom",
+        classDisciplineText1: "Discipline is a condition, means and result of upbringing, it requires mutual efforts. The main condition of disciplined student behavior is friendly relationships between teachers and children.",
+        classDisciplineText2: "It is necessary to take into account that discipline in the classroom is determined by previously accumulated experience of student behavior, class organization, attitude to learning, subject, teacher, adherence to uniform requirements for the student by all teachers working in the class, general order of conditions and traditions of the given school.",
+        classDisciplineRulesTitle: "When working in the classroom and to maintain discipline, the following rules must be taken into account:",
+        classDisciplineRule1: "Behave so that students feel you are managing the educational process, while stimulating their activity.",
+        classDisciplineRule2: "Don't get distracted by minor violations, moralizing.",
+
+        digitalLiteracyText: "As part of the large-scale information campaign \"Digital Literacy Month\" we recommend watching educational series:",
+        cyberHygiene: "Cybersecurity basics",
+        cybernanny: "Cyber nanny",
+        digitalCommunities: "How communities can become digital",
+        digitalSignature: "Electronic signature",
+        academicIntegrity: "Laws",
+        academicIntegrityEducation: "Academic integrity in the Law of Ukraine \"On Education\"",
+        academicIntegrityComplete: "Academic integrity in the Law of Ukraine \"On Complete General Secondary Education\"",
+        academicIntegritySchool: "Extract from the Regulation on the internal system of education quality assurance in Lubny Specialized School I-III degrees No. 6 of Lubny City Council of Poltava Region. System and mechanisms for ensuring academic integrity",
+        methodologicalRecommendations: "General methodological recommendations for organizing the educational process in fifth grades",
+        methodologicalRecommendationsText1: "For the purpose of organized transition to the new State Standard of Basic and Complete General Secondary Education, the Ministry of Education and Science sends for practical use methodological recommendations for organizing the educational process in 5th grades of general educational institutions (attached).",
+        methodologicalRecommendationsText2: "In accordance with the Resolution of the Cabinet of Ministers of Ukraine dated November 23, 2011 No. 1392 \"On Approval of the State Standard of Basic and Complete General Secondary Education\" in the 2013/2014 academic year, 5th grades of general educational institutions will switch to training under new programs for students of 5-9 grades of general educational institutions, which can be found on the website of the Ministry of Education and Science of Ukraine at: www.mon.gov.ua.",
+        methodologicalRecommendationsText3: "For students of 6-11th grades, the recommendations contained in the Ministry's letter dated June 1, 2012 No. 1/9-426 \"On instructional and methodological recommendations for basic disciplines\" (Information collection and comments of the Ministry of Education and Science, Youth and Sports of Ukraine No. 17-22, 2012) remain valid.",
     },
 
 
@@ -859,88 +959,23 @@ const en = {
 
 
         // Project research page
-        projectResearch: "Project research",
-        projectResearchIntro: "Educational work of each class group at Lubny Specialized School No. 6 is organized in the form of project activities.",
-        projectMethodTitle: "PROJECT METHOD",
-        projectMethodDefinition: "— a set of techniques, actions of students in their certain sequence to achieve the set task – solving a certain problem, significant for students and designed as some final product.",
-        projectMethodAllows: "PROJECT METHOD allows:",
-        projectMethodBenefit1: "learn independent, critical thinking;",
-        projectMethodBenefit2: "reflect, based on knowledge of facts, patterns of science;",
-        projectMethodBenefit3: "make reasoned conclusions;",
-        projectMethodBenefit4: "make independent decisions;",
-        projectMethodBenefit5: "learn to work in a team, performing different social roles.",
+
 
 
 
         // Evaluation criteria page
-        evaluationCriteria: "Evaluation criteria",
-        loadingEvaluationCriteria: "Loading evaluation criteria...",
-        noEvaluationCriteriaFound: "No evaluation criteria found",
+
 
         // Psychological support page
-        psychologicalSupport: "Social-psychological support",
-        psychologistName: "Kateryna Serhiivna Kogut",
-        psychologistTitle: "specialist of the second qualification category",
-        psychologistDescription: "Trainer and facilitator of the educational-interactive exhibition \"Mental Trek\", cognitive-behavioral therapist.",
-        psychologistGoal: "My goal is to help students, teachers and parents create a comfortable and safe educational environment.",
-        psychologistPrinciples: "In my work I follow these principles:",
-        principleConfidentiality: "Confidentiality. Everything discussed during consultations remains between us.",
-        principleNonJudgmental: "Non-judgmental attitude. I accept everyone as they are, without judgment or evaluation.",
-        principleCompetence: "Competence. I constantly improve my knowledge and skills to provide quality psychological help.",
-        workDirections: "Areas of work:",
-        directionLearning: "Learning difficulties. I help overcome exam anxiety, improve motivation and learn to effectively manage time.",
-        directionEmotional: "Emotional state. I work with anxiety, stress, aggression and other emotional manifestations.",
-        directionInterpersonal: "Interpersonal relationships. I help establish communication with peers, parents and teachers, resolve conflicts and find friends.",
-        directionSelfDiscovery: "Self-discovery. I promote the development of self-esteem, self-confidence and potential disclosure.",
-        howToContact: "How to contact me?",
-        contactDescription: "I am open to communication and ready to provide support.",
-        personalConsultation: "Personal consultation: You can make an appointment by phone +380502289817 or by writing to email kogutkaterina322@gmail.com",
-        workSchedule: "Work schedule: Monday - Friday from 9:00 to 17:00",
-        officeNumber: "My office: No. 27",
-        pedagogicalPractice: "Pedagogical practice",
-        adaptationAdvice56: "Advice for parents on adaptation of 5th and 6th grades",
-        adaptationRecommendations10: "Recommendations for adaptation of 10th grades",
-        childrenInShelter: "What to do with children in shelter",
-        mentalHealthProgram: "Mental health program",
-        usefulResources: "Useful resources",
-        usefulArticles: "Useful articles",
-        loadingAdditionalMaterials: "Loading additional materials...",
+
 
         // Anti-bullying page
-        antiBullying: "Anti-bullying",
-        schoolChatbot: "School chatbot",
-        chatbotHashtag: "#AboutBullying",
-        chatbotDescription: "will help recognize signs of bullying, explain how bullying differs from conflict, what to do when you are being bullied, and where to seek help if you are being offended in cyberspace.",
-        chatbotInfo: "Want to learn more – follow the link",
-        usefulDocuments: "Useful documents and materials",
-        bullyingReport: "Bullying incident report",
-        bullyingProcedure: "Regulation on the procedure for considering bullying (harassment) cases",
-        cyberbullyingProtection: "How to protect a child from cyberbullying",
-        cyberbullyingGuide: "Cyberbullying and cyber grooming: concepts, counteraction, responsibility",
-        loadingArticles: "Loading articles...",
-        viewDocument: "View document",
+
 
         // Teacher help page
-        teacherHelp: "Teacher help",
-        digitalLiteracyText: "As part of the large-scale information campaign \"Digital Literacy Month\" we recommend watching educational series:",
-        cyberHygiene: "Cybersecurity basics",
-        cybernanny: "Cyber nanny",
-        digitalCommunities: "How communities can become digital",
-        digitalSignature: "Electronic signature",
-        academicIntegrityEducation: "Academic integrity in the Law of Ukraine \"On Education\"",
-        academicIntegrityComplete: "Academic integrity in the Law of Ukraine \"On Complete General Secondary Education\"",
-        academicIntegritySchool: "Extract from the Regulation on the internal system of education quality assurance in Lubny Specialized School I-III degrees No. 6 of Lubny City Council of Poltava Region. System and mechanisms for ensuring academic integrity",
-        methodologicalRecommendations: "General methodological recommendations for organizing the educational process in fifth grades",
-        methodologicalRecommendationsText1: "For the purpose of organized transition to the new State Standard of Basic and Complete General Secondary Education, the Ministry of Education and Science sends for practical use methodological recommendations for organizing the educational process in 5th grades of general educational institutions (attached).",
-        methodologicalRecommendationsText2: "In accordance with the Resolution of the Cabinet of Ministers of Ukraine dated November 23, 2011 No. 1392 \"On Approval of the State Standard of Basic and Complete General Secondary Education\" in the 2013/2014 academic year, 5th grades of general educational institutions will switch to training under new programs for students of 5-9 grades of general educational institutions, which can be found on the website of the Ministry of Education and Science of Ukraine at: www.mon.gov.ua.",
-        methodologicalRecommendationsText3: "For students of 6-11th grades, the recommendations contained in the Ministry's letter dated June 1, 2012 No. 1/9-426 \"On instructional and methodological recommendations for basic disciplines\" (Information collection and comments of the Ministry of Education and Science, Youth and Sports of Ukraine No. 17-22, 2012) remain valid.",
+
 
         // Lesson effectiveness section
-        lessonEffectivenessTitle: "Ways to increase lesson effectiveness",
-        lessonEffectivenessPoint1: "Make the lesson goal the students' goal.",
-        lessonEffectivenessText1: "Explain the life value of the topic for students (not just for tests or exams). Ask students to explain the meaning of tasks or formulate tasks.",
-        lessonEffectivenessPoint2: "Formulate goals focusing on students' needs and interests.",
-        lessonEffectivenessText2: "Use games, movies, demonstrations. Use surveys, student survey results to correct your teaching mistakes. Avoid 'magic words' - phrases that sound beautiful but mean little.",
         lessonEffectivenessPoint3: "When developing achievement motivation, orient students to self-assessment of activity.",
         lessonEffectivenessText3: "Ask the student: 'Are you satisfied with the result?', instead of evaluation say: 'You did a good job.'",
         lessonEffectivenessPoint4: "As often as possible, put students in a choice situation.",
@@ -958,12 +993,6 @@ const en = {
         lessonEffectivenessPoint11: "Consider age characteristics of students in the development of their personality and cognitive sphere.",
 
         // Class discipline section
-        classDisciplineTitle: "How to maintain discipline in the classroom",
-        classDisciplineText1: "Discipline is a condition, means and result of upbringing, it requires mutual efforts. The main condition of disciplined student behavior is friendly relationships between teachers and children.",
-        classDisciplineText2: "It is necessary to take into account that discipline in the classroom is determined by previously accumulated experience of student behavior, class organization, attitude to learning, subject, teacher, adherence to uniform requirements for the student by all teachers working in the class, general order of conditions and traditions of the given school.",
-        classDisciplineRulesTitle: "When working in the classroom and to maintain discipline, the following rules must be taken into account:",
-        classDisciplineRule1: "Behave so that students feel you are managing the educational process, while stimulating their activity.",
-        classDisciplineRule2: "Don't get distracted by minor violations, moralizing.",
         classDisciplineRule3: "Maintain a friendly, cheerful tone, be attentive to every student. Provide necessary support, note successes, create a cheerful optimistic mood in the classroom.",
         classDisciplineRule4: "Monitor posture correctness, conduct physical education breaks; don't allow student fatigue.",
         classDisciplineRule5: "Give students the opportunity to work in groups more often - this can be a stimulus for everyone's employment, good mood and behavior.",
@@ -1004,26 +1033,6 @@ const en = {
         hyperactiveChildrenStats: "According to psychologists, hyperactivity among children aged 7 to 11 years averages 16.5%: among boys - 22%, among girls - about 10%.",
         hyperactiveChildrenWhyBoys: "Why are there significantly more hyperactive boys than girls?",
         hyperactiveChildrenExplanation: "The reasons may be: greater vulnerability of the male fetus's brain in relation to various types of pregnancy and childbirth pathology, in which the developing brain suffers. Possibly, functional and genetic factors play a role. In addition, it is believed that the smaller degree of functional asymmetry in girls creates a greater reserve for compensating disorders of certain higher mental functions. Possibly, girls have more sufficient norms of social behavior instilled from childhood. As a release, a girl can simply cry, while a boy in a similar situation will rather 'run on the ceiling'.",
-
-        // Active games section
-        activeGamesTitle: "Active games during breaks",
-        activeGamesIntro: "Optimal motor mode is the main condition for normal growth of the organism. Recommended active games during breaks:",
-        game1Name: "\"Ball to the center\".",
-        game1Description: "Players form three-four circles. In the middle of each circle stands a leader. He takes turns throwing the ball to his players, and the players throw the ball back to the leader. Having received the ball from his last player, the leader raises it up. The team whose ball fell less on the ground and who finished passing the ball earlier than others wins.",
-        game2Name: "\"Cat and mouse\".",
-        game2Description: "Children, holding hands, form a general circle. One of the players portrays a \"cat\", the other - a \"mouse\". The mouse runs away from the cat, the cat catches up with her. Children standing in the circle freely let the mouse under their hands and try to prevent the cat from entering the circle. If the cat caught the mouse, or cannot catch up with her for a long time, then another pair is appointed. Game instruction. For the cat to catch the mouse faster, several \"gates\" are made in the circle, through which the cat can freely run into the circle and run out of it.",
-        game3Name: "\"Jumping sparrows\".",
-        game3Description: "Draw a circle on the ground, in which the leader (\"crow\") stands. All other children (\"sparrows\") stand outside the circle near the line. Sparrows jump into the circle. The crow runs inside the circle and tries to touch the players with her hand. When sparrows are in danger of being touched, they quickly jump out of the circle. If the crow touched a sparrow when he was in the circle, - he replaces the crow, and the game continues.",
-        game4Name: "\"Ball to the wall\".",
-        game4Description: "Teams stand in a column one by one 5-8 m from the wall. The first players of each team hold a ball in their hands. On signal, they throw the ball at the wall so that it, bouncing off it, hits the floor. The second numbers catch the ball that bounced off the floor, throw it at the wall and stand at the end of the column, etc. The team that finishes the game first wins.",
-        game5Name: "\"Second extra\".",
-        game5Description: "Children form a circle. Outside it - two leaders. One of them - a catcher - tries to catch (touch) the other who is running away. If the runner stood in front of some player, then this player runs away and must escape from the catcher. Having caught the runner, the catcher himself becomes a runner, and having caught becomes a catcher.",
-        game5Instruction: "Game instruction. The teacher should watch that the runners do not run more than half the circle, and that they quickly stand in front of the players.",
-        game6Name: "\"Day and night\".",
-        game6Description: "Two teams stand back to back in the middle of the playground at a distance of 1.5-2 m. Each team has a \"home\" at the edge of the playground at a distance of 10-15 m from the middle line. One team is called \"Day\", the other - \"Night\". When the teacher calls one of the teams, for example, \"Day\", then this team runs to their \"home\", and the \"Night\" team catches up with them. The number of caught is counted. If the teacher said: \"Night\", - then, on the contrary, the \"Day\" team catches up. Caught players continue to play in their team. The game is repeated a certain number of times. The team that catches more players of the other team wins.",
-        game6Instruction: "Game instruction. Both teams must be called the same number of times.",
-        game7Name: "\"Ball throwing\".",
-        game7Description: "Teams are located on opposite sides of the playground. Judges introduce three balls into the game. Teams throw balls to each other, trying to do this so that all three balls are simultaneously on the opponents' side. When this succeeds, - the game stops and the team that ended up with three balls loses.",
 
         // Qualification improvement page
         qualificationImprovement: "Qualification improvement",
