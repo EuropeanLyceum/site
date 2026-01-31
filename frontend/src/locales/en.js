@@ -696,24 +696,85 @@ const en = {
         methodologicalRecommendationsText3: "For students of 6-11th grades, the recommendations contained in the Ministry's letter dated June 1, 2012 No. 1/9-426 \"On instructional and methodological recommendations for basic disciplines\" (Information collection and comments of the Ministry of Education and Science, Youth and Sports of Ukraine No. 17-22, 2012) remain valid.",
     },
 
+    qualification: {
+        qualificationImprovement: "Qualification improvement",
+        loadingMaterials: "Loading materials...",
+        trainingTitle: "Training \"New Ukrainian School: transition to the next level\"",
+        trainingText1: "From November 9 to 13, 2021, in accordance with the Program for improving the qualifications of teachers who will ensure the implementation of the new State Standard of Basic Secondary Education \"New Ukrainian School: transition to the next level\", approved by the Academic Council of the Poltava Regional Institute of Postgraduate Pedagogical Education named after M. V. Ostrogradsky, a training was held at Lubny Specialized School I-III degrees No. 6 for teachers of our educational institution and colleagues from secondary school No. 10 (trainer Andriievska L.M.).",
+        trainingText2: "During the week, teachers worked on new documents, got acquainted with the achievements of NUS, collaborated in teams, shared their own vision of solving individual situations, discussed urgent topics, tested new technologies and work techniques, created original creative products that were united in a joint creative project \"Trees of the Future NUS\".",
+        trainingText3: "The training ended with a test to check the acquired knowledge from the general modules of the program. There are still industry trainings ahead, so let's wish everyone success, endurance and good health!",
+        viewTrainingMaterials: "View training materials",
+        qualificationQuestions: "Some issues of qualification improvement of pedagogical and scientific-pedagogical workers",
+        psychologicalServiceRecommendations: "On methodological recommendations on the organization of effective activities of psychological service workers",
+        qualificationResults2024: "Qualification improvement results 2024",
+        qualificationProspects2025: "Prospects for qualification improvement by pedagogical workers for 2025",
+        documentsTitle: "Documents"
+    },
+
+    teacherCertification: {
+        pageTitle: "Teacher certification",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        finalPedagogicalCouncilTitle: "Final meeting of the pedagogical council - attestation summit 'Pedagogical creativity. What is its essence?'",
+        finalPedagogicalCouncilText: "On March 28, the Academic Lyceum \"European\" held the final meeting of the pedagogical council - attestation summit \"Pedagogical creativity. What is its essence?\" This time, teachers of the foreign languages department presented their professional experience and work features. In a relaxed creative atmosphere, everyone shared achievements and plans, their own developments and found innovations. During the meeting, we were once again convinced that foreign language teaching at the lyceum is carried out qualitatively and taking into account modern challenges, and teachers work diligently on themselves, developing and directing maximum efforts to achieve results.",
+
+        secondPedagogicalCouncilTitle: "Second meeting of the pedagogical council - attestation summit 'Pedagogical creativity. What is its essence?'",
+        secondPedagogicalCouncilText: "On March 27, the Academic Lyceum \"European\" held the second meeting of the pedagogical council - attestation summit \"Pedagogical creativity. What is its essence?\" Teachers of the humanities, social disciplines and primary classes department presented their professional experience. Creative teachers introduced those present to the results of work during the attestation period, to the steps of professional growth and plans for the future. Everyone was once again convinced that teachers make maximum efforts so that lyceum students receive quality education and become true patriots of their homeland. To be continued...",
+
+        firstPedagogicalCouncilTitle: "Pedagogical council - attestation summit «Pedagogical creativity. What is its essence?». Day 1",
+        firstPedagogicalCouncilText: "On March 26, the Academic Lyceum «European» launched the pedagogical council - attestation summit «Pedagogical creativity. What is its essence?». At the first meeting, teachers of the exact and natural sciences, educational work, physical education and educational work department presented their professional experience. They communicated, shared developments, created and built plans for the future. Every teacher at the lyceum has extensive work experience and makes maximum efforts so that students receive quality education. To be continued...",
+
+        emailForDocuments: "Email address for submitting documents of teaching staff undergoing attestation",
+        attestationCommission: "Attestation commission:",
+        commissionChairman: "chairman of the commission",
+        commissionSecretary: "secretary of the commission",
+        commissionMember: "member of the commission",
+        attestationResults2025: "Attestation results in 2025",
+        extraordinaryAttestationList2025: "List of teaching staff undergoing extraordinary attestation in 2025",
+        attestationList2024_2025: "List of teaching staff undergoing attestation in 2024-2025 academic year",
+        attestationSchedule: "Schedule of meetings of the first-level attestation commission of the \"European\" Lyceum of LMR",
+
+        importantDocuments: "Important documents",
+        viewCommissionList: "View commission list",
+
+        derkachLA: "Derkach L.A.",
+        sokolovskaOP: "Sokolovska O.P.",
+        korshakTV: "Korshak T.V",
+        ovdienkoOM: "Ovdienko O.M.",
+        nikulYV: "Nikul Y.V.",
+        mokrenkoEM: "Mokrenko E.M.",
+        simonkinaGP: "Simonkina G.P.",
+        holovkoSB: "Holovko S.B.",
+        kogutKS: "Kogut K.S.",
+    },
 
     meth: {
-        methodicalEventsTitle: "Main methodological events",
-        loadingMethodicalEvents: "Loading methodological events...",
-        noMethodicalEvents: "Methodological events have not been added yet",
+        pageTitle: "Main methodological events",
         viewMore: "View more",
         readMore: "Read more",
         collapse: "Read less",
     },
 
+    parents: {
+        parentsTitle: "For parents"
+    },
+
     students: {
         loadingStudents: "Loading additional materials...",
         photoForStudents: "photo",
+        howToControlYourself: "How to control yourself",
+        selfControlRule1: "1. Remember: the best way to fight mental anxiety is constant employment.",
+        selfControlRule2: "2. To forget your troubles, try to please others. By doing good to others, you do good to yourself.",
+        howToPrepareForExam: "How to prepare for exams and EIT",
+        examPreparationText1: "1. First, prepare a place for classes: remove everything unnecessary, conveniently arrange the necessary textbooks, notebooks, manuals, etc.",
+        examPreparationText2: "2. Make a study plan. At the same time, clearly define the volume of educational material that will be studied today.",
+        sevenHealthyLifeRules: "Seven rules of healthy lifestyle",
+        healthyRulesText1: "Lifestyle is not only the nature of human behavior that positively or negatively affects health. The very nature of behavior is determined by physical and cultural environment, upbringing, material opportunities. The formation of lifestyle is influenced by stereotypes of relationships between people, their life experience and social conditions and environment.",
     },
 
     some: {
         // Section titles
-        howToControlYourself: "How to control yourself",
         becomeStrongerAndBeautiful: "You can become stronger and more beautiful!",
         properBreakfast: "Proper breakfast - the key to success for the whole day",
         sevenAdviceForStudents: "7 tips for students",
@@ -721,15 +782,12 @@ const en = {
         attentionIsResult: "Attention - the result of your activity",
         howNotToWorryBeforeTest: "How not to worry before a test",
         universalTestRecipes: "Universal recipes for successful test completion",
-        howToPrepareForExam: "How to prepare for exams and EIT",
-        sevenHealthyLifeRules: "Seven rules of healthy lifestyle",
+
         eyeExercises: "Set of exercises for prevention of visual fatigue",
         backExercises: "Set of exercises for back muscles",
         etiquetteNorms: "Etiquette norms of behavior",
 
         // Self control section content
-        selfControlRule1: "1. Remember: the best way to fight mental anxiety is constant employment.",
-        selfControlRule2: "2. To forget your troubles, try to please others. By doing good to others, you do good to yourself.",
         selfControlRule3: "3. Don't try to change or re-educate others. It's much more profitable and safer to engage in self-education.",
         selfControlRule3Note: "Remember: every person is as bright and unique an individual as you are, accept them as they are. Try to find positive traits in a person, be able to see their merits and in relationships with them try to rely on these qualities.",
         selfControlRule4: "4. Have the courage to sincerely admit your mistakes. Avoid arrogance and dosing.",
@@ -862,8 +920,6 @@ const en = {
         universalRecipesText11: "Don't be upset! Strive to complete all tasks, but remember that in practice this is unrealistic. Consider that test tasks are designed for the maximum level of complexity, and the number of tasks you solved may be quite sufficient for a good grade.",
 
         // How to prepare for exam section content
-        examPreparationText1: "1. First, prepare a place for classes: remove everything unnecessary, conveniently arrange the necessary textbooks, notebooks, manuals, etc.",
-        examPreparationText2: "2. Make a study plan. At the same time, clearly define the volume of educational material that will be studied today.",
         examPreparationText3: "3. Add yellow and purple colors to the room interior. since they increase intellectual activity.",
         examPreparationText4: "4. Nutrition should be 3-4 times a day, high-calorie and rich in vitamins. Consume walnuts, dairy products, fish, meat, vegetables, fruits, chocolate. Another tip: before exams, you shouldn't overeat.",
         examPreparationText5: "5. Alternate classes and rest, say, 40 minutes of classes, then 10 minutes - break.",
@@ -880,7 +936,6 @@ const en = {
         examPreparationText16: "• exhale.",
 
         // Seven healthy life rules section content
-        healthyRulesText1: "Lifestyle is not only the nature of human behavior that positively or negatively affects health. The very nature of behavior is determined by physical and cultural environment, upbringing, material opportunities. The formation of lifestyle is influenced by stereotypes of relationships between people, their life experience and social conditions and environment.",
         healthyRulesText2: "The very concept of 'healthy lifestyle' appeared not very long ago, but people have been trying to follow its principles for a long time. Even in the Middle Ages, or maybe even earlier, people knew the basics of a healthy lifestyle, although their motivation was completely different from what we have now.",
         healthyRulesText3: "We offer you seven rules of healthy lifestyle, although we understand well that not everything written in them, due to certain circumstances, you will be able to fulfill, however some advice is still worth using.",
         healthyRulesText4: "RULE #1",
@@ -1035,53 +1090,14 @@ const en = {
         hyperactiveChildrenExplanation: "The reasons may be: greater vulnerability of the male fetus's brain in relation to various types of pregnancy and childbirth pathology, in which the developing brain suffers. Possibly, functional and genetic factors play a role. In addition, it is believed that the smaller degree of functional asymmetry in girls creates a greater reserve for compensating disorders of certain higher mental functions. Possibly, girls have more sufficient norms of social behavior instilled from childhood. As a release, a girl can simply cry, while a boy in a similar situation will rather 'run on the ceiling'.",
 
         // Qualification improvement page
-        qualificationImprovement: "Qualification improvement",
-        loadingMaterials: "Loading materials...",
-        trainingTitle: "Training \"New Ukrainian School: transition to the next level\"",
-        trainingText1: "From November 9 to 13, 2021, in accordance with the Program for improving the qualifications of teachers who will ensure the implementation of the new State Standard of Basic Secondary Education \"New Ukrainian School: transition to the next level\", approved by the Academic Council of the Poltava Regional Institute of Postgraduate Pedagogical Education named after M. V. Ostrogradsky, a training was held at Lubny Specialized School I-III degrees No. 6 for teachers of our educational institution and colleagues from secondary school No. 10 (trainer Andriievska L.M.).",
-        trainingText2: "During the week, teachers worked on new documents, got acquainted with the achievements of NUS, collaborated in teams, shared their own vision of solving individual situations, discussed urgent topics, tested new technologies and work techniques, created original creative products that were united in a joint creative project \"Trees of the Future NUS\".",
-        trainingText3: "The training ended with a test to check the acquired knowledge from the general modules of the program. There are still industry trainings ahead, so let's wish everyone success, endurance and good health!",
-        viewTrainingMaterials: "View training materials",
-        qualificationQuestions: "Some issues of qualification improvement of pedagogical and scientific-pedagogical workers",
-        psychologicalServiceRecommendations: "On methodological recommendations on the organization of effective activities of psychological service workers",
-        qualificationResults2024: "Qualification improvement results 2024",
-        qualificationProspects2025: "Prospects for qualification improvement by pedagogical workers for 2025",
 
         // Teacher certification page
-        teacherCertification: "Teacher certification",
-        viewAllPhotos: "View all photos",
+
 
         // Static events for teacher certification
-        finalPedagogicalCouncilTitle: "Final meeting of the pedagogical council - attestation summit 'Pedagogical creativity. What is its essence?'",
-        finalPedagogicalCouncilText: "On March 28, the Academic Lyceum \"European\" held the final meeting of the pedagogical council - attestation summit \"Pedagogical creativity. What is its essence?\" This time, teachers of the foreign languages department presented their professional experience and work features. In a relaxed creative atmosphere, everyone shared achievements and plans, their own developments and found innovations. During the meeting, we were once again convinced that foreign language teaching at the lyceum is carried out qualitatively and taking into account modern challenges, and teachers work diligently on themselves, developing and directing maximum efforts to achieve results.",
-
-        secondPedagogicalCouncilTitle: "Second meeting of the pedagogical council - attestation summit 'Pedagogical creativity. What is its essence?'",
-        secondPedagogicalCouncilText: "On March 27, the Academic Lyceum \"European\" held the second meeting of the pedagogical council - attestation summit \"Pedagogical creativity. What is its essence?\" Teachers of the humanities, social disciplines and primary classes department presented their professional experience. Creative teachers introduced those present to the results of work during the attestation period, to the steps of professional growth and plans for the future. Everyone was once again convinced that teachers make maximum efforts so that lyceum students receive quality education and become true patriots of their homeland. To be continued...",
-
-        firstPedagogicalCouncilTitle: "Pedagogical council - attestation summit «Pedagogical creativity. What is its essence?». Day 1",
-        firstPedagogicalCouncilText: "On March 26, the Academic Lyceum «European» launched the pedagogical council - attestation summit «Pedagogical creativity. What is its essence?». At the first meeting, teachers of the exact and natural sciences, educational work, physical education and educational work department presented their professional experience. They communicated, shared developments, created and built plans for the future. Every teacher at the lyceum has extensive work experience and makes maximum efforts so that students receive quality education. To be continued...",
 
         // Documents section
-        emailForDocuments: "Email address for submitting documents of teaching staff undergoing attestation",
-        attestationCommission: "Attestation commission:",
-        commissionChairman: "chairman of the commission",
-        commissionSecretary: "secretary of the commission",
-        commissionMember: "member of the commission",
-        attestationResults2025: "Attestation results in 2025",
-        extraordinaryAttestationList2025: "List of teaching staff undergoing extraordinary attestation in 2025",
-        attestationList2024_2025: "List of teaching staff undergoing attestation in 2024-2025 academic year",
-        attestationSchedule: "Schedule of meetings of the first-level attestation commission of the \"European\" Lyceum of LMR",
 
-        // Commission members
-        derkachLA: "Derkach L.A.",
-        sokolovskaOP: "Sokolovska O.P.",
-        korshakTV: "Korshak T.V",
-        ovdienkoOM: "Ovdienko O.M.",
-        nikulYV: "Nikul Y.V.",
-        mokrenkoEM: "Mokrenko E.M.",
-        simonkinaGP: "Simonkina G.P.",
-        holovkoSB: "Holovko S.B.",
-        kogutKS: "Kogut K.S.",
 
         foreignLanguages: "Foreign Languages",
         exactNaturalSciences: "Exact and Natural Sciences",

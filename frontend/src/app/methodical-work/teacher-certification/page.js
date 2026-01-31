@@ -1,349 +1,202 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import styles from "@/app/methodical-work/teacher-certification/teacher-certification.module.css";
+import {
+  Box, Typography, Container, Accordion, AccordionSummary,
+  AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EmailIcon from '@mui/icons-material/Email';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import GroupsIcon from '@mui/icons-material/Groups';
+
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import { apiUrl, assetUrl } from '@/utils/api.js';
+import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard";
+
+// ВИНЕСЕНА СТАТИКА
+const CERTIFICATION_STATIC = {
+  email: "atestacia24licey@gmail.com",
+
+  commission: [
+    "derkachLA", "sokolovskaOP", "korshakTV", "ovdienkoOM",
+    "nikulYV", "mokrenkoEM", "simonkinaGP", "holovkoSB", "kogutKS"
+  ],
+
+  documents: [
+    { key: "attestationResults2025", url: "https://docs.google.com/file/d/16pC6gZmJoge33TLgruXy-2mUAH3JjH2d/edit" },
+    { key: "extraordinaryAttestationList2025", url: "https://docs.google.com/document/d/1eTJ1ba7kYMbTFR3ejLbg6JWHNcmtTVf3/edit" },
+    { key: "attestationList2024_2025", url: "https://docs.google.com/document/d/1aimztLwaSXP7raZ4xIHQlIVxVXJsSMkL/edit" },
+    { key: "attestationSchedule", url: "https://docs.google.com/document/d/1pkadNTCdi6zgbcd_AzyC94nenbUxp6fJ/edit" }
+  ],
+
+  baseEvents: [
+    { id: 'st-1', titleKey: "finalPedagogicalCouncilTitle", textKey: "finalPedagogicalCouncilText", images: [] },
+    { id: 'st-2', titleKey: "secondPedagogicalCouncilTitle", textKey: "secondPedagogicalCouncilText", images: [] },
+    { id: 'st-3', titleKey: "firstPedagogicalCouncilTitle", textKey: "firstPedagogicalCouncilText", images: [] }
+  ]
+};
 
 export default function TeacherCertificationPage() {
-  const { t, locale } = useTranslation();
-  const [expandedEvent, setExpandedEvent] = useState(null);
-  const [galleryOpen, setGalleryOpen] = useState(false);
-  const [currentImage, setCurrentImage] = useState(null);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const { t, locale } = useTranslation("teacherCertification");
   const [dynamicItems, setDynamicItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState(null);
 
   useEffect(() => {
-    fetchDynamicItems();
+    const fetchData = async () => {
+      try {
+        const response = await fetch('/api/teacher-certification');
+        if (response.ok) {
+          const data = await response.json();
+          setDynamicItems(data);
+        }
+      } catch (err) { console.error(err); }
+      finally { setIsLoading(false); }
+    };
+    fetchData();
   }, []);
 
-  const fetchDynamicItems = async () => {
-    try {
-      const response = await fetch('/api/teacher-certification');
-      if (response.ok) {
-        const data = await response.json();
-        setDynamicItems(data);
-      }
-    } catch (error) {
-      console.error('Error fetching dynamic items:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Функція для отримання локалізованого контенту
-  const getLocalizedContent = (item) => {
-    if (locale === 'en') {
-      return {
-        heading: item.headingEn || item.heading,
-        description: item.descriptionEn || item.description,
-        text: item.textEn || item.text,
-        linkText: item.linkTextEn || item.linkText
-      };
-    }
-    return {
-      heading: item.heading,
-      description: item.description,
-      text: item.text,
-      linkText: item.linkText
-    };
-  };
-
-  // Статичні блоки (з перекладами)
-  const staticEvents = [
-    {
-      id: 1,
-      title: t("finalPedagogicalCouncilTitle"),
-      text: t("finalPedagogicalCouncilText"),
-      imagePosition: 'center' // Додаємо поле позиціонування
-    },
-    {
-      id: 2,
-      title: t("secondPedagogicalCouncilTitle"),
-      text: t("secondPedagogicalCouncilText"),
-      imagePosition: 'center' // Додаємо поле позиціонування
-    },
-    {
-      id: 3,
-      title: t("firstPedagogicalCouncilTitle"),
-      text: t("firstPedagogicalCouncilText"),
-      imagePosition: 'center' // Додаємо поле позиціонування
-    },
+  // Підготовка даних для UndefinedNewsCard
+  const mappedEvents = [
+    ...dynamicItems.filter(item => item.heading || item.headingEn).map(item => ({
+      id: item.id,
+      title: item.heading,
+      titleEn: item.headingEn,
+      text: item.description,
+      textEn: item.descriptionEn,
+      images: Array.isArray(item.photoUrls) ? item.photoUrls : [],
+      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "31.01.2026"
+    })),
+    ...CERTIFICATION_STATIC.baseEvents.map(e => ({
+      id: e.id,
+      title: t(e.titleKey),
+      text: t(e.textKey),
+      images: e.images,
+      date: "01.09.2025"
+    }))
   ];
 
-  // Динамічні блоки (додаються зверху) - як на сторінці новин
-  const dynamicEvents = dynamicItems.filter(item => 
-    (item.heading || item.headingEn) && (item.description || item.descriptionEn) && item.photoUrls
-  ).map(item => {
-    const localized = getLocalizedContent(item);
-    
-    return {
-      id: `dynamic-${item.id}`,
-      title: localized.heading,
-      text: localized.description,
-      images: (() => {
-        try {
-          // Перевіряємо, чи photoUrls є рядком (JSON) або масивом
-          if (typeof item.photoUrls === 'string') {
-            const parsed = JSON.parse(item.photoUrls);
-            return Array.isArray(parsed) ? parsed : [];
-          }
-          return Array.isArray(item.photoUrls) ? item.photoUrls : [];
-        } catch {
-          return [];
-        }
-      })().map(url => 
-        url.startsWith('http') ? url : url
-      ),
-      imagePosition: item.imagePosition || 'center'
-    };
-  });
-
-  // Об'єднуємо динамічні (зверху) та статичні блоки
-  const allEvents = [...dynamicEvents, ...staticEvents];
-
-  // Елементи для рожевого фону (як на сторінці на допомогу вчителю)
-  const pinkBackgroundItems = dynamicItems.filter(item => 
-    (item.text || item.textEn || item.url) && !item.heading && !item.headingEn && !item.description && !item.descriptionEn
-  );
-
-  const handleReadMore = (id) => {
-    setExpandedEvent(expandedEvent === id ? null : id);
-  };
-
-  const handleImageClick = (images, index) => {
-    setCurrentImage(images[index]);
-    setCurrentImageIndex(index);
-    setGalleryOpen(true);
-  };
-
-  const handleGalleryClose = () => {
-    setGalleryOpen(false);
-    setCurrentImage(null);
-    setCurrentImageIndex(0);
-  };
-
-  const handlePrevImage = () => {
-    const currentEvent = allEvents.find((item) => item.images.includes(currentImage));
-    if (currentEvent) {
-      const currentIndex = currentEvent.images.indexOf(currentImage);
-      const prevIndex = (currentIndex - 1 + currentEvent.images.length) % currentEvent.images.length;
-      setCurrentImage(currentEvent.images[prevIndex]);
-      setCurrentImageIndex(prevIndex);
-    }
-  };
-
-  const handleNextImage = () => {
-    const currentEvent = allEvents.find((item) => item.images.includes(currentImage));
-    if (currentEvent) {
-      const currentIndex = currentEvent.images.indexOf(currentImage);
-      const nextIndex = (currentIndex + 1) % currentEvent.images.length;
-      setCurrentImage(currentEvent.images[nextIndex]);
-      setCurrentImageIndex(nextIndex);
-    }
-  };
-
-  // Функція для отримання стилю позиціонування зображення (як на сторінці новин)
-  const getImagePositionStyle = (position) => {
-    switch (position) {
-      case 'top':
-        return { objectPosition: 'center top' };
-      case 'bottom':
-        return { objectPosition: 'center bottom' };
-      case 'left':
-        return { objectPosition: 'left center' };
-      case 'right':
-        return { objectPosition: 'right center' };
-      case 'center':
-      default:
-        return { objectPosition: 'center center' };
-    }
-  };
-
-  // Функція для відображення тексту з пропущеними рядками
-  const renderTextWithLineBreaks = (text) => {
-    if (!text) return null;
-    
-    const paragraphs = text.split('\n\n');
-    
-    return paragraphs.map((paragraph, index) => (
-      <p key={index}>
-        {paragraph.split('\n').map((line, lineIndex) => (
-          <span key={lineIndex}>
-            {line}
-            {lineIndex < paragraph.split('\n').length - 1 && <br />}
-          </span>
-        ))}
-      </p>
-    ));
-  };
+  const pinkItems = dynamicItems.filter(item => !item.heading && (item.text || item.url));
 
   return (
-    <div className={styles.container} lang={locale}>
-      <div className={styles.background}>
-        <div className={styles.gradientBg}></div>
-      </div>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#fff', pb: 10 }}>
+        {/* Hero Header */}
+        <Box sx={{py: 5, bgcolor: alpha('#0c1865', 0.02), textAlign: 'center', borderBottom: '1px solid #eee' }}>
+          <Container maxWidth="md">
+            <Typography variant="h2" sx={{
+              fontWeight: 900, color: '#0c1865',
+              fontFamily: "'Montserrat Alternates', sans-serif",
+              fontSize: { xs: 32, md: 54 }
+            }}>
+              {t("pageTitle")}
+            </Typography>
+          </Container>
+        </Box>
 
-      <main className={styles.eventsMain}>
-        <h2 className={styles.eventsStreamTitle}>{t("teacherCertification")}</h2>
-
-        {(
-          <div className={styles.eventsList}>
-            {allEvents.map((item) => (
-              <div
-                key={item.id}
-                className={`${styles.eventItem} ${expandedEvent === item.id ? styles.expanded : ""}`}
-              >
-                <div className={styles.eventContent}>
-                  <h3 className={styles.eventItemTitle}>{item.title}</h3>
-                  <p
-                    className={styles.eventItemText}
-                    style={{ whiteSpace: 'pre-line' }}
-                  >
-                    {item.text}
-                  </p>
-                  <button
-                    className={`${styles.readMoreBtn} ${expandedEvent === item.id ? styles.expanded : ""}`}
-                    onClick={() => handleReadMore(item.id)}
-                  >
-                    {expandedEvent === item.id ? t("collapse") : t("readMore")}
-                  </button>
-                </div>
-                {item.images && item.images.length > 0 && (
-                  <div className={styles.eventImage}>
-                    <Image
-                      src={item.images[0]}
-                      alt="Event image"
-                      width={400}
-                      height={300}
-                      onClick={() => handleImageClick(item.images, 0)}
-                      style={getImagePositionStyle(item.imagePosition)}
-                      data-position={item.imagePosition}
+        <Container maxWidth="lg" sx={{ mt: 4 }}>
+          {isLoading ? (
+              <Box sx={{ textAlign: 'center', py: 10 }}><CircularProgress /></Box>
+          ) : (
+              <Box>
+                {mappedEvents.map((event) => (
+                    <UndefinedNewsCard
+                        key={event.id}
+                        item={event}
+                        locale={locale}
+                        t={t}
+                        isExpanded={expandedId === event.id}
+                        onReadMore={(id) => setExpandedId(expandedId === id ? null : id)}
+                        onImageClick={(images, idx) => console.log("Open gallery", images, idx)}
                     />
-                    <a
-                      href="#"
-                      className={styles.eventImageOverlay}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleImageClick(item.images, 0);
-                      }}
-                    >
-                      <span className={styles.viewMoreText}>
-                        {t("viewAllPhotos")}
-                      </span>
-                    </a>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
+                ))}
+              </Box>
+          )}
 
-        {/* Секція з документами та рожевим фоном */}
-        <section className={styles.teacherCertificationDocuments}>
-          <div className={styles.documentsContainer}>
-            <p className={styles.documentsText}>{t("emailForDocuments")} <a href="mailto:atestacia24licey@gmail.com" className={styles.emailLink}>atestacia24licey@gmail.com</a></p>
-            
-            <p className={styles.documentsSubtitle}>{t("attestationCommission")}</p>
-            <div className={styles.documentsList}>
-              <p className={styles.commissionMember}>{t("derkachLA")} – {t("commissionChairman")}</p>
-              <p className={styles.commissionMember}>{t("sokolovskaOP")} – {t("commissionSecretary")}</p>
-              <p className={styles.commissionMember}>{t("korshakTV")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("ovdienkoOM")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("nikulYV")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("mokrenkoEM")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("simonkinaGP")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("holovkoSB")} – {t("commissionMember")}</p>
-              <p className={styles.commissionMember}>{t("kogutKS")} – {t("commissionMember")}</p>
-            </div>
+          {/* НИЖНЯ СЕКЦІЯ: ДОКУМЕНТИ ТА КОМІСІЯ */}
+          <Box sx={{
+            mt: 12, p: { xs: 4, md: 8 }, borderRadius: 10,
+            background: 'linear-gradient(135deg, #fff 0%, #fff7ed 100%)',
+            border: '1px solid #fed7aa',
+            boxShadow: '0 30px 60px rgba(249, 115, 22, 0.05)'
+          }}>
 
-            <div className={styles.divider}></div>
+            <Grid container spacing={6}>
+              {/* Email блок */}
+              <Grid item size={{xs: 12}}>
+                <Box sx={{
+                  display: 'flex', alignItems: 'center', gap: 3, p: 3,
+                  bgcolor: '#0c1865', borderRadius: 5, color: '#fff'
+                }}>
+                  <EmailIcon sx={{ fontSize: 40, color: '#f97316' }} />
+                  <Box>
+                    <Typography variant="subtitle2" sx={{ opacity: 0.7 }}>{t("emailForDocuments")}</Typography>
+                    <MuiLink href={`mailto:${CERTIFICATION_STATIC.email}`} sx={{ color: '#fff', fontWeight: 800, fontSize: 20, textDecoration: 'none' }}>
+                      {CERTIFICATION_STATIC.email}
+                    </MuiLink>
+                  </Box>
+                </Box>
+              </Grid>
 
-            <div className={styles.documentsList}>
-              <a href="https://docs.google.com/file/d/16pC6gZmJoge33TLgruXy-2mUAH3JjH2d/edit?filetype=msword" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("attestationResults2025")}</a>
-              <a href="https://docs.google.com/document/d/1eTJ1ba7kYMbTFR3ejLbg6JWHNcmtTVf3/edit" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("extraordinaryAttestationList2025")}</a>
-              <a href="https://docs.google.com/document/d/1aimztLwaSXP7raZ4xIHQlIVxVXJsSMkL/edit?tab=t.0" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("attestationList2024_2025")}</a>
-              <a href="https://docs.google.com/document/d/1pkadNTCdi6zgbcd_AzyC94nenbUxp6fJ/edit?tab=t.0" className={styles.documentLink} target="_blank" rel="noopener noreferrer">{t("attestationSchedule")}</a>
-            </div>
+              {/* Комісія */}
+              <Grid item size={{xs: 12, md: 6}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <GroupsIcon sx={{ color: '#0c1865' }} />
+                  <Typography variant="h5" sx={{ fontWeight: 900, color: '#0c1865' }}>{t("attestationCommission")}</Typography>
+                </Box>
+                <Accordion sx={{ borderRadius: '20px !important', border: '1px solid #fed7aa', boxShadow: 'none' }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography sx={{ fontWeight: 700 }}>{t("viewCommissionList") || "Переглянути склад"}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {CERTIFICATION_STATIC.commission.map((key) => (
+                        <Typography key={key} sx={{ py: 1.5, borderBottom: '1px solid #eee', fontSize: 15 }}>
+                          • <strong>{t(key)}</strong>
+                        </Typography>
+                    ))}
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
 
-            {/* Динамічні елементи для рожевого фону (як на сторінці на допомогу вчителю) */}
-            {pinkBackgroundItems.length > 0 && (
-              <>
-                <div className={styles.divider}></div>
-                <div className={styles.documentsBlock}>
-                  {pinkBackgroundItems.map((item, index) => {
-                    const localized = getLocalizedContent(item);
-                    
-                    return (
-                      <div key={item.id}>
-                        {/* Горизонтальна лінія та більший відступ перед текстом, якщо це не перший запис */}
-                        {localized.text && index > 0 && (
-                          <>
-                            <div className={styles.divider}></div>
-                            <div style={{ marginTop: '40px' }}></div>
-                          </>
-                        )}
-                        
-                        {/* Текст, якщо є */}
-                        {localized.text && (
-                          <div className={styles.documentsText}>
-                            {renderTextWithLineBreaks(localized.text)}
-                          </div>
-                        )}
-                        
-                        {/* Посилання, якщо є */}
-                        {item.url && (
-                          <div className={styles.documentsList}>
-                            <a 
-                              href={item.url} 
-                              className={styles.documentLink} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                            >
-                              {localized.linkText || item.url}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </>
-            )}
-          </div>
-        </section>
-      </main>
+              {/* Документи */}
+              <Grid item ize={{xs: 12, md: 6}}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                  <AssignmentIcon sx={{ color: '#0c1865' }} />
+                  <Typography variant="h5" sx={{ fontWeight: 900, color: '#0c1865' }}>{t("importantDocuments") || "Документація"}</Typography>
+                </Box>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {CERTIFICATION_STATIC.documents.map((doc) => (
+                      <MuiLink
+                          key={doc.key} href={doc.url} target="_blank"
+                          sx={{
+                            p: 2.5, bgcolor: '#fff', borderRadius: 4, textDecoration: 'none',
+                            color: '#0c1865', fontWeight: 700, border: '1px solid #fed7aa',
+                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                            transition: '0.3s', '&:hover': { transform: 'translateX(10px)', bgcolor: '#0c1865', color: '#fff' }
+                          }}
+                      >
+                        {t(doc.key)} <span>→</span>
+                      </MuiLink>
+                  ))}
+                </Box>
+              </Grid>
+            </Grid>
 
-      {/* Gallery Modal */}
-      {galleryOpen && (
-        <div className={`${styles.galleryModal} ${styles.active}`}>
-          <div className={styles.galleryContent}>
-            <Image
-              src={currentImage}
-              alt="Gallery image"
-              width={1200}
-              height={800}
-            />
-            <div className={styles.galleryNav}>
-              <button className={styles.galleryPrev} onClick={handlePrevImage}>
-                ❮
-              </button>
-              <button className={styles.galleryNext} onClick={handleNextImage}>
-                ❯
-              </button>
-            </div>
-            <button className={styles.galleryClose} onClick={handleGalleryClose}>
-              ×
-            </button>
-            <div className={styles.galleryCounter}>
-              {currentImageIndex + 1} /{" "}
-              {allEvents.find((item) => item.images.includes(currentImage))?.images.length}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+            {/* Динамічний "рожевий" футер */}
+            {pinkItems.map((item, idx) => {
+              const isEn = locale === 'en';
+              return (
+                  <Box key={item.id} sx={{ mt: 4, p: 3, bgcolor: alpha('#f97316', 0.1), borderRadius: 4 }}>
+                    <Typography sx={{ mb: 2, fontWeight: 500 }}>{isEn ? item.textEn : item.text}</Typography>
+                    {item.url && (
+                        <MuiLink href={item.url} target="_blank" sx={{ color: '#f97316', fontWeight: 800 }}>
+                          {isEn ? (item.linkTextEn || item.url) : (item.linkText || item.url)}
+                        </MuiLink>
+                    )}
+                  </Box>
+              );
+            })}
+          </Box>
+        </Container>
+      </Box>
   );
 }
