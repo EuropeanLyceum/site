@@ -515,7 +515,7 @@ const en = {
         kocherginaTeacherDescription3: "For many years of conscientious work, Svitlana O. Kochergina was awarded the Honorary Certificate of the Ministry of Education and Science of Ukraine (2007), Certificate of the US Embassy and the Ministry of Education and Science of Ukraine (1999, 2000), Certificates of the Main Department of Education and Science of Poltava Regional State Administration (1994, 1996, 2008, 2009, 2010, 2012), Honorary Certificate of the Cabinet of Ministers of Ukraine (2013)."
     },
 
-    innovation: {
+    innovative: {
         innovationActivity: "Innovation Activity",
         innovativeMainTitle: "Innovation activity",
         professionalOrientationAlt: "Professional orientation in the new Ukrainian school",

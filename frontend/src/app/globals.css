@@ -5,6 +5,10 @@
   font-family: 'Montserrat Alternates', sans-serif;
 }
 
+.MuiTypography-root {
+  font-family: 'Montserrat Alternates', sans-serif !important;
+}
+
 
 .ImageContainerFull {
   position: relative;
