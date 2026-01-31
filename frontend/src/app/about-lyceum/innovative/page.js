@@ -29,7 +29,7 @@ export default function InnovativePage() {
     const getLocalizedContent = (item) => item; // Тут локалізація, якщо треба
 
     return (
-        <Box component="main" sx={{mt: "60px", width: '100%', minHeight: '100vh', px: {xs: 2, sm: 4}}} lang={locale}>
+        <Box component="main" sx={{mt: "30px", width: '100%', minHeight: '100vh', py: {xs: 2, sm: 4}}} lang={locale}>
             <Box
                 sx={{
                     display: 'flex',
@@ -67,24 +67,6 @@ export default function InnovativePage() {
                     </Grid>
                 </Box>
             </Box>
-
-            {/* Динамічний контент */}
-            {isLoading ? (
-                <Typography align="center" sx={{py: 5, color: '#666'}}>Завантаження динамічного контенту...</Typography>
-            ) : dynamicData.length > 0 ? (
-                dynamicData.map((item, idx) => (
-                    <DynamicPost
-                        key={item.id}
-                        item={item}
-                        index={idx}
-                        getColorScheme={getColorScheme}
-                        getLocalizedContent={getLocalizedContent}
-                        formatText={formatText}
-                    />
-                ))
-            ) : (
-                <Typography align="center" sx={{py: 5, color: '#666'}}>Динамічний контент відсутній</Typography>
-            )}
         </Box>
     );
 }
