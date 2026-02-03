@@ -2,9 +2,21 @@
 
 import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import {
+  Box, Typography, Paper, TextField, Button,
+  Stepper, Step, StepLabel, Alert, InputAdornment,
+  IconButton, List, ListItem, ListItemIcon, ListItemText,
+  alpha, CircularProgress
+} from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import PersonIcon from '@mui/icons-material/Person';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { PASSWORD_REQUIREMENTS, validatePassword } from '@/lib/auth/password';
 
-type Step = 'verify' | 'update';
+type StepType = 'verify' | 'update';
 
 type FormState = {
   currentUsername: string;
@@ -25,14 +37,12 @@ const INITIAL_FORM_STATE: FormState = {
   newPassword: ''
 };
 
-const STEPS_COPY: Record<Step, string> = {
-  verify: 'Спочатку підтвердіть поточні дані для входу',
-  update: 'Тепер введіть нові дані для входу'
-};
-
 export default function ChangePasswordPage() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>('verify');
+  const [activeStep, setActiveStep] = useState(0);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+
   const [formState, setFormState] = useState<FormState>(INITIAL_FORM_STATE);
   const [verificationState, setVerificationState] = useState<RequestState>({ status: 'idle', message: '' });
   const [updateState, setUpdateState] = useState<RequestState>({ status: 'idle', message: '' });
@@ -40,31 +50,20 @@ export default function ChangePasswordPage() {
   const isLoading = verificationState.status === 'loading' || updateState.status === 'loading';
 
   const passwordValidationError = useMemo(() => {
-    if (formState.newPassword.length === 0) {
-      return '';
-    }
-
+    if (formState.newPassword.length === 0) return '';
     const validation = validatePassword(formState.newPassword);
     return validation.valid ? '' : validation.error;
   }, [formState.newPassword]);
 
-  const resetMessages = useCallback(() => {
+  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState(prev => ({ ...prev, [name]: value }));
     setVerificationState({ status: 'idle', message: '' });
     setUpdateState({ status: 'idle', message: '' });
   }, []);
 
-  const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormState(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    resetMessages();
-  }, [resetMessages]);
-
-  const handleVerifyCredentials = useCallback(async (event: FormEvent<HTMLFormElement>) => {
+  const handleVerifyCredentials = async (event: FormEvent) => {
     event.preventDefault();
-    resetMessages();
     setVerificationState({ status: 'loading', message: '' });
 
     try {
@@ -78,31 +77,18 @@ export default function ChangePasswordPage() {
       });
 
       const payload = await response.json();
+      if (!response.ok || !payload?.success) throw new Error(payload?.error || 'Неправильні дані');
 
-      if (!response.ok || !payload?.success) {
-        throw new Error(payload?.error || 'Неправильний логін або пароль');
-      }
-
-      setVerificationState({
-        status: 'success',
-        message: 'Поточні дані підтверджені. Тепер ви можете ввести нові дані.'
-      });
-      setStep('update');
-    } catch (error) {
-      console.error('Помилка при перевірці даних:', error);
-      const message = error instanceof Error ? error.message : 'Помилка з\'єднання з сервером';
-      setVerificationState({ status: 'error', message });
+      setVerificationState({ status: 'success', message: 'Дані підтверджено' });
+      setActiveStep(1);
+    } catch (error: any) {
+      setVerificationState({ status: 'error', message: error.message });
     }
-  }, [formState.currentPassword, formState.currentUsername, resetMessages]);
+  };
 
-  const handleChangeData = useCallback(async (event: FormEvent<HTMLFormElement>) => {
+  const handleChangeData = async (event: FormEvent) => {
     event.preventDefault();
-    resetMessages();
-
-    if (passwordValidationError) {
-      setUpdateState({ status: 'error', message: passwordValidationError });
-      return;
-    }
+    if (passwordValidationError) return;
 
     setUpdateState({ status: 'loading', message: '' });
 
@@ -118,218 +104,177 @@ export default function ChangePasswordPage() {
       });
 
       const payload = await response.json();
+      if (!response.ok || !payload?.success) throw new Error(payload?.error || 'Помилка оновлення');
 
-      if (!response.ok || !payload?.success) {
-        throw new Error(payload?.error || 'Помилка при зміні даних');
-      }
-
-      setUpdateState({
-        status: 'success',
-        message: payload.message || 'Дані успішно змінено!'
-      });
-      setFormState(INITIAL_FORM_STATE);
-      setStep('verify');
-    } catch (error) {
-      console.error('Помилка при зміні даних:', error);
-      const message = error instanceof Error ? error.message : 'Помилка з\'єднання з сервером';
-      setUpdateState({ status: 'error', message });
+      setUpdateState({ status: 'success', message: 'Дані успішно змінено!' });
+      setTimeout(() => router.push('/dashboard'), 2000);
+    } catch (error: any) {
+      setUpdateState({ status: 'error', message: error.message });
     }
-  }, [formState.currentPassword, formState.newPassword, formState.newUsername, passwordValidationError, resetMessages]);
-
-  const goBackToPreviousPage = useCallback(() => {
-    if (step === 'update') {
-      setStep('verify');
-      resetMessages();
-      return;
-    }
-
-    router.back();
-  }, [resetMessages, router, step]);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="mx-auto max-w-md rounded-lg bg-white p-6 shadow-md">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Зміна даних входу</h1>
-          <p className="mt-2 text-gray-600">{STEPS_COPY[step]}</p>
+      <Box sx={{ maxWidth: 600, mx: 'auto', py: 4 }}>
+        <Typography variant="h4" sx={{
+          fontWeight: 900, mb: 4, color: '#0c1865', textAlign: 'center',
+          fontFamily: 'var(--font-montserrat-alternates), sans-serif'
+        }}>
+          Зміна даних входу
+        </Typography>
 
-          <div className="mt-4 flex justify-center">
-            <div className="flex items-center space-x-3">
-              <StepBadge number={1} active />
-              <div className={`h-0.5 w-12 ${step === 'update' ? 'bg-blue-600' : 'bg-gray-300'}`} />
-              <StepBadge number={2} active={step === 'update'} />
-            </div>
-          </div>
-        </div>
+        <Stepper activeStep={activeStep} sx={{ mb: 5 }}>
+          <Step><StepLabel>Перевірка</StepLabel></Step>
+          <Step><StepLabel>Оновлення</StepLabel></Step>
+        </Stepper>
 
-        {step === 'verify' ? (
-          <form className="space-y-4" onSubmit={handleVerifyCredentials}>
-            <Alert state={verificationState} />
+        <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+          {activeStep === 0 ? (
+              <Box component="form" onSubmit={handleVerifyCredentials} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Підтвердіть особу</Typography>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="currentUsername">
-                Поточний логін
-              </label>
-              <input
-                autoComplete="username"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                id="currentUsername"
-                name="currentUsername"
-                onChange={handleInputChange}
-                required
-                type="text"
-                value={formState.currentUsername}
-              />
-            </div>
+                {verificationState.status === 'error' && (
+                    <Alert severity="error" sx={{ borderRadius: 3 }}>{verificationState.message}</Alert>
+                )}
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="currentPassword">
-                Поточний пароль
-              </label>
-              <input
-                autoComplete="current-password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                id="currentPassword"
-                name="currentPassword"
-                onChange={handleInputChange}
-                required
-                type="password"
-                value={formState.currentPassword}
-              />
-            </div>
+                <TextField
+                    fullWidth
+                    label="Поточний логін"
+                    name="currentUsername"
+                    value={formState.currentUsername}
+                    onChange={handleInputChange}
+                    required
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start"><PersonIcon color="primary"/></InputAdornment>,
+                      sx: { borderRadius: 3 }
+                    }}
+                />
 
-            <div className="flex space-x-4 pt-4">
-              <button
-                className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                onClick={goBackToPreviousPage}
-                type="button"
-              >
-                Назад
-              </button>
-              <button
-                className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={isLoading}
-                type="submit"
-              >
-                {isLoading ? 'Перевірка...' : 'Підтвердити'}
-              </button>
-            </div>
-          </form>
-        ) : (
-          <form className="space-y-4" onSubmit={handleChangeData}>
-            <Alert state={updateState} />
+                <TextField
+                    fullWidth
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    label="Поточний пароль"
+                    name="currentPassword"
+                    value={formState.currentPassword}
+                    onChange={handleInputChange}
+                    required
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start"><LockIcon color="primary"/></InputAdornment>,
+                      endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => setShowCurrentPassword(!showCurrentPassword)}>
+                              {showCurrentPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                      ),
+                      sx: { borderRadius: 3 }
+                    }}
+                />
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="newUsername">
-                Новий логін (за бажанням)
-              </label>
-              <input
-                autoComplete="username"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                id="newUsername"
-                minLength={3}
-                name="newUsername"
-                onChange={handleInputChange}
-                placeholder="Залиште пустим, щоб не змінювати"
-                type="text"
-                value={formState.newUsername}
-              />
-              <p className="mt-1 text-xs text-gray-500">Мінімум 3 символи</p>
-            </div>
+                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                  <Button
+                      fullWidth
+                      variant="outlined"
+                      startIcon={<ArrowBackIcon />}
+                      onClick={() => router.back()}
+                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700 }}
+                  >
+                    Назад
+                  </Button>
+                  <Button
+                      fullWidth
+                      type="submit"
+                      variant="contained"
+                      disabled={isLoading}
+                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, bgcolor: '#182BA1' }}
+                  >
+                    {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Продовжити'}
+                  </Button>
+                </Box>
+              </Box>
+          ) : (
+              <Box component="form" onSubmit={handleChangeData} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Нові дані</Typography>
 
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700" htmlFor="newPassword">
-                Новий пароль
-              </label>
-              <input
-                autoComplete="new-password"
-                className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-blue-500"
-                id="newPassword"
-                minLength={8}
-                name="newPassword"
-                onChange={handleInputChange}
-                required
-                type="password"
-                value={formState.newPassword}
-              />
-              <PasswordRequirements validationError={passwordValidationError} />
-            </div>
+                {updateState.status === 'success' ? (
+                    <Alert severity="success" sx={{ borderRadius: 3 }}>{updateState.message}</Alert>
+                ) : updateState.status === 'error' ? (
+                    <Alert severity="error" sx={{ borderRadius: 3 }}>{updateState.message}</Alert>
+                ) : null}
 
-            <div className="flex space-x-4 pt-4">
-              <button
-                className="flex-1 rounded-md bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                onClick={goBackToPreviousPage}
-                type="button"
-              >
-                Назад
-              </button>
-              <button
-                className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={isLoading}
-                type="submit"
-              >
-                {isLoading ? 'Зміна...' : 'Змінити дані'}
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-}
+                <TextField
+                    fullWidth
+                    label="Новий логін (необов'язково)"
+                    name="newUsername"
+                    placeholder="Залиште порожнім, якщо не змінюєте"
+                    value={formState.newUsername}
+                    onChange={handleInputChange}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start"><PersonIcon color="secondary"/></InputAdornment>,
+                      sx: { borderRadius: 3 }
+                    }}
+                    helperText="Мінімум 3 символи"
+                />
 
-function StepBadge({ number, active }: { number: number; active?: boolean }) {
-  return (
-    <div
-      className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold ${
-        active ? 'bg-blue-600 text-white' : 'bg-gray-300 text-gray-600'
-      }`}
-    >
-      {number}
-    </div>
-  );
-}
+                <TextField
+                    fullWidth
+                    type={showNewPassword ? 'text' : 'password'}
+                    label="Новий пароль"
+                    name="newPassword"
+                    value={formState.newPassword}
+                    onChange={handleInputChange}
+                    required
+                    error={!!passwordValidationError}
+                    helperText={passwordValidationError}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start"><LockIcon color="secondary"/></InputAdornment>,
+                      endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>
+                              {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                      ),
+                      sx: { borderRadius: 3 }
+                    }}
+                />
 
-function Alert({ state }: { state: RequestState }) {
-  if (state.status === 'idle') {
-    return null;
-  }
+                <Box sx={{ bgcolor: alpha('#182BA1', 0.04), p: 2, borderRadius: 3 }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, color: '#0c1865', display: 'block', mb: 1 }}>
+                    Вимоги до пароля:
+                  </Typography>
+                  <List dense disablePadding>
+                    {PASSWORD_REQUIREMENTS.map((req, i) => (
+                        <ListItem key={i} disablePadding sx={{ py: 0.2 }}>
+                          <ListItemIcon sx={{ minWidth: 28 }}><CheckCircleOutlineIcon sx={{ fontSize: 16, color: '#10b981' }} /></ListItemIcon>
+                          <ListItemText primaryTypographyProps={{ variant: 'caption', color: '#64748b' }} primary={req} />
+                        </ListItem>
+                    ))}
+                  </List>
+                </Box>
 
-  const baseClasses = 'rounded px-4 py-3 text-sm';
-
-  if (state.status === 'loading') {
-    return (
-      <div className={`${baseClasses} border border-blue-300 bg-blue-50 text-blue-700`}>
-        Зачекайте, виконується запит...
-      </div>
-    );
-  }
-
-  if (state.status === 'success') {
-    return (
-      <div className={`${baseClasses} border border-green-400 bg-green-100 text-green-700`}>
-        {state.message}
-      </div>
-    );
-  }
-
-  return (
-    <div className={`${baseClasses} border border-red-400 bg-red-100 text-red-700`}>
-      {state.message || 'Сталася невідома помилка'}
-    </div>
-  );
-}
-
-function PasswordRequirements({ validationError }: { validationError: string }) {
-  return (
-    <div className="mt-2 space-y-1 text-xs text-gray-500">
-      <p>Вимоги до пароля:</p>
-      <ul className="list-disc space-y-0.5 pl-5">
-        {PASSWORD_REQUIREMENTS.map(requirement => (
-          <li key={requirement}>{requirement}</li>
-        ))}
-      </ul>
-      {validationError ? <p className="text-red-600">{validationError}</p> : null}
-    </div>
+                <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+                  <Button
+                      fullWidth
+                      variant="outlined"
+                      onClick={() => setActiveStep(0)}
+                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700 }}
+                  >
+                    Назад
+                  </Button>
+                  <Button
+                      fullWidth
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                      disabled={isLoading || !!passwordValidationError}
+                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, color: '#fff' }}
+                  >
+                    {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Зберегти зміни'}
+                  </Button>
+                </Box>
+              </Box>
+          )}
+        </Paper>
+      </Box>
   );
 }

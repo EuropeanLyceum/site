@@ -1,135 +1,150 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
-import styles from '@/styles/pages/login.module.css';
+import { useState, FormEvent } from 'react';
+import {
+    Box, TextField, Button, Typography, Paper,
+    CircularProgress, Container, Stack
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 export default function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const error = searchParams?.get('error');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const errorParam = searchParams?.get('error');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    console.log('🔄 Attempting login with:', { username, password });
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
 
-    try {
-      console.log('📡 Sending request to /admin/api/auth/login...');
-      const response = await fetch('/admin/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+        try {
+            const response = await fetch('/admin/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
 
-      console.log('📡 Response received:', { 
-        status: response.status, 
-        statusText: response.statusText,
-        ok: response.ok,
-        contentType: response.headers.get('content-type')
-      });
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Сервер повернув некоректну відповідь.');
+            }
 
-      // Перевіряємо чи відповідь JSON
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('❌ API повернув не JSON:', text.substring(0, 200));
-        throw new Error('Сервер повернув некоректну відповідь. Перевірте консоль сервера.');
-      }
+            const data = await response.json();
 
-      const data = await response.json();
-      console.log('📄 Response data:', data);
+            if (response.ok && data.success) {
+                router.push('/dashboard');
+            } else {
+                router.push('/login?error=1');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            router.push('/login?error=1');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-      if (response.ok && data.success) {
-        console.log('✅ Login successful, redirecting to dashboard...');
+    return (
+        <Box
+            sx={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'linear-gradient(135deg, #FFCB8B 0%, #D7DCE8 50%, #182BA1 100%)',
+                px: 2
+            }}
+        >
+            <Container maxWidth="xs">
+                <Paper
+                    elevation={10}
+                    sx={{
+                        p: 4,
+                        borderRadius: 4,
+                        textAlign: 'center',
+                        bgcolor: 'rgba(255, 255, 255, 0.92)',
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(255, 255, 255, 0.3)'
+                    }}
+                >
+                    <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <Box sx={{
+                            bgcolor: '#182BA1',
+                            color: 'white',
+                            p: 1.5,
+                            borderRadius: '50%',
+                            mb: 1,
+                            display: 'flex',
+                            boxShadow: '0 4px 12px rgba(24, 42, 161, 0.3)'
+                        }}>
+                            <LockOutlinedIcon />
+                        </Box>
+                        <Typography variant="h5" sx={{ fontWeight: 900, color: '#182BA1', letterSpacing: 1 }}>
+                            ADMIN <span style={{ color: '#f97316' }}>PANEL</span>
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" sx={{ mt: 0.5 }}>
+                            Європейський ліцей
+                        </Typography>
+                    </Box>
 
-        // Use Next.js router so basePath (/admin) is respected.
-        router.push('/dashboard');
-        
-      } else {
-        console.log('❌ Login failed:', data.error || 'Unknown error');
-        router.push('/login?error=1');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      router.push('/login?error=1');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+                    <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, color: '#334155' }}>
+                        Вхід для адміністратора
+                    </Typography>
 
-  return (
-    <div className={styles['login-page']}>
-      {/* Градієнтний фон */}
-      <div 
-        className="absolute inset-0" 
-        style={{
-          background: 'linear-gradient(135deg, #FFCB8B 0%, #D7DCE8 50%, #182AA1 100%)'
-        }}
-      ></div>
-      
-      {/* Основний контент */}
-      <div className={`${styles['login-container']} relative z-10 px-4`} style={{ position: 'relative' }}>
-        {/* Логотип */}
-        <div className={styles['login-logo']}>
-          <div className={styles['login-logo-icon']}>
-            <div className={styles['login-logo-icon-inner']}></div>
-          </div>
-                     <span className="text-white text-xl font-normal">Європейський</span>
-        </div>
+                    {/* Відображення помилки на основі існуючої логіки редіректу */}
+                    {errorParam && (
+                        <Typography variant="body2" sx={{ color: '#d32f2f', mb: 2, fontWeight: 600 }}>
+                            Неправильний логін або пароль
+                        </Typography>
+                    )}
 
-        {/* Заголовок */}
-        <div className={styles['login-title']}>
-          <div>Вхід для</div>
-          <div>адміністратора</div>
-        </div>
-
-        {/* Форма входу */}
-        <form onSubmit={handleSubmit} className={styles['login-form']}>
-          {error && (
-            <div className={styles['login-error']}>
-              Неправильний логін або пароль
-            </div>
-          )}
-          
-          {/* Поле логіну */}
-          <input
-            id="username"
-            type="text"
-            placeholder="Логін"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className={styles['login-input']}
-            required
-          />
-
-          {/* Поле пароля */}
-          <input
-            id="password"
-            type="password"
-            placeholder="Пароль"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={styles['login-input']}
-            required
-          />
-
-          {/* Кнопка входу */}
-          <button 
-            type="submit" 
-            disabled={isLoading}
-            className={styles['login-button']}
-          >
-            {isLoading ? 'Вхід...' : 'Увійти'}
-          </button>
-        </form>
-      </div>
-    </div>
-  );
+                    <form onSubmit={handleSubmit}>
+                        <Stack spacing={2.5}>
+                            <TextField
+                                fullWidth
+                                label="Логін"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                disabled={isLoading}
+                                autoComplete="username"
+                            />
+                            <TextField
+                                fullWidth
+                                label="Пароль"
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                disabled={isLoading}
+                                autoComplete="current-password"
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                size="large"
+                                disabled={isLoading}
+                                sx={{
+                                    py: 1.6,
+                                    mt: 1,
+                                    bgcolor: '#182BA1',
+                                    fontWeight: 800,
+                                    borderRadius: 2,
+                                    textTransform: 'none',
+                                    '&:hover': { bgcolor: '#0c1865' }
+                                }}
+                            >
+                                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Увійти'}
+                            </Button>
+                        </Stack>
+                    </form>
+                </Paper>
+            </Container>
+        </Box>
+    );
 }

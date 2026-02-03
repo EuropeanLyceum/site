@@ -95,8 +95,8 @@ const Header = () => {
     {
       title: t("informationPage"),
       sub: [
-        { label: t("parents"), href: "/inforamtion-page/parents" },
-        { label: t("students"), href: "/inforamtion-page/students" }
+        { label: t("parents"), href: "/information-page/parents" },
+        { label: t("students"), href: "/information-page/students" }
       ]
     },
     {

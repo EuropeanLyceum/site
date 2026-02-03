@@ -13,8 +13,14 @@ services:
       - "5432:5432"  # Exposed for local database tools
     volumes:
       - postgres_data_local:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
     networks:
       - school-network-local
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d liceum" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # Admin Panel (Next.js)
   # Exposed for local development

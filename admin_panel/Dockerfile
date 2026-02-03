@@ -7,9 +7,6 @@ RUN npm install --include=dev
 
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
-
 # Build arguments for environment variables needed during build
 ARG NEXTAUTH_SECRET
 ARG NEXTAUTH_URL
@@ -21,6 +18,9 @@ ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
 ENV JWT_SECRET=$JWT_SECRET
 ENV DATABASE_URL=$DATABASE_URL
+
+# Generate Prisma client
+RUN npx prisma generate
 
 # Build for production
 RUN npm run build
