@@ -1,17 +1,30 @@
+'use client';
+import { useState, useEffect } from "react";
 import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout";
 
-const govData = [
-  {
-    id: 1,
-    date: "25.01.2026",
-    title: "Вибори президента ліцею",
-    titleEn: "Lyceum President Elections",
-    text: "Сьогодні відбулося таємне голосування...",
-    textEn: "Secret balloting took place today...",
-    images: ["https://images.unsplash.com/photo-1540910419892-f0c73255297e?q=80&w=1200"]
-  }
-];
-
 export default function StudentGovernmentPage() {
-  return <UnifiedNewsLayout translationKey="government" data={govData} />;
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/admin/api/admin/content?type=GOVERNMENT');
+        const json = await res.json();
+        const formatted = (json.data || []).map(item => ({
+          id: item.id,
+          title: item.titleUk,
+          titleEn: item.titleEn,
+          text: item.textUk,
+          textEn: item.textEn,
+          images: item.photoGallery || [],
+          date: new Date(item.publicationDate || item.createdAt).toLocaleDateString('uk-UA')
+        }));
+        setData(formatted);
+      } catch (e) { console.error(e); } finally { setLoading(false); }
+    };
+    fetchData();
+  }, []);
+
+  return <UnifiedNewsLayout translationKey="government" data={data} isLoading={loading} />;
 }

@@ -129,14 +129,28 @@ const Header = () => {
             <Toolbar sx={{ justifyContent: 'space-between', px: '0 !important' }}>
 
               {/* Логотип */}
-              <Box component={Link} href="/" sx={{ display: 'flex', flexShrink: 0 }}>
+              <Box
+                  component={Link}
+                  href="/"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    transition: 'transform 0.2s',
+                    '&:hover': { transform: 'scale(1.05)' }
+                  }}
+              >
                 <Box sx={{
-                  width: { xs: 45, lg: 52 },
-                  height: { xs: 45, lg: 52 },
-                  borderRadius: 2,
-                  overflow: 'hidden'
+                  width: { xs: 40, sm: 45, lg: 52 }, // Менший розмір для зовсім малих екранів
+                  height: { xs: 40, sm: 45, lg: 52 },
+                  position: 'relative', // Важливо для layout="fill" або якісного scaling
                 }}>
-                  <Image src={headerLogo} alt="Logo" width={52} height={52} priority />
+                  <Image
+                      src={headerLogo}
+                      alt="Lyceum Logo"
+                      fill // Використовуємо fill для кращого контролю контейнером
+                      style={{ objectFit: 'contain' }}
+                      priority
+                  />
                 </Box>
               </Box>
 
@@ -232,27 +246,40 @@ const Header = () => {
               )}
 
               {/* Перемикач мови та Бургер */}
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, lg: 3 } }}>
-                <Box
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.5, sm: 2 } }}>
+
+                {/* Перемикач мови як інтерактивна кнопка */}
+                <IconButton
                     onClick={() => changeLanguage(locale === "uk" ? "en" : "uk")}
                     sx={{
-                      cursor: 'pointer',
-                      width: 32,
-                      height: 38,
-                      display: 'flex',
-                      borderRadius: 1,
-                      overflow: 'hidden'
+                      p: 0.5,
+                      borderRadius: 2,
+                      bgcolor: alpha('#fff', 0.1),
+                      '&:hover': { bgcolor: alpha('#fff', 0.2) },
+                      width: { xs: 32, sm: 40 },
+                      height: { xs: 32, sm: 40 },
                     }}
                 >
-                  <Image
-                      src={locale === "uk" ? engIcon : ukrIcon}
-                      alt="lang" width={32} height={38}
-                  />
-                </Box>
+                  <Box sx={{ position: 'relative', width: '100%', height: '100%' }}>
+                    <Image
+                        src={locale === "uk" ? engIcon : ukrIcon}
+                        alt="Change Language"
+                        fill
+                        style={{ objectFit: 'contain', padding: '2px' }}
+                    />
+                  </Box>
+                </IconButton>
 
                 {isMobile && (
-                    <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff', p: 0 }}>
-                      <MenuIcon sx={{ fontSize: 35 }} />
+                    <IconButton
+                        onClick={handleDrawerToggle}
+                        sx={{
+                          color: '#fff',
+                          ml: { xs: 0, sm: 1 },
+                          p: { xs: 0.5, sm: 1 }
+                        }}
+                    >
+                      <MenuIcon sx={{ fontSize: { xs: 30, sm: 35 } }} />
                     </IconButton>
                 )}
               </Box>

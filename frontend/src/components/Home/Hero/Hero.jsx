@@ -3,7 +3,14 @@ import { Box, Typography, Container, alpha } from "@mui/material";
 import Image from "next/image";
 import logo from "@/assets/photos/icons/logo_without_background.ico.png";
 
-export default function Hero({ t }) {
+export default function Hero({ t, locale, data }) {
+    const isEn = locale === 'en';
+
+    // Мапінг полів з Prisma моделі PageSection
+    const title = isEn ? (data?.titleEn || data?.titleUk) : data?.titleUk;
+    const description = isEn ? (data?.contentEn || data?.contentUk) : data?.contentUk;
+    const bgImage = data?.imagePhoto || logo;
+
     return (
         <Box sx={{
             position: "relative",
@@ -15,21 +22,20 @@ export default function Hero({ t }) {
             pt: { xs: 8, md: 5 },
             pb: { xs: 8, md: 8 }
         }}>
-
+            {/* Фонове лого */}
             <Box sx={{
                 position: "absolute",
-                top: { xs: "0%", md: "-10%" },
-                right: { xs: "-20%", md: "-5%" },
+                top: "-10%", right: "-5%",
                 width: { xs: "80%", md: "50%" },
                 height: "120%",
                 zIndex: 1,
-                opacity: 0.4,
-                filter: "blur(8px)",
+                opacity: 0.15, // Зменшив непрозорість для кращої читабельності
+                filter: "blur(5px)",
                 userSelect: "none",
                 pointerEvents: "none"
             }}>
                 <Image
-                    src={logo}
+                    src={bgImage}
                     alt="Background Accent"
                     fill
                     style={{ objectFit: "contain" }}
@@ -37,45 +43,33 @@ export default function Hero({ t }) {
                 />
             </Box>
 
-            {/* Додаткове тепле світло для балансу */}
-            <Box sx={{
-                position: "absolute", bottom: "-20%", left: "-10%",
-                width: "40%", height: "60%",
-                background: "radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, transparent 70%)",
-                filter: "blur(80px)", zIndex: 1
-            }} />
-
             <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
                 <Box sx={{
-                    maxWidth: 800,
+                    maxWidth: 850,
                     borderLeft: "6px solid #f97316",
                     pl: { xs: 3, md: 6 },
-                    py: 2,
-                    // Додаємо легку тінь тексту, щоб він "відірвався" від фонової букви
-                    textShadow: "0 10px 30px rgba(0,0,0,0.5)"
+                    py: 2
                 }}>
                     <Typography variant="h1" sx={{
-                        fontSize: { xs: 36, sm: 48, md: 72 },
+                        fontSize: { xs: 34, sm: 48, md: 68 },
                         fontWeight: 900,
                         color: "#fff",
                         fontFamily: "'Montserrat Alternates', sans-serif",
                         lineHeight: 1.1,
-                        mb: 4,
-                        textTransform: "uppercase",
-                        letterSpacing: "-0.02em"
+                        mb: 3,
+                        textTransform: "uppercase"
                     }}>
-                        {t("welcome")}
+                        {title || t("heroDefaultTitle")}
                     </Typography>
 
                     <Typography sx={{
-                        fontSize: { xs: 16, md: 20 },
-                        color: alpha("#fff", 0.9),
-                        lineHeight: 1.8,
+                        fontSize: { xs: 16, md: 19 },
+                        color: alpha("#fff", 0.85),
+                        lineHeight: 1.7,
                         fontFamily: "'Montserrat Alternates', sans-serif",
-                        textAlign: "justify",
-                        maxWidth: 700
+                        textAlign: "justify"
                     }}>
-                        {t("welcomeDescription")}
+                        {description || t("heroDefaultDesc")}
                     </Typography>
                 </Box>
             </Container>

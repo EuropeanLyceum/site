@@ -14,41 +14,8 @@ const en = {
         flexWinners: "winners of the FLEX national exchange program",
         examResults: "students scored 200 points on NMT 2024",
         faqTitle: "FAQ (Frequently Asked Questions)",
-
-        faqData: [
-            {
-                label: "How many shifts of learning are there in the lyceum?",
-                text: "Grades 4, 5 study in the second shift. The rest of the parallels study in the first shift.",
-            },
-            {
-                label: "What is the learning format at your institution?",
-                text: "All classes are in offline learning, attending school daily.",
-            },
-            {
-                label: "Do you have a school uniform in the lyceum?",
-                text: "No, but formal style of clothing is welcome.",
-            },
-            {
-                label: "What foreign languages do you have?",
-                text: "The first foreign language is English, the second foreign language is German, which is studied from grades 5 to 9.",
-            },
-            {
-                label: "What learning profiles are offered in tenth grades?",
-                text: "Foreign philology, Ukrainian philology, historical profile, mathematical, chemical-biological, physical-mathematical.",
-            },
-            {
-                label: "What clubs does your educational institution offer?",
-                text: "Vocals, choreography, sports sections, theater studio, art club.",
-            },
-            {
-                label: "Is there enrollment for 5th grades?",
-                text: "Yes. Starting from 5th grade, pre-profile education in English and mathematics will be implemented.",
-            },
-            {
-                label: "What is the institution's operating mode during air raids?",
-                text: "Lessons continue in a safe place.",
-            },
-        ],
+        loading: "Loading data...",
+        noFaqs: "No FAQs available at the moment.",
     },
 
     virtual: {
@@ -435,6 +402,7 @@ const en = {
 
     history: {
         historyTitle: "Institution history",
+        viewAllPhotos: "View all photos",
         foundersTitle: "Founders",
         foundersDescription: "School No. 6 was founded in 1947 on the basis of Secondary School No. 3, with Yakiv O. Oranskyi heading the new institution. Eight elementary classes were taken along with teachers: Lidia O. Lychko, Lidia V. Frolova, Nadiya M. Milikova, Oleksandra D. Borysenko, Maria M. Oranska, Maria O. Novikova, Yelyzaveta M. Panchenko.",
         foundersImageAlt: "Founding teachers of the school",
@@ -523,7 +491,9 @@ const en = {
         innovativeImageAlt: "Professional orientation in the new Ukrainian school",
         innovativeDescription: "One of the priority areas of work of Lubny Specialized School No. 6 is research and experimental, project and innovation activities. In May of this year, the school joined a nationwide experiment on \"Professional Orientation in the New Ukrainian School\". The experiment is conducted within the EU4Skills project, implemented by the European Union and its member states: Germany, Finland, Poland and Estonia, and is designed for 2021-2026.",
         downloading: "Downloading...",
-        learnMore: "Learn more"
+        learnMore: "Learn more",
+        noContent: "No content available",
+        viewVideo: "View video"
     },
 
 
@@ -548,6 +518,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
 
@@ -565,6 +537,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     government: {
@@ -572,6 +546,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     sportLife: {
@@ -579,6 +555,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     patrioticEducation: {
@@ -586,6 +564,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     clubsStudios: {
@@ -593,6 +573,8 @@ const en = {
         readMore: "Read more",
         collapse: "Read less",
         viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     projects: {
@@ -606,6 +588,8 @@ const en = {
         projectMethodBenefit3: "make reasoned conclusions;",
         projectMethodBenefit4: "make independent decisions;",
         projectMethodBenefit5: "learn to work in a team, performing different social roles.",
+        noResults: "No results",
+        searchPlaceholder: "Search"
     },
 
     evaluationCriteria: {

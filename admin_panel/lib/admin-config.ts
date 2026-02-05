@@ -1,160 +1,207 @@
 export const FIELD_LABELS: Record<string, string> = {
-    // Системні
+    // ===== СИСТЕМНІ =====
     id: "ID",
     createdAt: "Дата створення",
     updatedAt: "Останнє оновлення",
-    order: "Порядок (пріоритет)",
-    slug: "URL-шлях (slug)",
-    isPublished: "Опубліковано",
-    isFeatured: "Важливе (на головну)",
+    order: "Порядок",
+    type: "Тип",
+    slug: "URL-слаг (SEO)",
 
-    // Content (Універсальний контент)
-    type: "Тип контенту",
+    // ===== CONTENT =====
     titleUk: "Заголовок (UA)",
     titleEn: "Заголовок (EN)",
-    subtitleUk: "Підзаголовок (UA)",
-    subtitleEn: "Підзаголовок (EN)",
-    mainPhoto: "Головне фото",
+    textUk: "Текст (UA)",
+    textEn: "Текст (EN)",
     photoGallery: "Галерея фото",
-    videoUrl: "YouTube Відео",
-    imagePosition: "Позиція фото",
+    videoUrl: "YouTube відео",
     publicationDate: "Дата публікації",
-    attributes: "Дод. атрибути (JSON)",
-    metaTitle: "SEO Заголовок",
-    metaDescription: "SEO Опис",
+    attributes: "Додаткові атрибути (JSON)",
 
-    // ContentSection (Блоки статті)
-    visualType: "Тип блоку",
-    bodyUk: "Текст блоку (UA)",
-    bodyEn: "Текст блоку (EN)",
-    photos: "Фото блоку",
+    // ===== PAGE SECTION =====
+    contentUk: "Контент / HTML (UA)",
+    contentEn: "Контент / HTML (EN)",
+    imagePhoto: "Зображення",
 
-    // PageSection (Статика)
-    contentUk: "Текст / HTML (UA)",
-    contentEn: "Текст / HTML (EN)",
-    imageUrl: "Банер / Фото (URL)",
+    // ===== EXTERNAL LINKS =====
+    pageKey: "Сторінка",
+    url: "Посилання",
 
-    // LyceumStats (Статистика та налаштування)
-    name: "Назва ліцею (UA)",
-    nameEn: "Назва ліцею (EN)",
+    // ===== LYCEUM STATS =====
+    name: "Назва",
+    nameEn: "Назва (EN)",
     addressUk: "Адреса (UA)",
     addressEn: "Адреса (EN)",
-    logoUrl: "Логотип (URL)",
-    quoteUk: "Девіз / Цитата (UA)",
-    quoteEn: "Девіз / Цитата (EN)",
-    teachingLanguages: "Мови викладання",
-    specializationsList: "Список спеціалізацій",
-    anthemUrl: "Гімн (URL/YouTube)",
+    email: "Email",
+    phone: "Телефон",
+    logoPhoto: "Логотип",
+    quoteUk: "Цитата (UA)",
+    quoteEn: "Цитата (EN)",
+    teachingLanguage: "Мова викладання",
+    teachingLanguageEn: "Мова викладання (EN)",
+    specialization: "Спеціалізація",
+    specializationEn: "Спеціалізація (EN)",
+    anthemUrl: "Гімн (URL)",
+    teachersPhoto: "Фото викладачів",
+    materialBasePhoto: "Матеріальна база (фото)",
+    materialBaseDescriptionUk: "Матеріальна база (опис UA)",
+    materialBaseDescriptionEn: "Матеріальна база (опис EN)",
+    socialLinks: "Соцмережі (JSON)",
     studentsCount: "К-ть учнів",
+    studentsCountReal: "К-ть учнів (реально)",
     teachersCount: "К-ть вчителів",
     staffCount: "Персонал",
     classesCount: "К-ть класів",
     flexParticipants: "Учасники FLEX",
     topScorersCount: "200-бальники",
-    socialLinks: "Соцмережі (JSON)",
 
-    // Person & Category
+    // ===== PERSON =====
     fullNameUk: "ПІБ (UA)",
     fullNameEn: "ПІБ (EN)",
     positionUk: "Посада (UA)",
     positionEn: "Посада (EN)",
-    descriptionUk: "Біографія (UA)",
-    descriptionEn: "Біографія (EN)",
-    photoUrl: "Фото (URL)",
+    descriptionUk: "Опис (UA)",
+    descriptionEn: "Опис (EN)",
+    photo: "Фото",
     specializationUk: "Спеціалізація (UA)",
-    quoteUk: "Цитата/Кредо",
-    nicknameUk: "Псевдонім / Нік",
-    categoryId: "Категорія (кафедра)",
+    categoryId: "Категорія",
 
-    // FAQ
-    questionUk: "Питання (UA)",
-    questionEn: "Питання (EN)",
-    answerUk: "Відповідь (UA)",
-    answerEn: "Відповідь (EN)",
-
-    // Location (VR)
-    floor: "Поверх",
-    highlightsUk: "Особливості (список)",
-    imageUrls: "Фото (360/звичайні)",
-    iconName: "ID іконки",
-
-    // Specialization (Профілі)
-    emoji: "Емодзі",
-    subjectsUk: "Профільні предмети",
-    characteristicsUk: "Характеристики",
-
-    // Documents
+    // ===== DOCUMENTS =====
     category: "Категорія",
-    year: "Рік",
-    fileType: "Формат",
-    fileSize: "Розмір",
-    parentId: "Батьківська папка"
+    parentId: "Батьківський розділ",
+    fileType: "Тип файлу",
+    fileSize: "Розмір файлу",
+    reportId: "Звіт/Документ",
+
+    // ===== LOCATION =====
+    floor: "Поверх",
+    highlightsUk: "Особливості (UA)",
+    highlightsEn: "Особливості (EN)",
+    imagePhotos: "Фото",
+    iconName: "Іконка",
+
+    // ===== TESTS & CLUBS =====
+    question: "Питання (UA)",
+    questionEn: "Питання (EN)",
+    options: "Варіанти (UA)",
+    optionsEn: "Варіанти (EN)",
+    nameUk: "Назва (UA)",
+
+    // ===== ADMIN =====
+    username: "Логін",
+    password: "Пароль",
+    role: "Роль",
+    isActive: "Активний",
+    lastLogin: "Останній вхід"
 };
 
 export const ADMIN_MODELS = {
+    // --- КОНТЕНТ ТА ІНФОРМАЦІЯ ---
     content: {
-        label: 'Контент (Новини, Статті)',
-        tableFields: ['titleUk', 'type', 'publicationDate', 'isPublished'],
-        allFields: ['type', 'slug', 'titleUk', 'titleEn', 'subtitleUk', 'subtitleEn', 'mainPhoto', 'imagePosition', 'publicationDate', 'isPublished', 'isFeatured', 'order', 'videoUrl', 'metaTitle', 'metaDescription'],
+        label: "Контент (Новини/Проєкти)",
+        tableFields: ["titleUk", "type", "publicationDate"],
+        allFields: ["type", "slug", "titleUk", "titleEn", "textUk", "textEn", "photoGallery", "videoUrl", "publicationDate", "attributes"],
         enums: {
-            type: ['NEWS', 'EVENT', 'PROJECT', 'RESEARCH', 'INNOVATION', 'HISTORY', 'FOR_PARENTS', 'FOR_STUDENTS', 'FOR_TEACHERS', 'VISITING_CARD', 'PATRIOTIC', 'CLUBS', 'SPORT', 'METHODOLOGICAL', 'PSYCHOLOGICAL', 'ANTI_BULLYING', 'QUALIFICATION', 'CERTIFICATION'],
-            imagePosition: ['center', 'left', 'right', 'background']
+            type: ["NEWS", "RESEARCH_PROJECT", "INNOVATION", "HISTORY", "BUILDING", "FOUNDERS", "FOR_PARENTS", "FOR_STUDENTS", "FOR_TEACHERS", "PATRIOTIC", "CLUBS", "SPORT", "METHODOLOGICAL", "PSYCHOLOGICAL", "ANTI_BULLYING", "QUALIFICATION", "CERTIFICATION", "INTELLECT", "GOVERNMENT"]
         }
     },
     pageSection: {
-        label: 'Статичні секції',
-        tableFields: ['id', 'titleUk'],
-        allFields: ['id', 'titleUk', 'titleEn', 'contentUk', 'contentEn', 'imageUrl'],
-    },
-    person: {
-        label: 'Команда та учні',
-        tableFields: ['fullNameUk', 'positionUk', 'type'],
-        allFields: ['type', 'categoryId', 'fullNameUk', 'fullNameEn', 'positionUk', 'positionEn', 'photoUrl', 'email', 'phone', 'specializationUk', 'quoteUk', 'descriptionUk', 'order'],
+        label: "Секції сторінок",
+        tableFields: ["type", "titleUk", "updatedAt"],
+        allFields: ["type", "titleUk", "titleEn", "contentUk", "contentEn", "imagePhoto"],
         enums: {
-            type: ['TEACHER', 'ADMINISTRATION', 'COMMISSION_MEMBER', 'FAMOUS_PERSON', 'ALUMNI', 'STUDENT_COUNCIL', 'PSYCHOLOGIST']
+            type: ["HOME_HERO", "PARENTS_INFO", "STUDENTS_INFO", "PSYCHOLOGICAL", "CERTIFICATION", "ANTI_BULLYING", "INNOVATIVE", "PROJECT_RESEARCH"]
+        }
+    },
+    fAQ: {
+        label: "FAQ (Питання-Відповіді)",
+        tableFields: ["questionUk", "order"],
+        allFields: ["questionUk", "questionEn", "answerUk", "answerEn", "order"]
+    },
+    externalLink: {
+        label: "Зовнішні посилання",
+        tableFields: ["titleUk", "pageKey", "order"],
+        allFields: ["pageKey", "titleUk", "titleEn", "url", "order"],
+        enums: {
+            pageKey: ["PARENTS", "STUDENTS", "TEACHER_HELP", "PSYCHOLOGICAL", "BULLYING", "CERTIFICATION", "METHODOLOGICAL"]
+        }
+    },
+
+    // --- ПЕРСОНАЛ ---
+    person: {
+        label: "Персонал / Люди",
+        tableFields: ["fullNameUk", "type", "order"],
+        allFields: ["fullNameUk", "fullNameEn", "positionUk", "positionEn", "descriptionUk", "descriptionEn", "photo", "email", "phone", "specializationUk", "specializationEn", "type", "order", "categoryId"],
+        enums: {
+            type: ["TEACHER", "PRINCIPALS", "COMMISSION_MEMBER", "FAMOUS_PERSON", "ALUMNI", "STUDENT_COUNCIL", "PSYCHOLOGIST"]
         }
     },
     personCategory: {
-        label: 'Кафедри / Категорії',
-        tableFields: ['nameUk'],
-        allFields: ['nameUk', 'nameEn'],
+        label: "Категорії персоналу",
+        tableFields: ["nameUk", "order"],
+        allFields: ["nameUk", "nameEn", "order"]
     },
+
+    // --- ДОКУМЕНТАЦІЯ ---
     documentReport: {
-        label: 'Документи (Папки)',
-        tableFields: ['titleUk', 'category', 'year'],
-        allFields: ['category', 'titleUk', 'titleEn', 'year', 'parentId', 'descriptionUk', 'order'],
+        label: "Документи та Звіти",
+        tableFields: ["titleUk", "category"],
+        allFields: ["category", "titleUk", "titleEn", "descriptionUk", "descriptionEn", "parentId"],
         enums: {
-            category: ['REGULATORY', 'FINANCIAL', 'PUBLIC_INFO', 'GENERAL']
+            category: ["REGULATORY", "FINANCIAL", "PUBLIC_INFO", "GENERAL"]
         }
     },
     fileAsset: {
-        label: 'Файли',
-        tableFields: ['nameUk', 'fileType', 'reportId'],
-        allFields: ['nameUk', 'nameEn', 'url', 'reportId', 'fileType', 'fileSize'],
+        label: "Файли",
+        tableFields: ["nameUk", "fileType", "reportId"],
+        allFields: ["nameUk", "nameEn", "url", "fileType", "fileSize", "reportId"]
     },
-    lyceumStats: {
-        label: 'Налаштування ліцею',
-        tableFields: ['name', 'updatedAt'],
-        allFields: ['name', 'nameEn', 'logoUrl', 'addressUk', 'addressEn', 'email', 'phone', 'quoteUk', 'quoteEn', 'anthemUrl', 'teachingLanguages', 'specializationsList', 'studentsCount', 'teachersCount', 'staffCount', 'classesCount', 'flexParticipants', 'topScorersCount', 'socialLinks'],
+
+    // --- ОСВІТА ТА VR ---
+    discipline: {
+        label: "Дисципліни",
+        tableFields: ["name", "hasSubItems"],
+        allFields: ["name", "nameEn", "color", "url", "hasSubItems"]
     },
-    faq: {
-        label: 'FAQ (Питання/Відповіді)',
-        tableFields: ['questionUk', 'category', 'isPublished'],
-        allFields: ['questionUk', 'questionEn', 'answerUk', 'answerEn', 'category', 'order', 'isPublished'],
+    disciplineSubItem: {
+        label: "Підпункти дисциплін",
+        tableFields: ["name", "disciplineId"],
+        allFields: ["name", "link", "disciplineId"]
     },
     location: {
-        label: 'VR Локації (Карта)',
-        tableFields: ['nameUk', 'slug', 'floor'],
-        allFields: ['slug', 'floor', 'nameUk', 'nameEn', 'descriptionUk', 'descriptionEn', 'highlightsUk', 'highlightsEn', 'imageUrls', 'iconName'],
+        label: "VR Локації",
+        tableFields: ["nameUk", "floor"],
+        allFields: ["floor", "nameUk", "nameEn", "descriptionUk", "descriptionEn", "highlightsUk", "highlightsEn", "imagePhotos", "iconName"]
     },
     specialization: {
-        label: 'Профілі навчання',
-        tableFields: ['id', 'nameUk', 'emoji'],
-        allFields: ['id', 'emoji', 'nameUk', 'nameEn', 'descriptionUk', 'descriptionEn', 'subjectsUk', 'characteristicsUk'],
+        label: "Профілі навчання",
+        tableFields: ["id", "nameUk"],
+        allFields: ["id", "emoji", "nameUk", "nameEn", "descriptionUk", "descriptionEn", "subjectsUk", "subjectsEn", "characteristicsUk", "characteristicsEn"]
     },
-    externalLink: {
-        label: 'Зовнішні посилання',
-        tableFields: ['titleUk', 'pageKey'],
-        allFields: ['pageKey', 'titleUk', 'titleEn', 'url', 'order'],
-    }
+    testQuestion: {
+        label: 'Тести (Профорієнтація)',
+        tableFields: ['question', 'createdAt'],
+        allFields: ['question', 'questionEn', 'options', 'optionsEn', 'specialization'],
+    },
+
+    // --- НАЛАШТУВАННЯ ТА ІНШЕ ---
+    lyceumStats: {
+        label: "Дані ліцею (Головна)",
+        tableFields: ["name", "email"],
+        allFields: ["name", "nameEn", "addressUk", "addressEn", "email", "phone", "logoPhoto", "quoteUk", "quoteEn", "teachingLanguage", "teachingLanguageEn", "specialization", "specializationEn", "anthemUrl", "teachersPhoto", "materialBasePhoto", "materialBaseDescriptionUk", "materialBaseDescriptionEn", "socialLinks", "studentsCount", "studentsCountReal", "teachersCount", "staffCount", "classesCount", "flexParticipants", "topScorersCount"]
+    },
+    clubs: {
+        label: 'Клуби та гуртки',
+        tableFields: ['nameUk', 'order', 'updatedAt'],
+        allFields: ['nameUk', 'nameEn', 'descriptionUk', 'descriptionEn', 'order'],
+    },
+    workingArea: {
+        label: 'Зони / Адреси роботи',
+        tableFields: ['nameUk', 'order'],
+        allFields: ['nameUk', 'nameEn', 'order'],
+    },
+    adminUser: {
+        label: "Адміністратори",
+        tableFields: ["username", "role", "isActive"],
+        allFields: ["username", "password", "role", "isActive"],
+    },
 };

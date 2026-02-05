@@ -1,151 +1,93 @@
 'use client';
-
-import { Box, Typography, Grid, alpha } from "@mui/material";
+import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
-import development1 from "@/assets/photos/history/development1.jpg";
-import development2 from "@/assets/photos/history/development2.jpg";
-import development3 from "@/assets/photos/history/development3.jpg";
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
-export default function Development({ t }) {
-    const stages = [
-        {
-            img: development1,
-            alt: "developmentImage1Alt",
-            desc: "developmentDescription1",
-            reverse: false
-        },
-        {
-            img: development2,
-            alt: "developmentImage2Alt",
-            desc: "developmentDescription2",
-            reverse: true
-        },
-        {
-            img: development3,
-            alt: "developmentImage3Alt",
-            desc: "developmentDescription3",
-            reverse: false,
-            caption: "schoolBuildingCaption"
-        }
-    ];
+export default function Development({ items, locale, t, onImageClick }) {
+    if (!items?.length) return null;
 
     return (
         <Box component="section" sx={{ mb: 10 }}>
-            <Box
-                sx={{
-                    background: 'linear-gradient(165deg, #0c1865 0%, #1a2a8a 100%)',
-                    borderRadius: 8,
-                    p: { xs: 3, md: 8 },
-                    boxShadow: '0 20px 50px rgba(12, 24, 101, 0.2)',
-                    overflow: 'hidden',
-                    position: 'relative'
-                }}
-            >
-                {/* Декоративний фон */}
-                <Box sx={{
-                    position: 'absolute', top: 0, right: 0, width: '100%', height: '100%',
-                    background: 'radial-gradient(circle at 100% 0%, rgba(249, 115, 22, 0.05) 0%, transparent 40%)',
-                    pointerEvents: 'none'
-                }} />
-
-                {/* Title */}
-                <Typography
-                    component="h2"
-                    sx={{
-                        fontFamily: "'Montserrat Alternates', sans-serif",
-                        fontSize: { xs: 28, md: 42 },
-                        fontWeight: 800,
-                        color: "#fff",
-                        textAlign: "center",
-                        mb: 8,
-                        position: 'relative'
-                    }}
-                >
+            <Box sx={{ background: 'linear-gradient(165deg, #0c1865 0%, #1a2a8a 100%)', borderRadius: 8, p: { xs: 4, md: 8 }, color: '#fff' }}>
+                <Typography variant="h2" sx={{ ...titleSx, textAlign: 'center', mb: 8 }}>
                     {t("developmentStagesTitle")}
                 </Typography>
 
-                <Grid container spacing={8}>
-                    {stages.map((stage, idx) => (
-                        <Grid item key={idx} size={{xs: 12}}>
-                            <Grid
-                                container
-                                spacing={{ xs: 4, md: 8 }}
-                                alignItems="center"
-                                direction={stage.reverse ? { xs: "column", md: "row-reverse" } : "row"}
-                            >
-                                {/* Фото */}
-                                <Grid item size={{xs: 12, md: 5}}>
-                                    <Box sx={{ position: 'relative' }}>
-                                        <Box
-                                            sx={{
-                                                position: 'relative',
-                                                height: { xs: 250, md: 350 },
-                                                borderRadius: 6,
-                                                overflow: 'hidden',
-                                                boxShadow: '0 15px 35px rgba(0,0,0,0.3)',
-                                                border: `1px solid ${alpha('#fff', 0.1)}`
-                                            }}
-                                        >
-                                            <Image
-                                                fill
-                                                src={stage.img}
-                                                alt={t(stage.alt)}
-                                                style={{ objectFit: 'cover' }}
-                                            />
-                                        </Box>
+                {items.map((item, idx) => {
+                    const photos = item.photoGallery || [];
+                    const title = locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk;
+                    const rawText = locale === 'en' ? (item.textEn || item.textUk) : item.textUk;
+                    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
 
-                                        {stage.caption && (
-                                            <Typography
-                                                sx={{
-                                                    mt: 2,
-                                                    fontSize: 13,
-                                                    color: alpha("#fff", 0.6),
-                                                    textAlign: "center",
-                                                    fontStyle: "italic",
-                                                    fontFamily: "'Montserrat Alternates', sans-serif",
-                                                }}
-                                            >
-                                                {t(stage.caption)}
-                                            </Typography>
+                    return (
+                        <Box key={item.id} sx={{ mb: 6, pb: 6, borderBottom: idx !== items.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
+                            <Typography variant="h5" sx={{ color: '#f97316', fontWeight: 800, mb: 4 }}>
+                                {title}
+                            </Typography>
+
+                            {paragraphs.map((p, pIdx) => {
+                                const photo = photos[pIdx];
+                                // Шаховий порядок:
+                                // 0: Текст зліва (row-reverse)
+                                // 1: Фото зліва (row)
+                                const direction = pIdx % 2 === 0 ? 'row-reverse' : 'row';
+
+                                return (
+                                    <Grid
+                                        container
+                                        spacing={4}
+                                        key={pIdx}
+                                        direction={direction}
+                                        alignItems="center"
+                                        sx={{ mb: 4 }}
+                                    >
+                                        {photo && (
+                                            <Grid item size={{ xs: 12, md: 5 }}>
+                                                <Box
+                                                    onClick={() => onImageClick(photos, pIdx)}
+                                                    sx={{
+                                                        position: 'relative', height: 350, borderRadius: 4,
+                                                        overflow: 'hidden', cursor: 'pointer',
+                                                        boxShadow: '0 10px 30px rgba(0,0,0,0.2)',
+                                                        '&:hover img': { transform: 'scale(1.05)' }
+                                                    }}
+                                                >
+                                                    <Image src={photo} fill style={{ objectFit: 'cover', transition: '0.5s' }} alt="Development stage" />
+                                                </Box>
+                                            </Grid>
                                         )}
-                                    </Box>
-                                </Grid>
 
-                                {/* Текст */}
-                                <Grid item size={{xs: 12, md: 7}}>
-                                    <Box sx={{ position: 'relative' }}>
-                                        {/* Номер етапу на фоні */}
-                                        <Typography sx={{
-                                            position: 'absolute', top: -40,
-                                            left: stage.reverse ? 'auto' : -20,
-                                            right: stage.reverse ? -20 : 'auto',
-                                            fontSize: 100, fontWeight: 900,
-                                            color: alpha('#fff', 0.03), zIndex: 0,
-                                            userSelect: 'none'
-                                        }}>
-                                            0{idx + 1}
-                                        </Typography>
+                                        <Grid item size={{ xs: 12, md: photo ? 7 : 12 }}>
+                                            <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>
+                                                {p}
+                                            </Typography>
+                                        </Grid>
+                                    </Grid>
+                                );
+                            })}
 
-                                        <Typography sx={paragraphSx}>
-                                            {t(stage.desc)}
-                                        </Typography>
-                                    </Box>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    ))}
-                </Grid>
+                            {photos.length > paragraphs.length && (
+                                <Button
+                                    onClick={() => onImageClick(photos, 0)}
+                                    startIcon={<PhotoLibraryIcon />}
+                                    sx={{
+                                        mt: 2,
+                                        color: alpha('#fff', 0.7),
+                                        fontWeight: 600,
+                                        textTransform: 'none',
+                                        '&:hover': { color: '#fff', bgcolor: alpha('#fff', 0.1) }
+                                    }}
+                                >
+                                    {t("viewGallery")} ({photos.length})
+                                </Button>
+                            )}
+                        </Box>
+                    );
+                })}
             </Box>
         </Box>
     );
 }
 
-const paragraphSx = {
-    fontFamily: "'Montserrat Alternates', sans-serif",
-    fontSize: { xs: 15, md: 17 },
-    lineHeight: 1.8,
-    color: alpha("#fff", 0.8),
-    textAlign: "justify",
-    position: 'relative',
-    zIndex: 1
-};
+const titleSx = { fontFamily: "'Montserrat Alternates', sans-serif", fontSize: { xs: 28, md: 42 }, fontWeight: 800, color: '#fff' };
+const paragraphSx = { fontSize: { xs: 15, md: 17 }, lineHeight: 1.8, color: alpha('#fff', 0.8), textAlign: 'justify' };

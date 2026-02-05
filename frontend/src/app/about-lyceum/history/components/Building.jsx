@@ -1,37 +1,88 @@
 'use client';
-
-import { Box, Typography, Grid, alpha } from "@mui/material";
+import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
-import schoolPhoto1 from "@/assets/photos/history/school_photo1.jpg";
-import schoolPhoto2 from "@/assets/photos/history/school_photo2.jpg";
-import schoolPhoto3 from "@/assets/photos/history/school_photo3.jpg";
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 
-export default function Building({ t }) {
-    const blocks = [
-        { img: schoolPhoto1, text: "schoolBuildingDescription1" },
-        { img: schoolPhoto2, text: "schoolBuildingDescription2", reverse: true },
-        { img: schoolPhoto3, text: "schoolBuildingDescription3" }
-    ];
+export default function Building({ items, locale, t, onImageClick }) {
+    if (!items?.length) return null;
 
     return (
         <Box component="section" sx={{ mb: 10 }}>
-            <Box sx={{ background: '#0c1865', borderRadius: 8, p: { xs: 3, md: 8 }, color: '#fff' }}>
+            <Box sx={{ background: '#0c1865', borderRadius: 8, p: { xs: 4, md: 8 }, color: '#fff' }}>
                 <Typography variant="h2" sx={{ ...titleSx, textAlign: 'center', mb: 8 }}>
                     {t("schoolBuildingTitle")}
                 </Typography>
 
-                {blocks.map((block, idx) => (
-                    <Grid container spacing={6} key={idx} direction={block.reverse ? 'row-reverse' : 'row'} alignItems="center" sx={{ mb: idx !== 2 ? 8 : 0 }}>
-                        <Grid item size={{xs: 12, md: 5}}>
-                            <Box sx={{ position: 'relative', height: 300, borderRadius: 4, overflow: 'hidden' }}>
-                                <Image src={block.img} fill style={{ objectFit: 'cover' }} alt="History" />
-                            </Box>
-                        </Grid>
-                        <Grid item size={{xs: 12, md: 7}}>
-                            <Typography sx={paragraphSx}>{t(block.text)}</Typography>
-                        </Grid>
-                    </Grid>
-                ))}
+                {items.map((item, idx) => {
+                    const title = locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk;
+                    const rawText = locale === 'en' ? (item.textEn || item.textUk) : item.textUk;
+                    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
+                    const photos = item.photoGallery || [];
+
+                    return (
+                        <Box key={item.id} sx={{ mb: idx !== items.length - 1 ? 10 : 0 }}>
+                            <Typography variant="h4" sx={{ color: '#f97316', fontWeight: 800, mb: 4, textAlign: 'center' }}>
+                                {title}
+                            </Typography>
+
+                            {paragraphs.map((p, pIdx) => {
+                                const photo = photos[pIdx];
+
+                                // 0 (парний) -> Текст зліва (row-reverse)
+                                // 1 (непарний) -> Фото зліва (row)
+                                const direction = pIdx % 2 === 0 ? 'row-reverse' : 'row';
+
+                                return (
+                                    <Grid
+                                        container
+                                        spacing={6}
+                                        key={pIdx}
+                                        direction={direction}
+                                        alignItems="center"
+                                        sx={{ mb: 6 }}
+                                    >
+                                        {photo && (
+                                            <Grid item size={{ xs: 12, md: 5 }}>
+                                                <Box
+                                                    onClick={() => onImageClick(photos, pIdx)}
+                                                    sx={{
+                                                        position: 'relative', height: 350, borderRadius: 4,
+                                                        overflow: 'hidden', cursor: 'pointer',
+                                                        boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
+                                                        '&:hover img': { transform: 'scale(1.05)' },
+                                                        transition: 'all 0.3s ease'
+                                                    }}
+                                                >
+                                                    <Image src={photo} fill style={{ objectFit: 'cover', transition: '0.5s' }} alt="Building history" />
+                                                </Box>
+                                            </Grid>
+                                        )}
+                                        <Grid item size={{ xs: 12, md: photo ? 7 : 12 }}>
+                                            <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>{p}</Typography>
+                                        </Grid>
+                                    </Grid>
+                                );
+                            })}
+
+                            {photos.length > paragraphs.length && (
+                                <Box sx={{ textAlign: 'center', mt: 4 }}>
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<PhotoLibraryIcon />}
+                                        onClick={() => onImageClick(photos, 0)}
+                                        sx={{
+                                            color: '#f97316', borderColor: '#f97316', borderRadius: '12px',
+                                            px: 4, py: 1, fontWeight: 700, textTransform: 'none',
+                                            '&:hover': { borderColor: '#fff', color: '#fff', bgcolor: alpha('#fff', 0.1) }
+                                        }}
+                                    >
+                                        {t("viewAllPhotos")} ({photos.length})
+                                    </Button>
+                                </Box>
+                            )}
+                        </Box>
+                    );
+                })}
             </Box>
         </Box>
     );

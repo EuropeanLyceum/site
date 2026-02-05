@@ -1,112 +1,9 @@
 'use client';
-
-import Image from 'next/image';
 import { Box, Grid, Typography, Card, CardContent, alpha } from '@mui/material';
+import Image from 'next/image';
 
-import oranskyi from '@/assets/photos/history/oranskyi.jpg';
-import bondar from '@/assets/photos/history/bondar.jpg';
-import sakhno from '@/assets/photos/history/sakhno.jpg';
-import chabanenko from '@/assets/photos/history/chabanenko.jpg';
-import klyushnichenko from '@/assets/photos/history/klyushnichenko.jpg';
-import tkachenko from '@/assets/photos/history/tkachenko.jpg';
-import rohozha from '@/assets/photos/history/rohozha.jpg';
-import nikitenko from '@/assets/photos/history/nikitenko.jpg';
-import dmytrenko from '@/assets/photos/history/dmytrenko.jpg';
-import kochergina from '@/assets/photos/history/kochergina.jpg';
-import derkach from '@/assets/photos/history/derkach.jpg';
-
-
-export default function Principals({ t }) {
-    const directors = [
-        {
-            key: 'oranskyi',
-            image: oranskyi,
-            alt: 'Оранський Яків Олександрович',
-            name: 'oranskyiName',
-            description: 'oranskyiDescription',
-            caption: 'oranskyiCaption',
-        },
-        {
-            key: 'bondar',
-            image: bondar,
-            alt: 'Бондар Михайло Сергійович',
-            name: 'bondarName',
-            description: 'bondarDescription',
-        },
-        {
-            key: 'sakhno',
-            image: sakhno,
-            alt: 'Сахно Володимир Іванович',
-            name: 'sakhnoName',
-            description: 'sakhnoDescription',
-            caption: 'sakhnoCaption',
-        },
-        {
-            key: 'chabanenko',
-            image: chabanenko,
-            alt: 'Чабаненко Олександра Іванівна',
-            name: 'chabanenkoName',
-            description: 'chabanenkoDescription',
-            objectPosition: 'center 20%',
-        },
-        {
-            key: 'klyushnichenko',
-            image: klyushnichenko,
-            alt: 'Клюшніченко Микола Степанович',
-            name: 'klyushnichenkoName',
-            description: 'klyushnichenkoDescription',
-            caption: 'klyushnichenkoCaption',
-        },
-        {
-            key: 'tkachenko',
-            image: tkachenko,
-            alt: 'Ткаченко Володимир Іванович',
-            name: 'tkachenkoName',
-            description: 'tkachenkoDescription',
-            objectPosition: 'left center',
-        },
-        {
-            key: 'rohozha',
-            image: rohozha,
-            alt: 'Рогожа Михайло Миколайович',
-            name: 'rohozhaName',
-            description: 'rohozhaDescription',
-            caption: 'rohozhaCaption',
-            objectPosition: 'right center',
-        },
-        {
-            key: 'nikitenko',
-            image: nikitenko,
-            alt: 'Нікітенко Микола Михайлович',
-            name: 'nikitenkoName',
-            description: 'nikitenkoDescription',
-            caption: 'nikitenkoCaption',
-        },
-        {
-            key: 'dmytrenko',
-            image: dmytrenko,
-            alt: 'Дмитренко Василь Едуардович',
-            name: 'dmytrenkoName',
-            description: 'dmytrenkoDescription',
-            objectPosition: 'center 30%',
-        },
-        {
-            key: 'kochergina',
-            image: kochergina,
-            alt: 'Кочергіна Світлана Олександрівна',
-            name: 'kocherginaName',
-            description: 'kocherginaDescription',
-            objectPosition: 'center 30%',
-        },
-        {
-            key: 'derkach',
-            image: derkach,
-            alt: 'Деркач Лариса Анатоліївна',
-            name: 'derkachName',
-            description: 'derkachDescription',
-            objectPosition: 'center 30%',
-        },
-    ];
+export default function Principals({ items, locale, t }) {
+    if (!items?.length) return null;
 
     return (
         <Box component="section" sx={{ mb: 10 }}>
@@ -116,31 +13,39 @@ export default function Principals({ t }) {
                 </Typography>
 
                 <Grid container spacing={3}>
-                    {directors.map((director) => (
-                        <Grid item key={director.key} size={{xs: 12, md: 6, lg: 4}}>
-                            <Card sx={{
-                                height: '100%',
-                                background: alpha('#fff', 0.05),
-                                backdropFilter: 'blur(10px)',
-                                borderRadius: 6,
-                                border: `1px solid ${alpha('#fff', 0.1)}`,
-                                p: 2,
-                                transition: '0.3s',
-                                '&:hover': { transform: 'translateY(-5px)', background: alpha('#fff', 0.1) }
-                            }}>
-                                <Box sx={{ position: 'relative', height: 300, borderRadius: 4, overflow: 'hidden', mb: 2 }}>
-                                    <Image src={director.image} alt={director.alt} fill style={{ objectFit: 'cover' }} />
-                                </Box>
-                                <CardContent sx={{ textAlign: 'center', p: 1 }}>
-                                    <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: 18, mb: 1 }}>{t(director.name)}</Typography>
-                                    <Typography sx={{ color: alpha('#fff', 0.7), fontSize: 14 }}>{t(director.description)}</Typography>
-                                </CardContent>
-                            </Card>
-                        </Grid>
-                    ))}
+                    {items.sort((a, b) => a.order - b.order).map((person) => {
+                        const isEn = locale === 'en';
+                        return (
+                            <Grid item key={person.id} size={{xs: 12, md: 6, lg: 4}}>
+                                <Card sx={cardSx}>
+                                    <Box sx={{ position: 'relative', height: 350, borderRadius: 4, overflow: 'hidden', mb: 2 }}>
+                                        <Image src={person.photo || ''} alt="Director" fill style={{ objectFit: 'cover' }} />
+                                    </Box>
+                                    <CardContent sx={{ textAlign: 'center', p: 1 }}>
+                                        <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: 20, mb: 1 }}>
+                                            {isEn ? person.fullNameEn : person.fullNameUk}
+                                        </Typography>
+                                        <Typography sx={{ color: '#f97316', fontWeight: 700, fontSize: 14, mb: 1, textTransform: 'uppercase' }}>
+                                            {isEn ? person.positionEn : person.positionUk}
+                                        </Typography>
+                                        <Typography sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}>
+                                            {isEn ? person.descriptionEn : person.descriptionUk}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Grid>
+                        );
+                    })}
                 </Grid>
             </Box>
         </Box>
     );
 }
+
 const titleSx = { fontFamily: "'Montserrat Alternates', sans-serif", fontSize: { xs: 28, md: 42 }, fontWeight: 800, color: '#fff' };
+const cardSx = {
+    height: '100%', background: alpha('#fff', 0.05),
+    backdropFilter: 'blur(10px)', borderRadius: 6,
+    border: `1px solid ${alpha('#fff', 0.1)}`, p: 2,
+    transition: '0.3s', '&:hover': { transform: 'translateY(-5px)', background: alpha('#fff', 0.1) }
+};

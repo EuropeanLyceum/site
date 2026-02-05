@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Box,
   Drawer,
@@ -14,7 +14,7 @@ import {
   ListSubheader,
   alpha
 } from "@mui/material";
-import React from 'react';
+import React, { Suspense } from 'react';
 
 const groupedLinks = [
   // ===================================
@@ -23,17 +23,11 @@ const groupedLinks = [
   {
     title: "🏠 Головна сторінка",
     links: [
-      { href: "/pageSection/home_hero", label: "Заголовок і банер (Hero)" },
+      { href: "/pageSection?type=HOME_HERO", label: "Заголовок та вступ" },
       { href: "/lyceumStats/", label: "Статистика (Цифри)" },
-      { href: "/faq", label: "FAQ (Питання-відповідь)" },
-    ],
-  },
-  {
-    title: "📇 Візитівка ліцею",
-    links: [
-      { href: "/pageSection/visiting_card_intro", label: "Текст візитівки" },
-      { href: "/lyceumStats/", label: "Дані про клуби (в статистиці)" },
-      { href: "/content?type=VISITING_CARD", label: "Матеріальна база (Контент)" },
+      { href: "/fAQ", label: "FAQ (Питання-відповідь)" },
+      { href: "/clubs", label: "Клуби" },
+      { href: "/workingArea", label: "Зона роботи" },
     ],
   },
 
@@ -43,17 +37,18 @@ const groupedLinks = [
   {
     title: "📜 Сторінка Історії",
     links: [
-      { href: "/content?type=HISTORY", label: "Тексти (Історія, Будівля)" },
-      { href: "/person?type=FAMOUS_PERSON", label: "Фундатори та Видатні" },
-      { href: "/person?type=ADMINISTRATION", label: "Директори" },
+      { href: "/content?type=FOUNDERS", label: "Тексти (Фундатори)" },
+      { href: "/content?type=BUILDING", label: "Тексти (Будівля)" },
+      { href: "/content?type=HISTORY", label: "Тексти (Історія)" },
+      { href: "/person?type=FAMOUS_PERSON", label: "Видатні" },
+      { href: "/person?type=PRINCIPALS", label: "Директори" },
     ],
   },
   {
     title: "💡 Сторінка Інновацій",
     links: [
-      { href: "/pageSection/innovation_intro", label: "Заголовок та вступ" },
+      { href: "/pageSection?type=INNOVATIVE", label: "Заголовок та вступ" },
       { href: "/content?type=INNOVATION", label: "Статті про інновації" },
-      { href: "/content?type=PROJECT", label: "Проєкти" },
     ],
   },
 
@@ -102,16 +97,18 @@ const groupedLinks = [
   {
     title: "🧠 Психологічна служба",
     links: [
+      { href: "/pageSection?type=PSYCHOLOGICAL", label: "Заголовок та вступ" },
       { href: "/person?type=PSYCHOLOGIST", label: "Психолог (Персона)" }, // Треба додати PSYCHOLOGIST в enum PersonType
       { href: "/content?type=PSYCHOLOGICAL", label: "Статті та поради" },
-      { href: "/externalLink?pageKey=psychological", label: "Корисні посилання" },
+      { href: "/externalLink?pageKey=PSYCHOLOGICAL", label: "Корисні посилання" },
     ],
   },
   {
     title: "🛑 Анти-булінг",
     links: [
-      { href: "/content?type=ANTI_BULLYING", label: "Статті та матеріали" }, // Додати в enum
-      { href: "/externalLink?pageKey=anti_bullying", label: "Корисні посилання" },
+      { href: "/pageSection?type=ANTI_BULLYING", label: "Заголовок та вступ" },
+      { href: "/content?type=ANTI_BULLYING", label: "Статті та матеріали" },
+      { href: "/externalLink?pageKey=ANTI_BULLYING", label: "Корисні посилання" },
     ],
   },
   {
@@ -119,8 +116,19 @@ const groupedLinks = [
     links: [
       { href: "/content?type=CLUBS", label: "Клуби та студії" },
       { href: "/content?type=SPORT", label: "SportLife" },
-      { href: "/content?type=RESEARCH", label: "Наукова робота" },
+      { href: "/pageSection?type=PROJECT_RESEARCH", label: "Заголовок та вступ для проектів" },
+      { href: "/content?type=RESEARCH_PROJECT", label: "Наукова робота" },
       { href: "/content?type=PATRIOTIC", label: "Патріотичне виховання" },
+      { href: "/content?type=INTELLECT", label: "Інтелект" },
+      { href: "/content?type=GOVERNMENT", label: "Самоврядування" },
+    ],
+  },
+
+  {
+    title: "🎓 Оцінюювання",
+    links: [
+      { href: "/discipline", label: "Предмет" },
+      { href: "/disciplineSubItem", label: "Поділ на класи" },
     ],
   },
 
@@ -132,16 +140,16 @@ const groupedLinks = [
     links: [
       { href: "/content?type=METHODOLOGICAL", label: "Методичні заходи" },
       { href: "/content?type=FOR_TEACHERS", label: "Допомога вчителю" },
-      { href: "/content?type=QUALIFICATION", label: "Підвищення кваліфікації" }, // Новий тип
+      { href: "/content?type=QUALIFICATION", label: "Підвищення кваліфікації" },
     ],
   },
   {
     title: "🏅 Сертифікація",
     links: [
-      { href: "/pageSection/certification_intro", label: "Інфо про комісію (Адреса)" },
+      { href: "/pageSection?type=CERTIFICATION", label: "Заголовок та вступ" },
       { href: "/person?type=COMMISSION_MEMBER", label: "Члени комісії" },
       { href: "/content?type=CERTIFICATION", label: "Матеріали" }, // Новий тип
-      { href: "/externalLink?pageKey=certification", label: "Корисні посилання" },
+      { href: "/externalLink?pageKey=CERTIFICATION", label: "Корисні посилання" },
     ],
   },
 
@@ -151,9 +159,9 @@ const groupedLinks = [
   {
     title: "👪 Батькам та Учням",
     links: [
-      { href: "/pageSection/parents_intro", label: "Батькам: Вступ" },
+      { href: "/pageSection?type=PARENTS_INFO", label: "Заголовок та вступ" },
       { href: "/content?type=FOR_PARENTS", label: "Батькам: Події/Оголошення" },
-      { href: "/pageSection/students_intro", label: "Учням: Вступ" },
+      { href: "/pageSection?type=STUDENTS_INFO", label: "Заголовок та вступ" },
       { href: "/content?type=FOR_STUDENTS", label: "Учням: Події/Оголошення" },
     ],
   },
@@ -169,7 +177,60 @@ const groupedLinks = [
       { href: "/specialization", label: "Тест: Результати (Профілі)" },
     ],
   },
+
+  {
+    title: "Admin",
+    links: [
+      { href: "/change-password", label: "Змінити пароль" },
+    ],
+  },
 ];
+
+function SidebarItem({ href, label, pathname }: { href: string; label: string; pathname: string }) {
+  const searchParams = useSearchParams();
+
+  const checkIsActive = () => {
+    const [path, query] = href.split('?');
+    const isPathMatch = pathname === path;
+
+    if (query) {
+      const urlParams = new URLSearchParams(query);
+      return isPathMatch && Array.from(urlParams.entries()).every(([key, value]) =>
+          searchParams.get(key) === value
+      );
+    }
+    return isPathMatch && searchParams.toString() === "";
+  };
+
+  const isActive = checkIsActive();
+
+  return (
+      <ListItem disablePadding sx={{ mb: 0.5 }}>
+        <ListItemButton
+            component={Link}
+            href={href}
+            sx={{
+              borderRadius: 3,
+              transition: 'all 0.2s',
+              bgcolor: isActive ? alpha('#182BA1', 0.08) : 'transparent',
+              color: isActive ? '#182BA1' : '#475569',
+              '&:hover': {
+                bgcolor: isActive ? alpha('#182BA1', 0.12) : '#f1f5f9',
+                color: isActive ? '#182BA1' : '#0f172a',
+              }
+            }}
+        >
+          <ListItemText
+              primary={label}
+              primaryTypographyProps={{
+                fontSize: '0.875rem',
+                fontWeight: isActive ? 700 : 500
+              }}
+          />
+        </ListItemButton>
+      </ListItem>
+  );
+}
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -221,37 +282,15 @@ export default function Sidebar() {
                     </ListSubheader>
                   }
               >
-                {group.links.map((link) => {
-                  // Перевірка активності: чи pathname починається з href (для вкладених сторінок)
-                  const isActive = pathname.startsWith(link.href.split('?')[0]);
-
-                  return (
-                      <ListItem key={link.href} disablePadding sx={{ mb: 0.5 }}>
-                        <ListItemButton
-                            component={Link}
-                            href={link.href}
-                            sx={{
-                              borderRadius: 3,
-                              transition: 'all 0.2s',
-                              bgcolor: isActive ? alpha('#182BA1', 0.08) : 'transparent',
-                              color: isActive ? '#182BA1' : '#475569',
-                              '&:hover': {
-                                bgcolor: isActive ? alpha('#182BA1', 0.12) : '#f1f5f9',
-                                color: isActive ? '#182BA1' : '#0f172a',
-                              }
-                            }}
-                        >
-                          <ListItemText
-                              primary={link.label}
-                              primaryTypographyProps={{
-                                fontSize: '0.875rem',
-                                fontWeight: isActive ? 700 : 500
-                              }}
-                          />
-                        </ListItemButton>
-                      </ListItem>
-                  );
-                })}
+                {group.links.map((link) => (
+                    <Suspense key={link.href} fallback={<ListItem sx={{ py: 1.5, opacity: 0.5 }}>{link.label}</ListItem>}>
+                      <SidebarItem
+                          href={link.href}
+                          label={link.label}
+                          pathname={pathname}
+                      />
+                    </Suspense>
+                ))}
               </List>
           ))}
         </Box>

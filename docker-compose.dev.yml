@@ -46,7 +46,7 @@ services:
     depends_on:
       - postgres_db
     volumes:
-      - admin-uploads-local:/app/public/uploads
+      - admin-uploads-local:/app/public/files/uploads
       - admin-db-local:/app/prisma
     networks:
       - school-network-local

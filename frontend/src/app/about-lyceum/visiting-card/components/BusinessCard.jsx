@@ -1,10 +1,23 @@
 'use client';
+
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import { Box, Typography, Grid, alpha, Container } from '@mui/material';
 import Image from 'next/image';
-import teachers from '@/assets/photos/teachers.jpg';
-import logoPictureVisitCard from '@/assets/photos/icons/logo_picture_visit_card.jpg';
+import teachersDefault from '@/assets/photos/teachers.jpg';
+import logoDefault from '@/assets/photos/icons/logo_picture_visit_card.jpg';
 
-export default function BusinessCard({ t }) {
+export default function BusinessCard({ t, stats, locale }) {
+    if (!stats) return null;
+
+    // Логіка вибору мови на основі нової схеми
+    const name = locale === 'en' ? stats.nameEn : stats.name;
+    const address = locale === 'en' ? (stats.addressEn || stats.addressUk) : stats.addressUk;
+    const quote = locale === 'en' ? (stats.quoteEn || stats.quoteUk) : stats.quoteUk;
+
+    // Нові поля зі схеми
+    const currentSpecialization = locale === 'en' ? stats.specializationEn : stats.specialization;
+    const currentLanguage = locale === 'en' ? stats.teachingLanguageEn : stats.teachingLanguage;
+
     return (
         <Box sx={{ pt: { xs: 4 }, pb: 8 }}>
             <Container maxWidth="xl">
@@ -13,31 +26,32 @@ export default function BusinessCard({ t }) {
                 </Typography>
 
                 <Grid container spacing={4}>
-                    {/* Ліва частина: Велика фотографія команди */}
+                    {/* Ліва частина: Фото */}
                     <Grid item size={{xs: 12, lg: 6}}>
                         <Box sx={{
-                            position: 'relative',
-                            height: { xs: 300, md: 500 },
-                            borderRadius: 8,
-                            overflow: 'hidden',
-                            boxShadow: '0 20px 40px rgba(12, 43, 161, 0.2)',
-                            border: '1px solid #fff'
+                            position: 'relative', height: { xs: 300, md: 500 },
+                            borderRadius: 8, overflow: 'hidden',
+                            boxShadow: '0 20px 40px rgba(12, 43, 161, 0.2)', border: '1px solid #fff'
                         }}>
-                            <Image src={teachers} alt={t('teachersTeamAlt')} fill style={{ objectFit: 'cover' }} priority />
+                            <Image
+                                src={stats.photoTeacherUrl || teachersDefault}
+                                alt="Teachers Team"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                priority
+                            />
                         </Box>
                     </Grid>
 
-                    {/* Права частина: Плитки з інфо */}
+                    {/* Права частина: Інфо-плитки */}
                     <Grid item size={{xs: 12, lg: 6}}>
                         <Box sx={{
                             background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
-                            borderRadius: 8,
-                            p: { xs: 3, md: 4 },
-                            height: '100%',
+                            borderRadius: 8, p: { xs: 3, md: 4 }, height: '100%',
                             boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
                         }}>
                             <Grid container spacing={2}>
-                                {/* Головний блок з лого */}
+                                {/* Шапка з назвою та лого */}
                                 <Grid item size={{xs: 12}}>
                                     <Box sx={{
                                         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -46,33 +60,74 @@ export default function BusinessCard({ t }) {
                                     }}>
                                         <Box>
                                             <Typography sx={{ color: '#fff', fontSize: { xs: 18, md: 22 }, fontWeight: 800, fontFamily: 'Montserrat Alternates' }}>
-                                                {t('academicLyceumEuropean')} {t('europeanLyceum')}
+                                                {name}
                                             </Typography>
-                                            <Typography sx={{ color: alpha('#fff', 0.7), mt: 1 }}>{t('locationLubnyPoltava')}</Typography>
-                                            <Typography sx={{ color: '#f97316', mt: 1, fontStyle: 'italic', fontWeight: 600 }}>{t('ourKnowledgeMotto')}</Typography>
+                                            <Typography sx={{ color: alpha('#fff', 0.7), mt: 1 }}>{address}</Typography>
+                                            {quote && (
+                                                <Typography sx={{ color: '#f97316', mt: 1, fontStyle: 'italic', fontWeight: 600 }}>
+                                                    {quote}
+                                                </Typography>
+                                            )}
                                         </Box>
                                         <Box sx={{ bgcolor: '#fff', p: 1, borderRadius: 4, display: { xs: 'none', sm: 'block' } }}>
-                                            <Image src={logoPictureVisitCard} alt="logo" width={80} height={80} />
+                                            <Image
+                                                src={stats.logoUrl || logoDefault}
+                                                alt="logo"
+                                                width={80}
+                                                height={80}
+                                                style={{ objectFit: 'contain' }}
+                                            />
                                         </Box>
                                     </Box>
                                 </Grid>
 
-                                <InfoTile title={t('specializationTitle')} value={t('inDepthEnglishStudy')} xs={12} sm={6} />
-                                <InfoTile title={t('languageOfStudyTitle')} value={t('ukrainianLanguage')} xs={12} sm={6} />
-                                <InfoTile title={t('teachersCount')} value={t('teachersCountNumber')} xs={6} sm={4} />
-                                <InfoTile title={t('totalStaffCount')} value={t('totalStaffNumber')} xs={6} sm={4} />
-                                <InfoTile title={t('licensedCapacityTitle')} value={t('licensedCapacityNumber')} xs={12} sm={4} />
+                                {/* Динамічні дані з LyceumStats */}
+                                <InfoTile title={t('specializationTitle')} value={currentSpecialization} xs={12} sm={4} />
+                                <InfoTile title={t('languageOfStudyTitle')} value={currentLanguage} xs={12} sm={4} />
+                                <Grid item size={{xs: 12, sm: 4}}>
+                                    <Box
+                                        component="a"
+                                        href={stats.anthemUrl}
+                                        target="_blank"
+                                        sx={{
+                                            ...tileStyle,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: 2,
+                                            textDecoration: 'none',
+                                            cursor: 'pointer',
+                                            '&:hover': { background: alpha('#f97316', 0.2), borderColor: '#f97316' }
+                                        }}
+                                    >
+                                        <MusicNoteIcon sx={{ color: '#f97316', fontSize: 30 }} />
+                                        <Box>
+                                            <Typography sx={tileTitle}>{t('lyceumAnthemTitle')}</Typography>
+                                            <Typography sx={{ ...tileValue, color: '#3b82f6', textDecoration: 'underline' }}>
+                                                {t('anthemLink')}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Grid>
+                                <InfoTile title={t('teachersCount')} value={stats.teachersCount} xs={6} sm={4} />
+                                <InfoTile title={t('totalStaffCount')} value={stats.staffCount} xs={6} sm={4} />
+                                <InfoTile title={t('licensedCapacityTitle')} value={stats.studentsCount} xs={12} sm={4} />
+                                <InfoTile title={t('classesCountTitle')} value={stats.classesCount} xs={12} sm={6} />
+                                <InfoTile title={t('actualStudentsCountTitle')} value={stats.studentsCountReal} xs={12} sm={6} />
 
+                                {/* Адреса та Контакти */}
                                 <Grid item size={{xs: 12, sm: 6}}>
                                     <Box sx={tileStyle}>
                                         <Typography sx={tileTitle}>{t('addressTitle')}</Typography>
-                                        <Typography sx={tileValue}>{t('fullAddressText')}</Typography>
+                                        <Typography sx={tileValue}>{address}</Typography>
                                     </Box>
                                 </Grid>
                                 <Grid item size={{xs: 12, sm: 6}}>
                                     <Box sx={tileStyle}>
                                         <Typography sx={tileTitle}>{t('contactsTitle')}</Typography>
-                                        <Typography sx={tileValue}>{t('contactPhone')}<br/>{t('contactEmail')}</Typography>
+                                        <Typography sx={tileValue}>
+                                            {stats.phone}<br/>
+                                            {stats.email}
+                                        </Typography>
                                     </Box>
                                 </Grid>
                             </Grid>
@@ -95,6 +150,7 @@ function InfoTile({ title, value, xs, sm }) {
     );
 }
 
+// Стилі залишаються без змін
 const ourCardTitleSx = {
     fontFamily: 'Montserrat Alternates',
     fontWeight: 900,
@@ -114,5 +170,16 @@ const tileStyle = {
     '&:hover': { background: alpha('#fff', 0.1) }
 };
 
-const tileTitle = { color: '#f97316', fontWeight: 700, fontSize: 13, mb: 0.5, textTransform: 'uppercase' };
-const tileValue = { color: '#fff', fontWeight: 600, fontSize: 15 };
+const tileTitle = {
+    color: '#f97316',
+    fontWeight: 700,
+    fontSize: 13,
+    mb: 0.5,
+    textTransform: 'uppercase'
+};
+
+const tileValue = {
+    color: '#fff',
+    fontWeight: 600,
+    fontSize: 15
+};

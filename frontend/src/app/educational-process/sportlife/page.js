@@ -1,20 +1,30 @@
+'use client';
+import { useState, useEffect } from "react";
 import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout";
 
-const sportLife = [
-  {
-    id: 1,
-    date: "28.01.2026",
-    title: "Турнір з футзалу серед старшокласників",
-    titleEn: "Futsal Tournament Among High School Students",
-    text: "Спорт — це життя! У запеклій боротьбі команда 10-А класу виборола кубок ліцею. Дякуємо всім учасникам за волю до перемоги та неймовірні емоції на полі. Наступний етап — товариський матч з викладачами.",
-    textEn: "In a fierce struggle, the team of the 10-A class won the lyceum cup. Thanks to all participants for the will to win.",
-    images: [
-      "https://images.unsplash.com/photo-1574629810360-7efbbe195018?q=80&w=1200",
-      "https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=1200"
-    ]
-  }
-];
-
 export default function SportLifePage() {
-  return <UnifiedNewsLayout translationKey="sportLife" data={sportLife} />;
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/admin/api/admin/content?type=SPORT_LIFE');
+        const json = await res.json();
+        const formatted = (json.data || []).map(item => ({
+          id: item.id,
+          title: item.titleUk,
+          titleEn: item.titleEn,
+          text: item.textUk,
+          textEn: item.textEn,
+          images: item.photoGallery || [],
+          date: new Date(item.publicationDate || item.createdAt).toLocaleDateString('uk-UA')
+        }));
+        setData(formatted);
+      } catch (e) { console.error(e); } finally { setLoading(false); }
+    };
+    fetchData();
+  }, []);
+
+  return <UnifiedNewsLayout translationKey="sportLife" data={data} isLoading={loading} />;
 }

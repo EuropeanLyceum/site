@@ -8,173 +8,188 @@ datasource db {
 }
 
 // =============================================
-// 1. УНІВЕРСАЛЬНИЙ КОНТЕНТ (Новини, Статті)
+// 1. CONTENT & NEWS
 // =============================================
 
 model Content {
-  id   Int         @id @default(autoincrement())
-  type ContentType
-  slug String      @unique
+  id    Int         @id @default(autoincrement())
+  type  ContentType
+  slug  String?     @unique // Optimized for SEO/URL lookups
 
-  // Заголовки
-  titleUk    String
-  titleEn    String?
-  subtitleUk String? @db.Text
-  subtitleEn String? @db.Text
+  titleUk String
+  titleEn String?
+  textUk  String? @db.Text
+  textEn  String? @db.Text
 
-  // Медіа
-  mainPhoto     String?
-  photoGallery  String[] @default([])
-  videoUrl      String?
-  imagePosition String   @default("center") // center, left, right, background
+  photoGallery String[] @default([])
+  videoUrl     String?
 
-  // Логіка
   publicationDate DateTime @default(now())
-  isPublished     Boolean  @default(true)
-  isFeatured      Boolean  @default(false)
-  order           Int      @default(0)
+  attributes      Json?
 
-  // Додаткові атрибути (наприклад, автор наукової роботи)
-  attributes Json? @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // SEO
-  metaTitle       String?
-  metaDescription String?
-
-  sections  ContentSection[]
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
-}
-
-model ContentSection {
-  id        Int     @id @default(autoincrement())
-  contentId Int
-  content   Content @relation(fields: [contentId], references: [id], onDelete: Cascade)
-
-  visualType String   @default("TEXT") // TEXT, GALLERY, QUOTE, VIDEO
-  titleUk    String?
-  titleEn    String?
-  bodyUk     String?  @db.Text
-  bodyEn     String?  @db.Text
-  photos     String[] @default([])
-  order      Int      @default(0)
+  @@index([type, publicationDate])
 }
 
 // =============================================
-// 2. СТАТИЧНІ СТОРІНКИ ТА НАЛАШТУВАННЯ
+// 2. PAGES & SETTINGS
 // =============================================
 
-// Використовується для Hero-секцій, вступних текстів на сторінках (Інновації, Історія тощо)
 model PageSection {
-  id        String   @id // Ключі: "home_hero", "history_intro", "visiting_card", "parents_info"
+  id   Int             @id @default(autoincrement())
+  type PageSectionType @unique
+
   titleUk   String?
   titleEn   String?
-  contentUk String?  @db.Text
-  contentEn String?  @db.Text
-  imageUrl  String?  // Банер або фонове зображення
+  contentUk String? @db.Text
+  contentEn String? @db.Text
 
+  imagePhoto String?
+
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-// Корисні посилання для сайдбарів (Психолог, Сертифікація)
 model ExternalLink {
-  id      Int     @id @default(autoincrement())
-  pageKey String  // До якої сторінки: "psychological", "certification", "anti_bullying"
+  id      Int             @id @default(autoincrement())
+  pageKey ExternalPageKey
 
   titleUk String
   titleEn String?
   url     String
-  order   Int     @default(0)
+  order   Int             @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pageKey, order])
 }
 
 model LyceumStats {
-  id        Int    @id @default(1)
-  name      String // Назва закладу
+  id Int @id @default(1)
+
+  name      String
   nameEn    String
   addressUk String
-  addressEn String?
+  addressEn String
   email     String
   phone     String
+  logoPhoto String
 
-  // --- Нові поля ---
-  logoUrl       String?  // Посилання на фото логотипа
-  quoteUk       String?  @db.Text // Цитата (наприклад, девіз ліцею)
-  quoteEn       String?  @db.Text
-  teachingLanguages String[] @default(["Українська"]) // Мови викладання
-  specializationsList String[] @default([]) // Спеціалізації (для швидкого відображення)
-  anthemUrl     String?  // Посилання на файл гімну або відео на YouTube
-  // -----------------
+  quoteUk String @db.Text
+  quoteEn String @db.Text
 
-  // Соцмережі: { facebook: "...", youtube: "..." }
+  teachingLanguage   String
+  teachingLanguageEn String
+  specialization     String
+  specializationEn   String
+
+  anthemUrl     String?
+  teachersPhoto String
+  materialBasePhoto String
+  materialBaseDescriptionUk String @db.Text
+  materialBaseDescriptionEn String @db.Text
+
   socialLinks Json?
 
-  studentsCount    Int @default(0)
-  teachersCount    Int @default(0)
-  staffCount       Int @default(0)
-  classesCount     Int @default(0)
-  flexParticipants Int @default(0)
-  topScorersCount  Int @default(0)
+  studentsCount     Int @default(0)
+  studentsCountReal Int @default(0)
+  teachersCount     Int @default(0)
+  staffCount        Int @default(0)
+  classesCount      Int @default(0)
+  flexParticipants  Int @default(0)
+  topScorersCount   Int @default(0)
 
+  createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model FAQ {
-  id          Int      @id @default(autoincrement())
-  questionUk  String
-  questionEn  String?
-  answerUk    String   @db.Text
-  answerEn    String?  @db.Text
-  category    String?  @default("GENERAL")
-  order       Int      @default(0)
-  isPublished Boolean  @default(true)
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  questionUk String
+  questionEn String?
+  answerUk   String   @db.Text
+  answerEn   String?  @db.Text
+  order      Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Clubs {
+  id            Int    @id @default(autoincrement())
+  nameUk        String @db.Text
+  nameEn        String @db.Text
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
+
+  order         Int    @default(0)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model WorkingArea {
+  id     Int     @id @default(autoincrement())
+  nameUk String  @db.Text
+  nameEn String? @db.Text
+
+  order  Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // =============================================
-// 3. ЛЮДИ (Персонал, Учні, Видатні)
+// 3. PEOPLE & STAFF
 // =============================================
 
 model Person {
   id Int @id @default(autoincrement())
 
   fullNameUk    String
-  fullNameEn    String?
+  fullNameEn    String
   positionUk    String
-  positionEn    String?
-  descriptionUk String? @db.Text
-  descriptionEn String? @db.Text
+  positionEn    String
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
 
-  photoUrl         String?
-  email            String?
-  phone            String?
+  photo String?
+  email String?
+  phone String?
 
-  // Специфічні поля
   specializationUk String?
   specializationEn String?
-  quoteUk          String?
-  quoteEn          String?
-  nicknameUk       String? // Для учнів/випускників
-  nicknameEn       String?
 
   type  PersonType @default(TEACHER)
   order Int        @default(0)
 
   categoryId Int?
-  category   PersonCategory? @relation(fields: [categoryId], references: [id])
+  category   PersonCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type, order])
+}
+
+model PersonCategory {
+  id      Int      @id @default(autoincrement())
+  nameUk  String   @unique
+  nameEn  String?
+  persons Person[]
+  order   Int      @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model PersonCategory {
-  id      Int      @id @default(autoincrement())
-  nameUk  String   @unique // Наприклад: "Кафедра математики", "Адміністрація"
-  nameEn  String?
-  persons Person[]
-}
-
 // =============================================
-// 4. ДОКУМЕНТИ ТА ЗВІТНІСТЬ
+// 4. DOCUMENTS & ASSETS
 // =============================================
 
 model DocumentReport {
@@ -182,107 +197,130 @@ model DocumentReport {
   category DocumentCategory @default(GENERAL)
 
   titleUk       String
-  titleEn       String?
+  titleEn       String
   descriptionUk String? @db.Text
   descriptionEn String? @db.Text
-  year          Int?
 
-  // Ієрархія папок
   parentId   Int?
-  parent     DocumentReport?  @relation("SubReports", fields: [parentId], references: [id])
+  parent     DocumentReport?  @relation("SubReports", fields: [parentId], references: [id], onDelete: Cascade)
   subReports DocumentReport[] @relation("SubReports")
 
   documents FileAsset[]
-  order     Int         @default(0)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category, createdAt])
 }
 
 model FileAsset {
   id       Int     @id @default(autoincrement())
   nameUk   String
-  nameEn   String?
+  nameEn   String
   url      String
-  fileType String? // pdf, docx, zip, xlsx
+  fileType String?
   fileSize String?
 
   reportId Int?
   report   DocumentReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([reportId])
 }
 
 // =============================================
-// 5. VR-ТУР, ТЕСТИ ТА ПРОФІЛІ
+// 5. INTERACTIVE & ACADEMICS
 // =============================================
 
 model Location {
   id    String  @id @default(cuid())
-  slug  String  @unique
-  floor String? // "1", "2", "3", "sport"
+  floor String?
 
   nameUk        String
   nameEn        String
-  descriptionUk String   @db.Text
-  descriptionEn String   @db.Text
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
 
-  highlightsUk  String[] // Список особливостей кімнати
-  highlightsEn  String[]
+  highlightsUk String[]
+  highlightsEn String[]
+  imagePhotos  String[]
+  iconName     String
 
-  imageUrls String[] // Фото 360 або звичайні
-  iconName  String   // Назва іконки для карти
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  // Зв'язки для навігації (граф переходів)
-  connections Location[] @relation("LocationConnections")
-  connectedTo Location[] @relation("LocationConnections")
+  @@index([floor])
+}
+
+model TestQuestion {
+  id             Int      @id @default(autoincrement())
+  question       String
+  questionEn     String
+  options        String[]
+  optionsEn      String[]
+  specialization String[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model TestQuestion {
-  id        Int          @id @default(autoincrement())
-  question  Json         // { "uk": "Текст питання", "en": "Question text" }
-  options   TestOption[]
-  createdAt DateTime     @default(now())
-}
-
-model TestOption {
-  id         Int          @id @default(autoincrement())
-  questionId Int
-  question   TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  text       Json         // { "uk": "Варіант А", "en": "Option A" }
-  type       String       // "math", "philology", "art" - до якого профілю веде
-}
-
 model Specialization {
-  id                String   @id // math, philology, it
-  emoji             String
-  nameUk            String
-  nameEn            String
-  descriptionUk     String   @db.Text
-  descriptionEn     String   @db.Text
+  id            String @id @default(cuid())
+  emoji         String
+  nameUk        String
+  nameEn        String
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
 
-  subjectsUk        String[] // Профільні предмети
+  subjectsUk        String[]
   subjectsEn        String[]
-  characteristicsUk String[] // "Вміння аналізувати", "Креативність"
+  characteristicsUk String[]
   characteristicsEn String[]
 
-  createdAt         DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Discipline {
+  id          Int                 @id @default(autoincrement())
+  name        String
+  nameEn      String
+  color       String
+  url         String              @default("#")
+  hasSubItems Boolean             @default(false)
+  subItems    DisciplineSubItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DisciplineSubItem {
+  id           Int        @id @default(autoincrement())
+  name         String
+  link         String
+  disciplineId Int
+  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // =============================================
-// 6. АДМІНІСТРУВАННЯ
+// 6. ADMINISTRATION
 // =============================================
 
 model AdminUser {
   id        Int       @id @default(autoincrement())
   username  String    @unique
-  password  String    // Hashed
+  password  String
   role      String    @default("admin")
   lastLogin DateTime?
-  createdAt DateTime  @default(now())
   isActive  Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 // =============================================
@@ -291,15 +329,14 @@ model AdminUser {
 
 enum ContentType {
   NEWS
-  EVENT
-  PROJECT
-  RESEARCH
+  RESEARCH_PROJECT
   INNOVATION
   HISTORY
+  BUILDING
+  FOUNDERS
   FOR_PARENTS
   FOR_STUDENTS
   FOR_TEACHERS
-  VISITING_CARD
   PATRIOTIC
   CLUBS
   SPORT
@@ -308,11 +345,13 @@ enum ContentType {
   ANTI_BULLYING
   QUALIFICATION
   CERTIFICATION
+  INTELLECT
+  GOVERNMENT
 }
 
 enum PersonType {
   TEACHER
-  ADMINISTRATION
+  PRINCIPALS
   COMMISSION_MEMBER
   FAMOUS_PERSON
   ALUMNI
@@ -325,4 +364,25 @@ enum DocumentCategory {
   FINANCIAL
   PUBLIC_INFO
   GENERAL
+}
+
+enum PageSectionType {
+  HOME_HERO
+  PARENTS_INFO
+  STUDENTS_INFO
+  PSYCHOLOGICAL
+  CERTIFICATION
+  ANTI_BULLYING
+  INNOVATIVE
+  PROJECT_RESEARCH
+}
+
+enum ExternalPageKey {
+  PARENTS
+  STUDENTS
+  TEACHER_HELP
+  PSYCHOLOGICAL
+  BULLYING
+  CERTIFICATION
+  METHODOLOGICAL
 }
