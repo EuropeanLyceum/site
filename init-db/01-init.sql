@@ -15,13 +15,13 @@ CREATE TYPE "DocumentCategory" AS ENUM (
 );
 
 CREATE TYPE "PageSectionType" AS ENUM (
-  'HOME_HERO', 'PARENTS_INFO', 'STUDENTS_INFO', 'PSYCHOLOGICAL',
-  'CERTIFICATION', 'ANTI_BULLYING', 'INNOVATIVE', 'PROJECT_RESEARCH'
+  'HOME_HERO', 'PARENTS_INFO', 'STUDENTS_INFO', 'PSYCHOLOGICAL', 'QUALIFICATION',
+  'CERTIFICATION', 'ANTI_BULLYING', 'INNOVATIVE', 'PROJECT_RESEARCH', 'TEACHERS_INFO'
 );
 
 CREATE TYPE "ExternalPageKey" AS ENUM (
   'PARENTS', 'STUDENTS', 'TEACHER_HELP', 'PSYCHOLOGICAL',
-  'BULLYING', 'CERTIFICATION', 'METHODOLOGICAL'
+  'BULLYING', 'CERTIFICATION', 'METHODOLOGICAL', 'QUALIFICATION'
 );
 
 -- 1. Content
@@ -176,40 +176,54 @@ CREATE TABLE "Location" (
                             "nameEn" TEXT NOT NULL,
                             "descriptionUk" TEXT NOT NULL,
                             "descriptionEn" TEXT NOT NULL,
-                            "highlightsUk" TEXT[],
-                            "highlightsEn" TEXT[],
+                            "highlightsTextUk" TEXT NOT NULL,
+                            "highlightsTextEn" TEXT NOT NULL,
                             "imagePhotos" TEXT[],
-                            "iconName" TEXT NOT NULL,
+                            "iconName" TEXT,
                             "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                             "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 11. TestQuestion
-CREATE TABLE "TestQuestion" (
-                                "id" SERIAL PRIMARY KEY,
-                                "question" TEXT NOT NULL,
-                                "questionEn" TEXT NOT NULL,
-                                "options" TEXT[] NOT NULL,
-                                "optionsEn" TEXT[] NOT NULL,
-                                "specialization" TEXT[] NOT NULL,
-                                "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- 12. Specialization
+-- 1. Створення таблиці Спеціалізацій (спочатку, бо на неї посилаються інші)
 CREATE TABLE "Specialization" (
-                                  "id" TEXT PRIMARY KEY, -- cuid equivalent
-                                  "emoji" TEXT NOT NULL,
+                                  "id" SERIAL PRIMARY KEY,
                                   "nameUk" TEXT NOT NULL,
                                   "nameEn" TEXT NOT NULL,
                                   "descriptionUk" TEXT NOT NULL,
                                   "descriptionEn" TEXT NOT NULL,
-                                  "subjectsUk" TEXT[],
-                                  "subjectsEn" TEXT[],
-                                  "characteristicsUk" TEXT[],
-                                  "characteristicsEn" TEXT[],
-                                  "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-                                  "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                                  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                  "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 2. Створення таблиці Питань
+CREATE TABLE "TestQuestion" (
+                                "id" SERIAL PRIMARY KEY,
+                                "question" TEXT NOT NULL,
+                                "questionEn" TEXT,
+                                "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Створення таблиці Варіантів Відповідей
+CREATE TABLE "TestOption" (
+                              "id" SERIAL PRIMARY KEY,
+                              "option" TEXT NOT NULL,
+                              "optionEn" TEXT,
+                              "specializationId" INTEGER NOT NULL,
+                              "questionId" INTEGER NOT NULL,
+                              "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                              "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    -- Зовнішні ключі
+                              CONSTRAINT "TestOption_specializationId_fkey"
+                                  FOREIGN KEY ("specializationId")
+                                      REFERENCES "Specialization" ("id")
+                                      ON DELETE CASCADE ON UPDATE CASCADE,
+
+                              CONSTRAINT "TestOption_questionId_fkey"
+                                  FOREIGN KEY ("questionId")
+                                      REFERENCES "TestQuestion" ("id")
+                                      ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- 13. Discipline

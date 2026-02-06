@@ -1,213 +1,213 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import {
   Box, Typography, Container, Accordion, AccordionSummary,
-  AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid
+  AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid, Paper, Stack,
+  TextField, InputAdornment
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import LaunchIcon from '@mui/icons-material/Launch';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import SearchIcon from '@mui/icons-material/Search';
+
+import firebird from '@/assets/photos/firebird/firebird2.png';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-
-const STATIC_SECTIONS = [
-  {
-    id: 'active-games',
-    titleKey: "activeGamesTitle",
-    type: 'list_with_description', // Ігри: заголовок + опис
-    introKey: "activeGamesIntro",
-    items: [1, 2], // game1Name, game1Description...
-    itemPrefix: 'game'
-  },
-  {
-    id: 'effectiveness',
-    titleKey: "lessonEffectivenessTitle",
-    type: 'numbered_list', // Ефективність: Пункт + підтекст
-    items: [1, 2], // lessonEffectivenessPoint1, lessonEffectivenessText1...
-    itemPrefix: 'lessonEffectiveness'
-  },
-  {
-    id: 'discipline',
-    titleKey: "classDisciplineTitle",
-    type: 'bullet_list', // Дисципліна: Текст + список правил
-    introKey: "classDisciplineText1",
-    items: [1, 2], // classDisciplineRule1...
-    itemPrefix: 'classDisciplineRule'
-  }
-];
-
-const EXTERNAL_RESOURCES = {
-  digital: [
-    { key: "cyberHygiene", url: "https://osvita.diia.gov.ua/courses/cyber-hygiene" },
-    { key: "cybernanny", url: "https://osvita.diia.gov.ua/courses/cybernanny" },
-    { key: "digitalCommunities", url: "https://osvita.diia.gov.ua/courses/digital-communities" },
-    { key: "digitalSignature", url: "https://osvita.diia.gov.ua/courses/digital-signature" }
-  ],
-  integrity: [
-    { key: "academicIntegrityEducation", url: "https://docs.google.com/document/d/15j7N4paWcXiuUZbIzFW9z7Lna6OYW_nD/edit" },
-    { key: "academicIntegrityComplete", url: "https://docs.google.com/document/d/1OqnzljmdKG2-TejHKAoy_89NLU8_xp2P/edit" },
-    { key: "academicIntegritySchool", url: "https://docs.google.com/document/d/1-ofGwJUyxhkO45aGJmvl6ElM_pf_7Jpu/edit" }
-  ]
-};
 
 export default function TeacherHelpPage() {
   const { t, locale } = useTranslation("teacherHelp");
-  const [dynamicItems, setDynamicItems] = useState([]);
+  const [data, setData] = useState({
+    section: null,      // Hero дані
+    articles: [],       // Поради (Content)
+    externalLinks: [],  // Корисні ресурси (ExternalLink)
+  });
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const isEn = locale === 'en';
+  const l = (uk, en) => (isEn ? en || uk : uk);
 
   useEffect(() => {
-    const loadData = async () => {
+    const loadAllData = async () => {
       try {
-        const response = await fetch('/api/help-teacher');
-        if (response.ok) {
-          const data = await response.json();
-          setDynamicItems(data);
-        }
-      } catch (err) { console.error(err); }
-      finally { setIsLoading(false); }
+        setIsLoading(true);
+        const [secRes, artRes, linkRes] = await Promise.all([
+          fetch('/admin/api/admin/pageSection?type=TEACHERS_INFO'),
+          fetch('/admin/api/admin/content?type=FOR_TEACHERS'),
+          fetch('/admin/api/admin/externalLink?pageKey=TEACHER')
+        ]);
+
+        const sectionJson = await secRes.json();
+        const articlesJson = await artRes.json();
+        const linksJson = await linkRes.json();
+
+        setData({
+          section: sectionJson.data?.[0] || null,
+          articles: articlesJson.data || [],
+          externalLinks: linksJson.data || []
+        });
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    loadData();
-  }, []);
+    loadAllData();
+  }, [locale]);
 
-  const getLocalized = (item) => ({
-    title: locale === 'en' ? (item.titleEn || item.title) : item.title,
-    content: locale === 'en' ? (item.contentEn || item.content) : item.content,
-    text: locale === 'en' ? (item.textEn || item.text) : item.text,
-    linkText: locale === 'en' ? (item.linkTextEn || item.linkText) : item.linkText
-  });
+  // Фільтрація порад на основі пошуку
+  const filteredArticles = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return data.articles.filter(item =>
+        item.titleUk?.toLowerCase().includes(query) ||
+        item.titleEn?.toLowerCase().includes(query) ||
+        item.textUk?.toLowerCase().includes(query) ||
+        item.textEn?.toLowerCase().includes(query)
+    );
+  }, [data.articles, searchQuery]);
 
-  const accordionItemsFromDb = dynamicItems.filter(item => item.title && item.content);
-  const footerItemsFromDb = dynamicItems.filter(item => !item.title && (item.text || item.link));
-
-  // Рендерер для статичного контенту всередині акордеонів
-  const renderStaticContent = (section) => {
-    switch (section.type) {
-      case 'list_with_description':
-        return (
-            <Box>
-              <Typography sx={{ mb: 2, fontWeight: 500 }}>{t(section.introKey)}</Typography>
-              {section.items.map(num => (
-                  <Box key={num} sx={{ mb: 2 }}>
-                    <Typography sx={{ fontWeight: 700, color: '#f97316' }}>{t(`${section.itemPrefix}${num}Name`)}</Typography>
-                    <Typography variant="body2">{t(`${section.itemPrefix}${num}Description`)}</Typography>
-                  </Box>
-              ))}
-            </Box>
-        );
-      case 'numbered_list':
-        return (
-            <Box component="ol" sx={{ pl: 2 }}>
-              {section.items.map(num => (
-                  <li key={num} style={{ marginBottom: '12px' }}>
-                    <Typography sx={{ fontWeight: 700 }}>{t(`${section.itemPrefix}Point${num}`)}</Typography>
-                    <Typography variant="body2" sx={{ color: '#555' }}>{t(`${section.itemPrefix}Text${num}`)}</Typography>
-                  </li>
-              ))}
-            </Box>
-        );
-      case 'bullet_list':
-        return (
-            <Box>
-              <Typography sx={{ mb: 2 }}>{t(section.introKey)}</Typography>
-              <Box component="ul" sx={{ pl: 2 }}>
-                {section.items.map(num => (
-                    <li key={num} style={{ marginBottom: '6px' }}>
-                      <Typography variant="body2">{t(`${section.itemPrefix}${num}`)}</Typography>
-                    </li>
-                ))}
-              </Box>
-            </Box>
-        );
-      default: return null;
-    }
-  };
+  if (isLoading) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
 
   return (
-      <Box sx={{ minHeight: '100vh', bgcolor: '#fff', pb: 10 }}>
-        {/* Hero Header */}
-        <Box sx={{ py: 6, bgcolor: alpha('#182BA1', 0.03), borderBottom: '1px solid', borderColor: alpha('#182BA1', 0.1) }}>
-          <Container maxWidth="md">
-            <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 48 }, color: '#182BA1', fontWeight: 900, textAlign: 'center', fontFamily: "'Montserrat Alternates', sans-serif" }}>
-              {t("teacherHelp")}
+      <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
+
+        {/* 1. HERO SECTION */}
+        <Box sx={{
+          position: 'relative', py: { xs: 10, md: 15 },
+          background: 'linear-gradient(135deg, #0c1865 0%, #182BA1 100%)',
+          color: '#fff', overflow: 'hidden',
+          clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)'
+        }}>
+          <Container maxWidth="lg">
+            <Typography variant="h1" sx={{
+              fontSize: { xs: 36, md: 64 },
+              fontWeight: 900,
+              fontFamily: "'Montserrat Alternates', sans-serif",
+              mb: 2,
+              textTransform: 'uppercase'
+            }}>
+              TEACHER <span style={{ color: '#f97316' }}>SUPPORT</span>
+            </Typography>
+            <Typography sx={{ maxWidth: '700px', fontSize: '1.2rem', opacity: 0.9, fontWeight: 500 }}>
+              {l(data.section?.contentUk, data.section?.contentEn)}
             </Typography>
           </Container>
+
+          <Box sx={{ position: 'absolute', right: '-5%', bottom: '10%', width: '400px', opacity: 0.2, pointerEvents: 'none' }}>
+            <Image src={firebird} alt="" style={{ width: '100%', height: 'auto' }} />
+          </Box>
         </Box>
 
-        <Container maxWidth="md" sx={{ mt: 6 }}>
-          {/* 1. ГРУПА АКОРДЕОНІВ: ДИНАМІЧНІ (З БАЗИ) */}
-          {isLoading ? (
-              <Box sx={{ textAlign: 'center', py: 5 }}><CircularProgress /></Box>
-          ) : (
-              accordionItemsFromDb.map((item) => {
-                const loc = getLocalized(item);
-                return (
-                    <Accordion key={item.id} sx={{ mb: 2, borderRadius: '12px !important', boxShadow: 'none', border: '1px solid #eee' }}>
-                      <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#182BA1' }} />}>
-                        <Typography sx={{ fontWeight: 700, color: '#182BA1' }}>{loc.title}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails sx={{ bgcolor: alpha('#182BA1', 0.01) }}>
-                        <Typography sx={{ whiteSpace: 'pre-wrap', color: '#444', lineHeight: 1.7 }}>{loc.content}</Typography>
-                        {item.link && (
-                            <MuiLink href={item.link} target="_blank" sx={{ display: 'block', mt: 2, color: '#f97316', fontWeight: 600 }}>
-                              {loc.linkText || item.link}
-                            </MuiLink>
-                        )}
-                      </AccordionDetails>
-                    </Accordion>
-                );
-              })
-          )}
+        <Container maxWidth="lg" sx={{ mt: -6, position: 'relative', zIndex: 10 }}>
 
-          {/* 2. ГРУПА АКОРДЕОНІВ: СТАТИЧНІ (ПОРАДИ, ІГРИ ТОЩО) */}
-          <Typography variant="h5" sx={{ mt: 6, mb: 3, fontWeight: 800, color: '#182BA1', textAlign: 'center' }}>
-            {t("methodologicalRecommendations")}
-          </Typography>
+          {/* 2. EXTERNAL LINKS (Тепер спочатку) */}
+          <Box sx={{ mb: 10 }}>
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 4, color: '#fff', textAlign: { xs: 'center', md: 'left' }, textShadow: '0 2px 4px rgba(0,0,0,0.2)' }}>
+              {t("usefulResourcesTitle") || "Корисні ресурси"}
+            </Typography>
+            <Grid container spacing={2}>
+              {data.externalLinks.map((link) => (
+                  <Grid key={link.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Paper
+                        component="a"
+                        href={link.url}
+                        target="_blank"
+                        sx={{
+                          p: 3, borderRadius: 5, display: 'flex', alignItems: 'center', gap: 2,
+                          textDecoration: 'none', border: '1px solid #e2e8f0', transition: '0.3s',
+                          bgcolor: 'rgba(255, 255, 255, 0.9)',
+                          backdropFilter: 'blur(10px)',
+                          '&:hover': { bgcolor: '#182BA1', '& .icon': { color: '#fff' }, '& .txt': { color: '#fff' } }
+                        }}
+                    >
+                      <LaunchIcon className="icon" sx={{ color: '#f97316' }} />
+                      <Typography className="txt" sx={{ fontWeight: 700, color: '#0c1865', textAlign: 'left' }}>
+                        {l(link.titleUk, link.titleEn)}
+                      </Typography>
+                    </Paper>
+                  </Grid>
+              ))}
+            </Grid>
+          </Box>
 
-          {STATIC_SECTIONS.map((section) => (
-              <Accordion key={section.id} sx={{ mb: 2, borderRadius: '12px !important', boxShadow: 'none', border: '1px solid #eee' }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#182BA1' }} />}>
-                  <Typography sx={{ fontWeight: 700, color: '#182BA1' }}>{t(section.titleKey)}</Typography>
-                </AccordionSummary>
-                <AccordionDetails sx={{ bgcolor: alpha('#182BA1', 0.01) }}>
-                  {renderStaticContent(section)}
-                </AccordionDetails>
-              </Accordion>
-          ))}
+          {/* 3. SEARCH & DYNAMIC ARTICLES */}
+          <Box sx={{ mb: 4 }}>
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', md: 'center' }} spacing={2} sx={{ mb: 4 }}>
+              <Typography variant="h4" sx={{ fontWeight: 900, fontFamily: 'Montserrat Alternates', color: '#0c1865' }}>
+                {t("methodologicalRecommendations") || "Методичні поради"}
+              </Typography>
 
-          {/* 3. ФУТЕР-РЕСУРСИ (БЕЗ АКОРДЕОНІВ, БО ЦЕ ПОСИЛАННЯ) */}
-          <Box sx={{ mt: 8, p: 4, borderRadius: 6, bgcolor: alpha('#182BA1', 0.04), border: '1px dashed', borderColor: alpha('#182BA1', 0.3) }}>
-            <Grid container spacing={4}>
-              <Grid item size={{xs: 12, md: 6}}>
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: '#182BA1' }}>{t("digitalLiteracyText")}</Typography>
-                {EXTERNAL_RESOURCES.digital.map(link => (
-                    <MuiLink key={link.key} href={link.url} target="_blank" sx={{ display: 'block', mb: 1, color: '#182BA1', textDecoration: 'none', fontWeight: 500, '&:hover': { textDecoration: 'underline' } }}>
-                      • {t(link.key)}
-                    </MuiLink>
-                ))}
-              </Grid>
-              <Grid item size={{xs: 12, md: 6}}>
-                <Typography variant="h6" sx={{ fontWeight: 800, mb: 2, color: '#182BA1' }}>{t("academicIntegrity")}</Typography>
-                {EXTERNAL_RESOURCES.integrity.map(link => (
-                    <MuiLink key={link.key} href={link.url} target="_blank" sx={{ display: 'block', mb: 1, color: '#182BA1', textDecoration: 'none', fontWeight: 500, '&:hover': { textDecoration: 'underline' } }}>
-                      • {t(link.key)}
-                    </MuiLink>
-                ))}
-              </Grid>
+              <TextField
+                  placeholder={t("searchPlaceholder") || "Пошук порад..."}
+                  variant="outlined"
+                  size="small"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  sx={{
+                    width: { xs: '100%', md: '300px' },
+                    bgcolor: '#fff',
+                    borderRadius: 2,
+                    '& .MuiOutlinedInput-root': { borderRadius: 2 }
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon sx={{ color: '#182BA1' }} />
+                        </InputAdornment>
+                    ),
+                  }}
+              />
+            </Stack>
+
+            <Grid container spacing={3}>
+              {filteredArticles.map((item) => (
+                  <Grid key={item.id} size={{ xs: 12, md: 6 }}>
+                    <Paper sx={{
+                      p: 4, height: '100%', borderRadius: 6, display: 'flex', flexDirection: 'column',
+                      transition: '0.3s', border: '1px solid #e2e8f0', boxShadow: 'none',
+                      '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 30px rgba(0,0,0,0.05)', borderColor: '#182BA1' }
+                    }}>
+                      <Box sx={{ display: 'flex', gap: 2, mb: 3, alignItems: 'center' }}>
+                        <Box sx={{ p: 1, bgcolor: alpha('#182BA1', 0.1), borderRadius: 2, display: 'flex' }}>
+                          <LightbulbIcon sx={{ color: '#182BA1' }} />
+                        </Box>
+                        <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
+                          {l(item.titleUk, item.titleEn)}
+                        </Typography>
+                      </Box>
+
+                      <Typography sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }}>
+                        {l(item.textUk, item.textEn)}
+                      </Typography>
+
+                      {item.photoGallery?.length > 0 && (
+                          <Box sx={{ mt: 'auto', pt: 2 }}>
+                            <Grid container spacing={1}>
+                              {item.photoGallery.slice(0, 3).map((img, i) => (
+                                  <Grid key={i} size={{ xs: 4 }}>
+                                    <Box sx={{ position: 'relative', height: 80, borderRadius: 2, overflow: 'hidden' }}>
+                                      <Image src={img} alt="" fill style={{ objectFit: 'cover' }} />
+                                    </Box>
+                                  </Grid>
+                              ))}
+                            </Grid>
+                          </Box>
+                      )}
+                    </Paper>
+                  </Grid>
+              ))}
             </Grid>
 
-            {/* Динамічний футер з БД */}
-            {footerItemsFromDb.map((item) => {
-              const loc = getLocalized(item);
-              return (
-                  <Box key={item.id} sx={{ mt: 3, pt: 3, borderTop: '1px solid', borderColor: alpha('#000', 0.1) }}>
-                    {loc.text && <Typography sx={{ mb: 2 }}>{loc.text}</Typography>}
-                    {item.link && (
-                        <MuiLink href={item.link} target="_blank" sx={{ bgcolor: '#f97316', color: '#fff', px: 2, py: 1, borderRadius: 2, display: 'inline-block', textDecoration: 'none', fontWeight: 700 }}>
-                          {loc.linkText || item.link}
-                        </MuiLink>
-                    )}
-                  </Box>
-              );
-            })}
+            {filteredArticles.length === 0 && (
+                <Box sx={{ textAlign: 'center', py: 10 }}>
+                  <Typography variant="h6" color="text.secondary">
+                    {t("noResults") || "Нічого не знайдено за вашим запитом"}
+                  </Typography>
+                </Box>
+            )}
           </Box>
+
         </Container>
       </Box>
   );

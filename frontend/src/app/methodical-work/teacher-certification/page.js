@@ -1,201 +1,191 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   Box, Typography, Container, Accordion, AccordionSummary,
-  AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid
+  AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid, Paper, Stack
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EmailIcon from '@mui/icons-material/Email';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupsIcon from '@mui/icons-material/Groups';
-
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard";
 
-// ВИНЕСЕНА СТАТИКА
-const CERTIFICATION_STATIC = {
-  email: "atestacia24licey@gmail.com",
-
-  commission: [
-    "derkachLA", "sokolovskaOP", "korshakTV", "ovdienkoOM",
-    "nikulYV", "mokrenkoEM", "simonkinaGP", "holovkoSB", "kogutKS"
-  ],
-
-  documents: [
-    { key: "attestationResults2025", url: "https://docs.google.com/file/d/16pC6gZmJoge33TLgruXy-2mUAH3JjH2d/edit" },
-    { key: "extraordinaryAttestationList2025", url: "https://docs.google.com/document/d/1eTJ1ba7kYMbTFR3ejLbg6JWHNcmtTVf3/edit" },
-    { key: "attestationList2024_2025", url: "https://docs.google.com/document/d/1aimztLwaSXP7raZ4xIHQlIVxVXJsSMkL/edit" },
-    { key: "attestationSchedule", url: "https://docs.google.com/document/d/1pkadNTCdi6zgbcd_AzyC94nenbUxp6fJ/edit" }
-  ],
-
-  baseEvents: [
-    { id: 'st-1', titleKey: "finalPedagogicalCouncilTitle", textKey: "finalPedagogicalCouncilText", images: [] },
-    { id: 'st-2', titleKey: "secondPedagogicalCouncilTitle", textKey: "secondPedagogicalCouncilText", images: [] },
-    { id: 'st-3', titleKey: "firstPedagogicalCouncilTitle", textKey: "firstPedagogicalCouncilText", images: [] }
-  ]
-};
-
 export default function TeacherCertificationPage() {
-  const { t, locale } = useTranslation("teacherCertification");
-  const [dynamicItems, setDynamicItems] = useState([]);
+  const { locale } = useTranslation("teacherCertification");
+  const [data, setData] = useState({
+    section: null,
+    articles: [],
+    externalLinks: [],
+    commission: []
+  });
   const [isLoading, setIsLoading] = useState(true);
   const [expandedId, setExpandedId] = useState(null);
 
+  const isEn = locale === 'en';
+  const l = (uk, en) => (isEn ? en || uk : uk);
+
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
-        const response = await fetch('/api/teacher-certification');
-        if (response.ok) {
-          const data = await response.json();
-          setDynamicItems(data);
-        }
-      } catch (err) { console.error(err); }
-      finally { setIsLoading(false); }
+        setIsLoading(true);
+        const [secRes, artRes, linkRes, commRes] = await Promise.all([
+          fetch('/admin/api/admin/pageSection?type=CERTIFICATION'),
+          fetch('/admin/api/admin/content?type=CERTIFICATION'),
+          fetch('/admin/api/admin/externalLink?pageKey=CERTIFICATION'),
+          fetch('/admin/api/admin/person?type=COMMISSION_MEMBER')
+        ]);
+
+        const [sJson, aJson, lJson, cJson] = await Promise.all([
+          secRes.json(), artRes.json(), linkRes.json(), commRes.json()
+        ]);
+
+        setData({
+          section: sJson.data?.[0] || null,
+          articles: aJson.data || [],
+          externalLinks: lJson.data || [],
+          commission: cJson.data || []
+        });
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchData();
-  }, []);
+    loadData();
+  }, [locale]);
 
-  // Підготовка даних для UndefinedNewsCard
-  const mappedEvents = [
-    ...dynamicItems.filter(item => item.heading || item.headingEn).map(item => ({
+  const mappedEvents = useMemo(() => {
+    // Реверс, щоб останні додані новини були першими в списку
+    return [...data.articles].reverse().map(item => ({
       id: item.id,
-      title: item.heading,
-      titleEn: item.headingEn,
-      text: item.description,
-      textEn: item.descriptionEn,
-      images: Array.isArray(item.photoUrls) ? item.photoUrls : [],
-      date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "31.01.2026"
-    })),
-    ...CERTIFICATION_STATIC.baseEvents.map(e => ({
-      id: e.id,
-      title: t(e.titleKey),
-      text: t(e.textKey),
-      images: e.images,
-      date: "01.09.2025"
-    }))
-  ];
+      title: l(item.titleUk, item.titleEn),
+      text: l(item.textUk, item.textEn),
+      images: item.photoGallery || [],
+      date: new Date(item.publicationDate || item.createdAt).toLocaleDateString(isEn ? 'en-US' : 'uk-UA')
+    }));
+  }, [data.articles, locale]);
 
-  const pinkItems = dynamicItems.filter(item => !item.heading && (item.text || item.url));
+  if (isLoading) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
 
   return (
-      <Box sx={{ minHeight: '100vh', bgcolor: '#fff', pb: 10 }}>
-        {/* Hero Header */}
-        <Box sx={{py: 5, bgcolor: alpha('#0c1865', 0.02), textAlign: 'center', borderBottom: '1px solid #eee' }}>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
+        {/* 1. HERO SECTION */}
+        <Box sx={{
+          py: { xs: 8, md: 12 },
+          background: 'linear-gradient(135deg, #0c1865 0%, #1e293b 100%)',
+          color: '#fff', textAlign: 'center',
+          clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)',
+          mb: 6
+        }}>
           <Container maxWidth="md">
-            <Typography variant="h2" sx={{
-              fontWeight: 900, color: '#0c1865',
+            <Typography variant="h1" sx={{
+              fontWeight: 900,
               fontFamily: "'Montserrat Alternates', sans-serif",
-              fontSize: { xs: 32, md: 54 }
+              fontSize: { xs: 32, md: 54 },
+              mb: 2, textTransform: 'uppercase'
             }}>
-              {t("pageTitle")}
+              {l(data.section?.titleUk, data.section?.titleEn) || "Certification"}
+            </Typography>
+            <Typography sx={{ fontSize: '1.2rem', opacity: 0.8, maxWidth: '700px', mx: 'auto' }}>
+              {l(data.section?.contentUk, data.section?.contentEn)}
             </Typography>
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-          {isLoading ? (
-              <Box sx={{ textAlign: 'center', py: 10 }}><CircularProgress /></Box>
-          ) : (
-              <Box>
-                {mappedEvents.map((event) => (
+        <Container maxWidth="lg">
+          {/* 2. ІНФОРМАЦІЙНИЙ БЛОК (Email, Комісія, Документи) */}
+          <Grid container spacing={4} sx={{ mb: 10 }}>
+            {/* Email */}
+            <Grid item xs={12}>
+              <Paper sx={{
+                p: 4, bgcolor: '#fff', borderRadius: 6,
+                display: 'flex', alignItems: 'center', gap: 3,
+                border: '1px solid #e2e8f0', boxShadow: '0 10px 40px rgba(0,0,0,0.03)'
+              }}>
+                <Box sx={{ bgcolor: alpha('#f97316', 0.1), p: 2, borderRadius: 4 }}>
+                  <EmailIcon sx={{ fontSize: 40, color: '#f97316' }} />
+                </Box>
+                <Box>
+                  <Typography variant="subtitle2" sx={{ color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
+                    {isEn ? "Email for documents" : "Електронна пошта для документів"}
+                  </Typography>
+                  <MuiLink href="mailto:atestacia24licey@gmail.com" sx={{ color: '#0c1865', fontWeight: 900, fontSize: { xs: 18, md: 24 }, textDecoration: 'none' }}>
+                    atestacia24licey@gmail.com
+                  </MuiLink>
+                </Box>
+              </Paper>
+            </Grid>
+
+            {/* Комісія */}
+            <Grid item xs={12} md={6}>
+              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+                <GroupsIcon sx={{ color: '#182BA1' }} />
+                <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
+                  {isEn ? "Commission" : "Комісія"}
+                </Typography>
+              </Stack>
+              <Accordion sx={{ borderRadius: '20px !important', border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography sx={{ fontWeight: 700 }}>{isEn ? "View List" : "Переглянути склад"}</Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ p: 0 }}>
+                  {data.commission.map((person) => (
+                      <Box key={person.id} sx={{ px: 3, py: 2, borderBottom: '1px solid #f1f5f9' }}>
+                        <Typography sx={{ fontWeight: 800 }}>{l(person.fullNameUk, person.fullNameEn)}</Typography>
+                        <Typography variant="body2" sx={{ color: '#64748b' }}>{l(person.positionUk, person.positionEn)}</Typography>
+                      </Box>
+                  ))}
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+
+            {/* Документи */}
+            <Grid item xs={12} md={6}>
+              <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+                <AssignmentIcon sx={{ color: '#182BA1' }} />
+                <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
+                  {isEn ? "Documents" : "Документація"}
+                </Typography>
+              </Stack>
+              <Stack spacing={2}>
+                {data.externalLinks.map((doc) => (
+                    <Paper key={doc.id} component="a" href={doc.url} target="_blank"
+                           sx={{
+                             p: 2.5, borderRadius: 4, textDecoration: 'none',
+                             display: 'flex', justifyContent: 'space-between', border: '1px solid #e2e8f0',
+                             transition: '0.3s', '&:hover': { bgcolor: '#0c1865', '& *': { color: '#fff' } }
+                           }}>
+                      <Typography sx={{ fontWeight: 700, color: '#0c1865' }}>{l(doc.titleUk, doc.titleEn)}</Typography>
+                      <span>→</span>
+                    </Paper>
+                ))}
+              </Stack>
+            </Grid>
+          </Grid>
+
+          {/* 3. ARTICLES / EVENTS (ТЕПЕР ОСТАННІ) */}
+          <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', mb: 4, fontFamily: "'Montserrat Alternates', sans-serif" }}>
+            {isEn ? "Certification Events" : "Хід атестації"}
+          </Typography>
+          <Stack spacing={4}>
+            {mappedEvents.length > 0 ? (
+                mappedEvents.map((event) => (
                     <UndefinedNewsCard
                         key={event.id}
                         item={event}
                         locale={locale}
-                        t={t}
                         isExpanded={expandedId === event.id}
                         onReadMore={(id) => setExpandedId(expandedId === id ? null : id)}
-                        onImageClick={(images, idx) => console.log("Open gallery", images, idx)}
                     />
-                ))}
-              </Box>
-          )}
-
-          {/* НИЖНЯ СЕКЦІЯ: ДОКУМЕНТИ ТА КОМІСІЯ */}
-          <Box sx={{
-            mt: 12, p: { xs: 4, md: 8 }, borderRadius: 10,
-            background: 'linear-gradient(135deg, #fff 0%, #fff7ed 100%)',
-            border: '1px solid #fed7aa',
-            boxShadow: '0 30px 60px rgba(249, 115, 22, 0.05)'
-          }}>
-
-            <Grid container spacing={6}>
-              {/* Email блок */}
-              <Grid item size={{xs: 12}}>
-                <Box sx={{
-                  display: 'flex', alignItems: 'center', gap: 3, p: 3,
-                  bgcolor: '#0c1865', borderRadius: 5, color: '#fff'
-                }}>
-                  <EmailIcon sx={{ fontSize: 40, color: '#f97316' }} />
-                  <Box>
-                    <Typography variant="subtitle2" sx={{ opacity: 0.7 }}>{t("emailForDocuments")}</Typography>
-                    <MuiLink href={`mailto:${CERTIFICATION_STATIC.email}`} sx={{ color: '#fff', fontWeight: 800, fontSize: 20, textDecoration: 'none' }}>
-                      {CERTIFICATION_STATIC.email}
-                    </MuiLink>
-                  </Box>
-                </Box>
-              </Grid>
-
-              {/* Комісія */}
-              <Grid item size={{xs: 12, md: 6}}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                  <GroupsIcon sx={{ color: '#0c1865' }} />
-                  <Typography variant="h5" sx={{ fontWeight: 900, color: '#0c1865' }}>{t("attestationCommission")}</Typography>
-                </Box>
-                <Accordion sx={{ borderRadius: '20px !important', border: '1px solid #fed7aa', boxShadow: 'none' }}>
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Typography sx={{ fontWeight: 700 }}>{t("viewCommissionList") || "Переглянути склад"}</Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {CERTIFICATION_STATIC.commission.map((key) => (
-                        <Typography key={key} sx={{ py: 1.5, borderBottom: '1px solid #eee', fontSize: 15 }}>
-                          • <strong>{t(key)}</strong>
-                        </Typography>
-                    ))}
-                  </AccordionDetails>
-                </Accordion>
-              </Grid>
-
-              {/* Документи */}
-              <Grid item ize={{xs: 12, md: 6}}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                  <AssignmentIcon sx={{ color: '#0c1865' }} />
-                  <Typography variant="h5" sx={{ fontWeight: 900, color: '#0c1865' }}>{t("importantDocuments") || "Документація"}</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {CERTIFICATION_STATIC.documents.map((doc) => (
-                      <MuiLink
-                          key={doc.key} href={doc.url} target="_blank"
-                          sx={{
-                            p: 2.5, bgcolor: '#fff', borderRadius: 4, textDecoration: 'none',
-                            color: '#0c1865', fontWeight: 700, border: '1px solid #fed7aa',
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                            transition: '0.3s', '&:hover': { transform: 'translateX(10px)', bgcolor: '#0c1865', color: '#fff' }
-                          }}
-                      >
-                        {t(doc.key)} <span>→</span>
-                      </MuiLink>
-                  ))}
-                </Box>
-              </Grid>
-            </Grid>
-
-            {/* Динамічний "рожевий" футер */}
-            {pinkItems.map((item, idx) => {
-              const isEn = locale === 'en';
-              return (
-                  <Box key={item.id} sx={{ mt: 4, p: 3, bgcolor: alpha('#f97316', 0.1), borderRadius: 4 }}>
-                    <Typography sx={{ mb: 2, fontWeight: 500 }}>{isEn ? item.textEn : item.text}</Typography>
-                    {item.url && (
-                        <MuiLink href={item.url} target="_blank" sx={{ color: '#f97316', fontWeight: 800 }}>
-                          {isEn ? (item.linkTextEn || item.url) : (item.linkText || item.url)}
-                        </MuiLink>
-                    )}
-                  </Box>
-              );
-            })}
-          </Box>
+                ))
+            ) : (
+                <Typography sx={{ color: '#94a3b8', fontStyle: 'italic' }}>
+                  {isEn ? "No updates yet" : "Інформація оновлюється..."}
+                </Typography>
+            )}
+          </Stack>
         </Container>
       </Box>
   );

@@ -74,8 +74,8 @@ export const FIELD_LABELS: Record<string, string> = {
 
     // ===== LOCATION =====
     floor: "Поверх",
-    highlightsUk: "Особливості (UA)",
-    highlightsEn: "Особливості (EN)",
+    highlightsTextUk: "Особливості (UA)",
+    highlightsTextEn: "Особливості (EN)",
     imagePhotos: "Фото",
     iconName: "Іконка",
 
@@ -91,7 +91,9 @@ export const FIELD_LABELS: Record<string, string> = {
     password: "Пароль",
     role: "Роль",
     isActive: "Активний",
-    lastLogin: "Останній вхід"
+    lastLogin: "Останній вхід",
+
+    hasSubItem: "Має підпердмети"
 };
 
 export const ADMIN_MODELS = {
@@ -131,6 +133,12 @@ export const ADMIN_MODELS = {
         label: "Персонал / Люди",
         tableFields: ["fullNameUk", "type", "order"],
         allFields: ["fullNameUk", "fullNameEn", "positionUk", "positionEn", "descriptionUk", "descriptionEn", "photo", "email", "phone", "specializationUk", "specializationEn", "type", "order", "categoryId"],
+        relations: {
+            categoryId: {
+                model: 'personCategory', // назва моделі в prisma
+                labelField: 'nameUk'     // яке поле показувати у списку
+            }
+        },
         enums: {
             type: ["TEACHER", "PRINCIPALS", "COMMISSION_MEMBER", "FAMOUS_PERSON", "ALUMNI", "STUDENT_COUNCIL", "PSYCHOLOGIST"]
         }
@@ -146,6 +154,9 @@ export const ADMIN_MODELS = {
         label: "Документи та Звіти",
         tableFields: ["titleUk", "category"],
         allFields: ["category", "titleUk", "titleEn", "descriptionUk", "descriptionEn", "parentId"],
+        relations: {
+            parentId: { model: 'documentReport', labelField: 'titleUk' }
+        },
         enums: {
             category: ["REGULATORY", "FINANCIAL", "PUBLIC_INFO", "GENERAL"]
         }
@@ -153,7 +164,10 @@ export const ADMIN_MODELS = {
     fileAsset: {
         label: "Файли",
         tableFields: ["nameUk", "fileType", "reportId"],
-        allFields: ["nameUk", "nameEn", "url", "fileType", "fileSize", "reportId"]
+        allFields: ["nameUk", "nameEn", "url", "fileType", "fileSize", "reportId"],
+        relations: {
+            reportId: { model: 'documentReport', labelField: 'titleUk' }
+        }
     },
 
     // --- ОСВІТА ТА VR ---
@@ -165,22 +179,32 @@ export const ADMIN_MODELS = {
     disciplineSubItem: {
         label: "Підпункти дисциплін",
         tableFields: ["name", "disciplineId"],
-        allFields: ["name", "link", "disciplineId"]
+        allFields: ["name", "link", "disciplineId"],
+        relations: {
+            disciplineId: {
+                model: 'discipline', // Назва моделі для запиту опцій в API
+                labelField: 'name',  // Яке поле показувати в списку
+            }
+        }
     },
     location: {
         label: "VR Локації",
         tableFields: ["nameUk", "floor"],
-        allFields: ["floor", "nameUk", "nameEn", "descriptionUk", "descriptionEn", "highlightsUk", "highlightsEn", "imagePhotos", "iconName"]
+        allFields: ["floor", "nameUk", "nameEn", "descriptionUk", "descriptionEn", "highlightsTextUk", "highlightsTextEn", "imagePhotos", "iconName"]
     },
     specialization: {
         label: "Профілі навчання",
         tableFields: ["id", "nameUk"],
-        allFields: ["id", "emoji", "nameUk", "nameEn", "descriptionUk", "descriptionEn", "subjectsUk", "subjectsEn", "characteristicsUk", "characteristicsEn"]
+        allFields: ["nameUk", "nameEn", "descriptionUk", "descriptionEn"]
     },
     testQuestion: {
         label: 'Тести (Профорієнтація)',
         tableFields: ['question', 'createdAt'],
-        allFields: ['question', 'questionEn', 'options', 'optionsEn', 'specialization'],
+        allFields: [
+            'question',
+            'questionEn',
+            'options' // кастомний блок (відповіді + specialization)
+        ],
     },
 
     // --- НАЛАШТУВАННЯ ТА ІНШЕ ---

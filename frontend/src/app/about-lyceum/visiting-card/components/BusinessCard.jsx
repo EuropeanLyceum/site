@@ -3,7 +3,6 @@
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import { Box, Typography, Grid, alpha, Container } from '@mui/material';
 import Image from 'next/image';
-import teachersDefault from '@/assets/photos/teachers.jpg';
 import logoDefault from '@/assets/photos/icons/logo_picture_visit_card.jpg';
 
 export default function BusinessCard({ t, stats, locale }) {
@@ -34,7 +33,7 @@ export default function BusinessCard({ t, stats, locale }) {
                             boxShadow: '0 20px 40px rgba(12, 43, 161, 0.2)', border: '1px solid #fff'
                         }}>
                             <Image
-                                src={stats.photoTeacherUrl || teachersDefault}
+                                src={stats.photoTeacherUrl}
                                 alt="Teachers Team"
                                 fill
                                 style={{ objectFit: 'cover' }}

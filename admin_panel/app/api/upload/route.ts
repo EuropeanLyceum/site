@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { join, extname } from 'path'; // Додав extname
 import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 export async function POST(req: NextRequest) {
     try {
@@ -12,31 +13,43 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'No files provided' }, { status: 400 });
         }
 
-        // 1. Prepare upload directory
         const relativeUploadDir = '/files/uploads';
         const uploadDir = join(process.cwd(), 'public', relativeUploadDir);
 
         try {
             await mkdir(uploadDir, { recursive: true });
-        } catch (e) {
-            // Directory already exists
-        }
+        } catch (e) {}
 
         const urls = await Promise.all(
             files.map(async (file) => {
-                // 2. Generate unique filename to prevent overwrites
                 const uniqueId = uuidv4();
-                const extension = file.name.split('.').pop();
-                const fileName = `${uniqueId}.${extension}`;
+                const originalExtension = extname(file.name).toLowerCase();
+                const isImage = file.type.startsWith('image/');
+
+                // Якщо це картинка — робимо .webp, якщо документ — лишаємо рідне розширення
+                const fileName = isImage ? `${uniqueId}.webp` : `${uniqueId}${originalExtension}`;
+                const path = join(uploadDir, fileName);
 
                 const bytes = await file.arrayBuffer();
                 const buffer = Buffer.from(bytes);
 
-                // 3. Save to public/uploads
-                const path = join(uploadDir, fileName);
-                await writeFile(path, buffer);
+                let processedBuffer: Buffer;
 
-                // 4. Return the public URL
+                if (isImage) {
+                    // Оптимізація для фото (як і раніше)
+                    processedBuffer = await sharp(buffer)
+                        .rotate()
+                        .resize({ width: 1920, withoutEnlargement: true })
+                        .webp({ quality: 80 })
+                        .toBuffer();
+                } else {
+                    // Для PDF, DOC, DOCX, XLS просто використовуємо оригінальний буфер
+                    // Стискати їх програмно дуже важко і зазвичай не варто
+                    processedBuffer = buffer;
+                }
+
+                await writeFile(path, processedBuffer);
+
                 return `/admin/api/media/${fileName}`;
             })
         );

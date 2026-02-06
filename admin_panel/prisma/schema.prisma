@@ -243,10 +243,10 @@ model Location {
   descriptionUk String @db.Text
   descriptionEn String @db.Text
 
-  highlightsUk String[]
-  highlightsEn String[]
+  highlightsTextUk String @db.Text
+  highlightsTextEn String @db.Text
   imagePhotos  String[]
-  iconName     String
+  iconName     String? @db.Text  @default("MeetingRoom")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -255,29 +255,47 @@ model Location {
 }
 
 model TestQuestion {
-  id             Int      @id @default(autoincrement())
-  question       String
-  questionEn     String
-  options        String[]
-  optionsEn      String[]
-  specialization String[]
+  id Int @id @default(autoincrement())
+  question String
+  questionEn String?
+
+
+  options TestOption[]
+
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
+
+model TestOption {
+  id Int @id @default(autoincrement())
+  option String
+  optionEn String?
+
+
+  // Замінив поле `specialization String` на явну FK-пов'язку
+  specializationId Int
+  specialization Specialization @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+
+
+  question TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
 model Specialization {
-  id            String @id @default(cuid())
-  emoji         String
-  nameUk        String
-  nameEn        String
+  id Int @id @default(autoincrement())
+  nameUk String
+  nameEn String
   descriptionUk String @db.Text
   descriptionEn String @db.Text
 
-  subjectsUk        String[]
-  subjectsEn        String[]
-  characteristicsUk String[]
-  characteristicsEn String[]
+  options TestOption[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -369,12 +387,14 @@ enum DocumentCategory {
 enum PageSectionType {
   HOME_HERO
   PARENTS_INFO
+  TEACHERS_INFO
   STUDENTS_INFO
   PSYCHOLOGICAL
   CERTIFICATION
   ANTI_BULLYING
   INNOVATIVE
   PROJECT_RESEARCH
+  QUALIFICATION
 }
 
 enum ExternalPageKey {
@@ -385,4 +405,5 @@ enum ExternalPageKey {
   BULLYING
   CERTIFICATION
   METHODOLOGICAL
+  QUALIFICATION
 }

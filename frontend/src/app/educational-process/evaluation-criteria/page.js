@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import {
   Box, Typography, Container, Grid, Paper,
-  Collapse, IconButton, alpha, CircularProgress, Link as MuiLink
+  Collapse, alpha, CircularProgress, Link as MuiLink
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -22,35 +22,13 @@ export default function EvaluationCriteria() {
   const loadSubjects = async () => {
     try {
       setIsLoading(true);
-      const testData = [
-        {
-          id: 1, name: "Математика", nameEn: "Mathematics", color: "#F44336",
-          url: "#", hasSubItems: true,
-          subItems: [
-            { name: "5-6 класи", link: "https://google.com" },
-            { name: "Алгебра 7-9", link: "#" },
-            { name: "Геометрія 7-9", link: "#" }
-          ]
-        },
-        {
-          id: 2, name: "Українська мова", nameEn: "Ukrainian Language", color: "#2196F3",
-          url: "https://google.com", hasSubItems: false
-        },
-        {
-          id: 3, name: "Іноземна мова", nameEn: "Foreign Language", color: "#4CAF50",
-          url: "#", hasSubItems: true,
-          subItems: [
-            { name: "Англійська", link: "#" },
-            { name: "Німецька", link: "#" }
-          ]
-        },
-        {
-          id: 4, name: "Фізика", nameEn: "Physics", color: "#FF9800",
-          url: "https://google.com", hasSubItems: false
-        }
-      ];
-
-      setSubjects(testData);
+      // Міняємо тестові дані на реальний запит до твого API
+      const res = await fetch('/admin/api/admin/discipline'); // перевір шлях до свого API
+      if (res.ok) {
+        const json = await res.json();
+        // Якщо API повертає об'єкт { data: [...] }
+        setSubjects(json.data || json);
+      }
     } catch (error) {
       console.error("Error loading subjects:", error);
     } finally {
@@ -117,8 +95,10 @@ export default function EvaluationCriteria() {
                           {/* Головна частина картки */}
                           <Box
                               component={subject.hasSubItems ? 'div' : 'a'}
-                              href={!subject.hasSubItems ? subject.link : undefined}
+                              // Використовуємо subject.url з Prisma моделі
+                              href={!subject.hasSubItems ? subject.url : undefined}
                               target={!subject.hasSubItems ? "_blank" : undefined}
+                              rel={!subject.hasSubItems ? "noopener noreferrer" : undefined}
                               onClick={subject.hasSubItems ? () => toggleSubject(subject.id) : undefined}
                               sx={{
                                 p: 3,
@@ -136,14 +116,14 @@ export default function EvaluationCriteria() {
                                 width: 50,
                                 height: 50,
                                 borderRadius: '12px',
-                                bgcolor: subject.color,
+                                bgcolor: subject.color || '#182BA1',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 color: '#fff',
                                 fontSize: 22,
                                 fontWeight: 800,
-                                boxShadow: `0 4px 12px ${alpha(subject.color, 0.4)}`,
+                                boxShadow: `0 4px 12px ${alpha(subject.color || '#182BA1', 0.4)}`,
                                 fontFamily: "'Montserrat Alternates', sans-serif"
                               }}>
                                 {localizedName.charAt(0)}
@@ -169,7 +149,7 @@ export default function EvaluationCriteria() {
                             )}
                           </Box>
 
-                          {/* Випадаючий список під-предметів */}
+                          {/* Список під-предметів */}
                           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                             <Box sx={{
                               p: 2,
@@ -177,8 +157,8 @@ export default function EvaluationCriteria() {
                               borderTop: `1px solid ${alpha('#182BA1', 0.05)}`
                             }}>
                               <Grid container spacing={1}>
-                                {subject.subItems?.map((sub, idx) => (
-                                    <Grid item size={{xs: 12}} key={idx}>
+                                {subject.subItems?.map((sub) => (
+                                    <Grid item size={{xs: 12}} key={sub.id}>
                                       <MuiLink
                                           href={sub.link}
                                           target="_blank"

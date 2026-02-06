@@ -1,89 +1,144 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Image from 'next/image';
 import {
-    Box, Typography, Container, Accordion, AccordionSummary,
-    AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid, Paper
+    Box, Typography, Container, CircularProgress, Grid, Paper, Stack,
+    TextField, InputAdornment, Pagination
 } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SearchIcon from '@mui/icons-material/Search';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
-import InfoIcon from '@mui/icons-material/Info';
+import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 
+const ITEMS_PER_PAGE = 6;
+
 export default function ParentsPage() {
-    const { t, locale } = useTranslation("parents");
-    const [data, setData] = useState([]);
+    const { locale } = useTranslation("parents");
+    const [data, setData] = useState({ section: null, articles: [], externalLinks: [] });
     const [isLoading, setIsLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [page, setPage] = useState(1);
+
+    const isEn = locale === 'en';
+    const l = (uk, en) => (isEn ? en || uk : uk);
 
     useEffect(() => {
-        fetch('/api/for-parents').then(res => res.json()).then(d => {
-            setData(d);
-            setIsLoading(false);
-        });
+        const loadData = async () => {
+            try {
+                setIsLoading(true);
+                const [secRes, artRes, linkRes] = await Promise.all([
+                    fetch('/admin/api/admin/pageSection?type=PARENTS_INFO'),
+                    fetch('/admin/api/admin/content?type=FOR_PARENTS'),
+                    fetch('/admin/api/admin/externalLink?pageKey=PARENTS')
+                ]);
+                const [sJson, aJson, lJson] = await Promise.all([secRes.json(), artRes.json(), linkRes.json()]);
+                setData({
+                    section: sJson.data?.[0] || null,
+                    articles: aJson.data || [],
+                    externalLinks: lJson.data || []
+                });
+            } catch (err) { console.error("Fetch error:", err); }
+            finally { setIsLoading(false); }
+        };
+        loadData();
     }, [locale]);
+
+    const filteredArticles = useMemo(() => {
+        const query = searchQuery.toLowerCase();
+        return data.articles.filter(item =>
+            l(item.titleUk, item.titleEn)?.toLowerCase().includes(query) ||
+            l(item.textUk, item.textEn)?.toLowerCase().includes(query)
+        );
+    }, [data.articles, searchQuery, locale]);
+
+    const count = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
+    const paginatedArticles = filteredArticles.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+    if (isLoading) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
 
     return (
         <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
-            {/* HERO */}
+            {/* HERO - Повністю з БД */}
             <Box sx={{
-                py: { xs: 8, md: 10 },
+                position: 'relative', py: { xs: 10, md: 15 },
                 background: 'linear-gradient(135deg, #182BA1 0%, #0c1865 100%)',
-                color: '#fff', textAlign: 'center',
-                clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)', mb: 6
+                color: '#fff', overflow: 'hidden', clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)'
             }}>
-                <Container maxWidth="md">
-                    <FamilyRestroomIcon sx={{ fontSize: 60, mb: 2, opacity: 0.8 }} />
-                    <Typography variant="h1" sx={{ fontSize: { xs: 32, md: 54 }, fontWeight: 900, fontFamily: "'Montserrat Alternates', sans-serif" }}>
-                        {t("parentsTitle") || "Батькам"}
+                <Container maxWidth="lg">
+                    <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                        <FamilyRestroomIcon sx={{ fontSize: { xs: 40, md: 60 }, opacity: 0.8 }} />
+                        <Typography variant="h1" sx={{ fontSize: { xs: 36, md: 64 }, fontWeight: 900, fontFamily: "'Montserrat Alternates', sans-serif", textTransform: 'uppercase' }}>
+                            {l(data.section?.titleUk, data.section?.titleEn) || "PARENTS"}
+                        </Typography>
+                    </Stack>
+                    <Typography sx={{ maxWidth: '700px', fontSize: '1.2rem', opacity: 0.9, fontWeight: 500 }}>
+                        {l(data.section?.contentUk, data.section?.contentEn)}
                     </Typography>
                 </Container>
             </Box>
 
-            <Container maxWidth="md">
-                {isLoading ? <CircularProgress sx={{ display: 'block', mx: 'auto' }} /> : (
-                    <Box>
-                        {data.map((item) => {
-                            const heading = locale === 'en' ? (item.headingEn || item.heading) : item.heading;
-                            const content = locale === 'en' ? (item.contentEn || item.content) : item.content;
+            <Container maxWidth="lg" sx={{ mt: -6, position: 'relative', zIndex: 10 }}>
+                {/* Ресурси (напр. посилання на Дія, МОН тощо) */}
+                <Grid container spacing={2} sx={{ mb: 8 }}>
+                    {data.externalLinks.map((link) => (
+                        <Grid key={link.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                            <Paper component="a" href={link.url} target="_blank" sx={{
+                                p: 3, borderRadius: 5, display: 'flex', alignItems: 'center', gap: 2,
+                                textDecoration: 'none', border: '1px solid #e2e8f0', transition: '0.3s',
+                                '&:hover': { bgcolor: '#182BA1', '& *': { color: '#fff' } }
+                            }}>
+                                <LaunchIcon sx={{ color: '#f97316' }} />
+                                <Typography sx={{ fontWeight: 700, color: '#0c1865' }}>{l(link.titleUk, link.titleEn)}</Typography>
+                            </Paper>
+                        </Grid>
+                    ))}
+                </Grid>
 
-                            return (
-                                <Paper key={item.id} sx={{ mb: 4, borderRadius: 6, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
-                                    <Box sx={{ p: 4 }}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                                            <InfoIcon sx={{ color: '#f97316' }} />
-                                            <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
-                                                {heading || t("info")}
-                                            </Typography>
-                                        </Box>
-                                        <Typography sx={{ whiteSpace: 'pre-line', color: '#334155', lineHeight: 1.8, mb: 3 }}>
-                                            {content}
-                                        </Typography>
+                <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" spacing={2} sx={{ mb: 4 }}>
+                    <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', fontFamily: "'Montserrat Alternates', sans-serif" }}>
+                        {l(data.section?.subTitleUk, data.section?.subTitleEn) || "Parents Info"}
+                    </Typography>
+                    <TextField
+                        size="small"
+                        placeholder="..."
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#182BA1' }} /></InputAdornment> }}
+                        sx={{ width: { xs: '100%', md: 350 }, bgcolor: '#fff', borderRadius: 2 }}
+                    />
+                </Stack>
 
-                                        {/* Файли та посилання */}
-                                        {item.url && (
-                                            <MuiLink href={item.url} target="_blank" sx={{ display: 'inline-block', p: 1.5, px: 3, bgcolor: alpha('#f97316', 0.1), color: '#f97316', borderRadius: 2, fontWeight: 700, textDecoration: 'none' }}>
-                                                {t("openResource") || "Перейти до матеріалів"} →
-                                            </MuiLink>
-                                        )}
-
-                                        {/* Галерея зображень */}
-                                        {item.photoUrls?.length > 0 && (
-                                            <Grid container spacing={2} sx={{ mt: 2 }}>
-                                                {item.photoUrls.map((url, idx) => (
-                                                    <Grid item xs={12} sm={item.photoUrls.length > 1 ? 6 : 12} key={idx}>
-                                                        <Box sx={{ borderRadius: 4, overflow: 'hidden', position: 'relative' }}>
-                                                            <Image src={url} alt="parent-info" width={800} height={500} layout="responsive" objectFit="cover" />
-                                                        </Box>
-                                                    </Grid>
-                                                ))}
-                                            </Grid>
-                                        )}
+                <Grid container spacing={3}>
+                    {paginatedArticles.map((item) => (
+                        <Grid key={item.id} size={{ xs: 12, md: 6 }}>
+                            <Paper sx={{ p: 4, height: '100%', borderRadius: 6, border: '1px solid #e2e8f0', transition: '0.3s', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 30px rgba(0,0,0,0.05)' } }}>
+                                <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865', mb: 2 }}>{l(item.titleUk, item.titleEn)}</Typography>
+                                <Typography sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }}>
+                                    {l(item.textUk, item.textEn)}
+                                </Typography>
+                                {item.photoGallery?.length > 0 && (
+                                    <Box sx={{ mt: 'auto', pt: 2 }}>
+                                        <Grid container spacing={2}>
+                                            {item.photoGallery.map((url, idx) => (
+                                                <Grid key={idx} size={{ xs: item.photoGallery.length > 1 ? 6 : 12 }}>
+                                                    <Box sx={{ position: 'relative', height: 180, borderRadius: 4, overflow: 'hidden' }}>
+                                                        <Image src={url} alt="" fill style={{ objectFit: 'cover' }} />
+                                                    </Box>
+                                                </Grid>
+                                            ))}
+                                        </Grid>
                                     </Box>
-                                </Paper>
-                            );
-                        })}
-                    </Box>
+                                )}
+                            </Paper>
+                        </Grid>
+                    ))}
+                </Grid>
+
+                {count > 1 && (
+                    <Stack alignItems="center" sx={{ mt: 6 }}>
+                        <Pagination count={count} page={page} onChange={(_, v) => setPage(v)} color="primary" />
+                    </Stack>
                 )}
             </Container>
         </Box>

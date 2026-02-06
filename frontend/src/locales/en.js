@@ -33,113 +33,10 @@ const en = {
         readDescription: "Read the description of each room",
         useMiniMap: "Use the mini-map for quick navigation",
         studyFeatures: "Study the features of each location",
+        noLocations: "No locations available",
 
         // Virtual Tour Floors
-        groundFloor: "Ground floor",
-        firstFloor: "First floor",
-        secondFloor: "Second floor",
-        thirdFloor: "Third floor",
-
-        // Virtual Tour Locations - Names
-        entrance: "Main entrance",
-        foyer: "Foyer and reception",
-        rimc: "RIMC",
-        library: "Library",
-        gym: "Gymnasium",
-        danceroom: "Dance hall",
-        medical: "Medical center",
-        recreation: "Recreation room",
-        classroom1: "Primary school classroom",
-        classroom2: "Primary school classroom",
-        teacherspace: "Teacher's space",
-        computerclass: "Computer class",
-        middleschool: "Middle school classroom",
-        auditorium: "Assembly hall",
-        cafeteria: "School canteen",
-        orgoffice: "Administrative office",
-        languageroom: "Foreign language classroom",
-        hallway3: "Third floor corridors",
-        chemistry: "Chemistry classroom",
-        biology: "Biology classroom",
-        physics: "Physics classroom",
-        languageroom3: "Foreign language classroom",
-        playground: "School playground",
-        courtyard: "Inner courtyard",
-
-        // Virtual Tour Locations - Descriptions
-        entranceDescription: "Welcome to our lyceum! This is where our learning journey begins every morning. The modern and cozy entrance creates a pleasant first impression.",
-        entranceHighlights: ["Modern facade design", "Secure entrance with security"],
-
-        foyerDescription: "The central foyer is the heart of our school, where students and visitors receive necessary information. A spacious and bright area for meetings.",
-        foyerHighlights: ["Administrative area", "Waiting area for parents", "Access to school yard"],
-
-        rimcDescription: "Resource Information-Methodical Center - a multifunctional room for conferences, seminars and various educational events. Equipped with modern computer technology and a large TV for presentations.",
-        rimcHighlights: ["Modern computers", "Large TV for presentations", "Conference room for events"],
-
-        libraryDescription: "Modern school library with a large collection of books and computer area. A quiet place for learning and reading where students can deepen their knowledge.",
-        libraryHighlights: ["Reading area", "Educational and fiction literature"],
-
-        gymDescription: "Large gymnasium for physical education lessons and sports competitions. A space for active and healthy lifestyle where students develop physical abilities.",
-        gymHighlights: ["Basketball and volleyball nets", "Various sports equipment", "Locker rooms", "Safe floor covering"],
-
-        danceroomDescription: "Spacious dance hall with mirrored walls for choreography classes and creative self-expression. A place where students develop grace and artistry.",
-        danceroomHighlights: ["Mirrored walls", "Special dance floor covering", "Space for group classes"],
-
-        medicalDescription: "Medical center for providing first aid and medical care to students. Ensures a safe and healthy learning environment.",
-        medicalHighlights: ["First aid equipment", "Medical supplies", "Examination couch", "Qualified medical staff"],
-
-        chemistryDescription: "Specially equipped chemistry classroom with laboratory for practical classes and experiments. Safe environment for studying chemical processes.",
-        chemistryHighlights: ["Laboratory equipment", "Chemical reagents", "Safe work stations"],
-
-        biologyDescription: "Biology classroom with microscopes and educational materials for studying living nature. Equipped with modern equipment for researching biological processes.",
-        biologyHighlights: ["Microscopes and magnifying glasses", "Herbarium and collections", "Models of organs and systems"],
-
-        physicsDescription: "Physics classroom with demonstration equipment for studying the laws of nature. Laboratory for conducting physics experiments and research.",
-        physicsHighlights: ["Demonstration equipment", "Electrical circuits", "Optical instruments", "Mechanical models"],
-
-        // Additional locations
-        recreationDescription: "Bright first-floor corridor for short breaks between classes.",
-        recreationHighlights: ["Natural lighting", "Access to main classrooms"],
-
-        classroom1Description: "Modern classroom for primary school students, equipped with interactive learning tools and comfortable furniture appropriate for children's age.",
-        classroom1Highlights: ["Furniture for primary school", "Safe learning environment"],
-
-        classroom2Description: "Classroom for primary school students with modern equipment and comfortable educational environment for effective learning.",
-        classroom2Highlights: ["Comfortable work spaces", "Creative learning atmosphere"],
-
-        teacherspaceDescription: "Specially equipped area for teachers' work and rest. A comfortable place for lesson preparation, planning and professional communication.",
-        teacherspaceHighlights: ["Work spaces for teachers", "Rest area", "Professional communication"],
-
-        computerclassDescription: "Modern computer class with the latest equipment for studying information technologies and digital skills by students of different age groups.",
-        computerclassHighlights: ["Modern computers", "High-speed internet", "Multimedia equipment"],
-
-        middleschoolDescription: "Universal classroom for middle school students, designed for conducting various subject lessons and practical classes.",
-        middleschoolHighlights: ["Modern educational equipment", "Flexible space planning", "Multifunctionality"],
-
-        auditoriumDescription: "Spacious assembly hall for ceremonial events, concerts, theatrical performances and school-wide meetings. Equipped with modern sound and lighting equipment.",
-        auditoriumHighlights: ["Stage with professional lighting", "Quality acoustic system", "Seating for audience", "Technical equipment for events"],
-
-        cafeteriaDescription: "Cozy canteen with spacious dining hall and modern kitchen. A place for healthy nutrition for students and staff during the school day.",
-        cafeteriaHighlights: ["Modern kitchen", "Healthy and tasty food", "Spacious dining hall"],
-
-        orgofficeDescription: "Administrative office for coordinating organizational matters of the lyceum. Center for planning educational processes and managing internal affairs of the institution.",
-        orgofficeHighlights: ["Administrative work spaces", "Document flow and planning", "Coordination of educational processes"],
-
-        languageroomDescription: "Specialized classroom for studying foreign languages with interactive learning tools. Creates a language environment for effective study of English, German and other languages.",
-        languageroomHighlights: ["Interactive language programs", "Audio and video materials", "Communicative teaching methods", "Multimedia equipment"],
-
-        hallway3Description: "Spacious third floor corridor with natural lighting and relaxation area with bean bags. Central zone for movement between specialized science classrooms and educational premises. Walls are decorated with artistic elements, creating a pleasant and inspiring atmosphere for students.",
-        hallway3Highlights: ["Natural lighting", "Relaxation area with bean bags", "Artistic wall decoration", "Access to science classrooms", "Space for movement"],
-
-        languageroom3Description: "Additional foreign language classroom on the third floor. Equipped with modern technologies for effective language learning.",
-        languageroom3Highlights: ["Interactive panels", "Audio system", "Language programs", "Group work"],
-
-        playgroundDescription: "Spacious outdoor sports ground for active games and physical education classes. Includes football field, basketball hoops and areas for various sports activities.",
-        playgroundHighlights: ["Football field", "Basketball hoops", "Sports equipment", "Group games area"],
-
-        courtyardDescription: "Cozy inner courtyard with green plantings and rest areas. A quiet place for reflection, reading or informal communication in a natural environment.",
-        courtyardHighlights: ["Green plantings", "Rest gazebo", "Silence and tranquility", "Natural environment"],
-
+        floor: "Floor",
     },
 
     test: {
@@ -162,108 +59,7 @@ const en = {
         returnToHome: "Return to home page",
         of: "of",
 
-        question1: "If you found yourself in an unfamiliar city without internet, how would you find the address you need?",
-        question2: "Choose the situation in which you would best reveal your potential:",
-        question3: "If you were collecting something, what would it be?",
-        question4: "Your favorite part in team games?",
-        question5: "When you watch a movie, what do you pay the most attention to?",
-        question6: "In which situation do you feel most comfortable?",
-        question7: "Imagine you need to introduce yourself to the class. How would you do it?",
-        question8: "Your gift style for friends:",
-        question9: "What role do you most often play in group work?",
-        question10: "If you could change one thing at school, what would it be?",
-
-        // Profile Tests Question Options
-        // Question 1 options
-        q1_option1: "Pay attention to building numbering and street planning logic",
-        q1_option2: "Ask passersby, try to understand local language features",
-        q1_option3: "Look at architecture and building style to understand the area",
-        q1_option4: "Find the nearest shopping center or transport hub",
-
-        // Question 2 options
-        q2_option1: "Solve complex puzzles and find unexpected solutions",
-        q2_option2: "Communicate with people and influence their emotions",
-        q2_option3: "Understand what really stands behind events",
-        q2_option4: "Plan projects and implement them in life",
-
-        // Question 3 options
-        q3_option1: "Mechanical puzzles or objects with interesting design",
-        q3_option2: "Old postcards or books from different countries",
-        q3_option3: "Coins or objects that tell stories of eras",
-        q3_option4: "Things that might become valuable or useful in the future",
-
-        // Question 4 options
-        q4_option1: "Develop strategy and predict opponent's moves",
-        q4_option2: "Come up with creative names and legends for the team",
-        q4_option3: "Study rules and their origins, game history",
-        q4_option4: "Analyze players' strengths and assign roles",
-
-        // Question 5 options
-        q5_option1: "Details that might become keys to solving the plot",
-        q5_option2: "Dialogues, actors' accents and translation features",
-        q5_option3: "Historical accuracy and context of events",
-        q5_option4: "How realistically relationships and motivations are shown",
-
-        // Question 6 options
-        q6_option1: "When I can concentrate and work in silence",
-        q6_option2: "When there are many people around and active communication",
-        q6_option3: "When there's time to think and explore issues deeper",
-        q6_option4: "When I can quickly make decisions and see results",
-
-        // Question 7 options
-        q7_option1: "Prepare a clear structure and speak point by point",
-        q7_option2: "Tell an interesting story to attract attention",
-        q7_option3: "Share what really excites and interests me",
-        q7_option4: "Show specific examples of what I can do",
-
-        // Question 8 options
-        q8_option1: "Something unusual that will make you think or experiment",
-        q8_option2: "Something that will broaden horizons or add new experiences",
-        q8_option3: "Something that has deep meaning or interesting history",
-        q8_option4: "Practical thing that the person will definitely use",
-
-        // Question 9 options
-        q9_option1: "Monitor quality and notice mistakes",
-        q9_option2: "Generate ideas and inspire others",
-        q9_option3: "Collect and systematize all necessary information",
-        q9_option4: "Build relationships between team members",
-
-        // Question 10 options
-        q10_option1: "More experiments and opportunities to test theory in practice",
-        q10_option2: "More discussions and exchange of ideas between students",
-        q10_option3: "More interdisciplinary connections and comprehensive understanding",
-        q10_option4: "More projects whose results can be seen and applied",
-
-
-        mathSpecialization: "Mathematical direction",
-        mathDescription: "You have an aptitude for exact sciences, logical thinking and a structured approach to problem solving. Mathematics, algebra, geometry and analytical disciplines are your forte.",
-        mathSubjects: ["Mathematics", "Algebra", "Geometry", "Statistics", "Computer Science"],
-        mathCharacteristics: ["Logical thinking", "Attention to detail", "Systematic approach", "Analytical abilities", "Accuracy in work"],
-
-        physicsSpecialization: "Physics and mathematics direction",
-        physicsDescription: "You are attracted to fundamental laws of nature, experiments and research. You are able to think abstractly and understand complex physical processes.",
-        physicsSubjects: ["Physics", "Mathematics", "Astronomy", "Computer Science", "Chemistry"],
-        physicsCharacteristics: ["Abstract thinking", "Research abilities", "Mathematical intuition", "Logical thinking", "Curiosity about nature"],
-
-        biologySpecialization: "Chemical and biological direction",
-        biologyDescription: "You are interested in the living world, chemical processes and medicine. You are ready to explore nature at the molecular level and understand the mechanisms of life.",
-        biologySubjects: ["Biology", "Chemistry", "Ecology", "Anatomy", "Physiology"],
-        biologyCharacteristics: ["Observational skills", "Curiosity about nature", "Analytical thinking", "Patience in research", "Systematic approach"],
-
-        historySpecialization: "Historical profile",
-        historyDescription: "You value the past, understand connections between events and can analyze social processes. History, culture and politics are your strengths.",
-        historySubjects: ["History", "Social Studies", "Cultural Studies", "Law", "Geography"],
-        historyCharacteristics: ["Analytical thinking", "Curiosity about the past", "Critical thinking", "Research abilities", "Systematic approach"],
-
-        philologySpecialization: "Foreign philology",
-        philologyDescription: "You have strong linguistic intelligence, love foreign languages and intercultural communication. Languages, literature and communications are your field.",
-        philologySubjects: ["English", "German", "Foreign Literature", "Linguistics", "Cultural Studies"],
-        philologyCharacteristics: ["Language abilities", "Communication skills", "Creativity", "Curiosity about cultures", "Analytical thinking"],
-
-        ukrphilologySpecialization: "Ukrainian philology",
-        ukrphilologyDescription: "You have a deep understanding of your native language, are interested in Ukrainian literature and culture. Ukrainian language and literature is your calling.",
-        ukrphilologySubjects: ["Ukrainian Language", "Ukrainian Literature", "History of Ukraine", "Cultural Studies", "Linguistics"],
-        ukrphilologyCharacteristics: ["Language abilities", "Literary taste", "Creativity", "Patriotism", "Analytical thinking"],
+        question: "Question",
     },
 
 
@@ -368,26 +164,7 @@ const en = {
         contactPhone: "0536170838",
         contactEmail: "schoolsuncity@ukr.net",
         serviceAreaTitle: "Service area",
-        serviceAreaAddress1: "Vyshnevetskykh St.",
-        serviceAreaAddress2: "Monastyrska St.",
-        serviceAreaAddress3: "Kuzni St.",
-        serviceAreaAddress4: "Yevhen Chykalenko St. with 1st and 2nd lanes",
-        serviceAreaAddress5: "Hrushevskyi St.",
-        serviceAreaAddress6: "Petro Lubenskyi St.",
-        serviceAreaAddress7: "Svobody St.",
-        serviceAreaAddress8: "Botanichna St.",
-        serviceAreaAddress9: "Andrii Zhuka St. with dead end",
         lyceumWorksTitle: "The lyceum operates",
-        divosvitSociety: "«Divosvit»",
-        scientificSocietyDescription: "scientific society",
-        linkClub: "«LINK»",
-        europeanClubDescription: "European club",
-        divotsvitStudio: "«Divotsvit»",
-        artStudioDescription: "visual arts studio",
-        valeriEnsemble: "«Valeri»",
-        vocalEnsembleDescription: "vocal ensemble",
-        kardenGroup: "«Karden»",
-        danceGroupDescription: "dance group",
         facilitiesTitle: "Material base",
         facilitiesPhotoAlt: "Facilities photo",
         threeFloorBuildingTitle: "The lyceum has a three-story building:",
@@ -500,16 +277,19 @@ const en = {
     financial: {
         financialReportsTitle: "Financial reports",
         firebirdAlt: "Firebird",
+        searchPlaceholder: "Search",
     },
 
     public: {
         publicInformationTitle: "Public information",
         firebirdAlt: "Firebird",
+        searchPlaceholder: "Search",
     },
 
     regdocs: {
         regulatoryDocumentsTitle: "Regulatory Documents",
         firebirdAlt: "Firebird",
+        searchPlaceholder: "Search",
     },
 
 
@@ -527,8 +307,10 @@ const en = {
         pedagogicalTeam: "Teaching staff",
         choose: "Choose category",
         loading: "Loading...",
-        noTeachersInCategory: "No teachers in category \"{category}\" yet",
+        noTeachersInCategory: "No teachers in category this yet",
         photoMissing: "Photo missing",
+        noMatches: "No matches",
+        searchTeacher: "Search teacher",
     },
 
 
@@ -599,6 +381,12 @@ const en = {
     },
 
     psychological: {
+        specialization: "Specialization",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search",
         psychologicalSupport: "Social-psychological support",
         psychologistName: "Kateryna Serhiivna Kogut",
         psychologistTitle: "specialist of the second qualification category",
@@ -632,6 +420,11 @@ const en = {
         antiBullying: "Anti-bullying",
         schoolChatbot: "School chatbot",
         chatbotHashtag: "#AboutBullying",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search",
         chatbotDescription: "will help recognize signs of bullying, explain how bullying differs from conflict, what to do when you are being bullied, and where to seek help if you are being offended in cyberspace.",
         chatbotInfo: "Want to learn more – follow the link",
         usefulDocuments: "Useful documents and materials",
@@ -664,6 +457,13 @@ const en = {
         classDisciplineRulesTitle: "When working in the classroom and to maintain discipline, the following rules must be taken into account:",
         classDisciplineRule1: "Behave so that students feel you are managing the educational process, while stimulating their activity.",
         classDisciplineRule2: "Don't get distracted by minor violations, moralizing.",
+
+        usefulResourcesTitle: "Useful resources",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        noResults: "No results",
+        searchPlaceholder: "Search",
 
         digitalLiteracyText: "As part of the large-scale information campaign \"Digital Literacy Month\" we recommend watching educational series:",
         cyberHygiene: "Cybersecurity basics",
@@ -738,14 +538,27 @@ const en = {
         viewMore: "View more",
         readMore: "Read more",
         collapse: "Read less",
+        noResults: "No results",
+        searchPlaceholder: "Search",
     },
 
     parents: {
-        parentsTitle: "For parents"
+        parentsInfo: "For parents",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        noResults: "No results",
+        search: "Search"
     },
 
     students: {
+        forStudents: "For students",
         loadingStudents: "Loading additional materials...",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
+        noResults: "No results",
+        search: "Search",
         photoForStudents: "photo",
         howToControlYourself: "How to control yourself",
         selfControlRule1: "1. Remember: the best way to fight mental anxiety is constant employment.",

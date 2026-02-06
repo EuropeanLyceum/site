@@ -1,38 +1,61 @@
+'use client';
+
 import { Box, Typography, Button, alpha, Chip } from "@mui/material";
 import Image from "next/image";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
-    // Мапінг мови відповідно до даних з API
-    const localized = locale === "en"
-        ? { title: item.titleEn || item.title, text: item.textEn || item.text }
-        : { title: item.title, text: item.text };
+    // 1. Захист від undefined: якщо item не передано, нічого не рендеримо
+    if (!item) return null;
 
-    // Визначаємо масив фото для безпечної роботи
-    const photos = item.images && item.images.length > 0 ? item.images : [];
+    // 2. Мапінг контенту (з дефолтними значеннями)
+    const localized = locale === "en"
+        ? {
+            title: item.titleEn || item.title || "No title",
+            text: item.textEn || item.text || ""
+        }
+        : {
+            title: item.title || "Без заголовка",
+            text: item.text || ""
+        };
+
+    // 3. Безпечна робота з картинками
+    const photos = Array.isArray(item.images) ? item.images : [];
+    const hasPhotos = photos.length > 0;
     const displayImages = isExpanded ? photos.slice(0, 3) : photos.slice(0, 1);
 
     return (
         <Box sx={{
             my: 3, mx: "auto",
             display: 'flex',
-            flexDirection: { xs: 'column-reverse', md: 'row' },
+            // Якщо фото немає, не міняємо порядок на мобілках
+            flexDirection: {
+                xs: hasPhotos ? 'column-reverse' : 'column',
+                md: 'row'
+            },
             background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
             borderRadius: { xs: 6, md: 8 },
             overflow: 'hidden',
             boxShadow: '0 20px 50px rgba(12, 24, 101, 0.15)',
             transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+            width: '100%', // Важливо для стабільності верстки
             '&:hover': {
                 transform: { md: 'translateY(-8px) scale(1.01)' },
                 boxShadow: '0 30px 60px rgba(12, 24, 101, 0.25)',
             }
         }}>
             {/* Текстова частина */}
-            <Box sx={{ width: { xs: '100%', md: '60%' }, p: { xs: 4, md: 6 }, display: 'flex', flexDirection: 'column' }}>
+            <Box sx={{
+                width: { xs: '100%', md: hasPhotos ? '60%' : '100%' },
+                p: { xs: 4, md: 6 },
+                display: 'flex',
+                flexDirection: 'column',
+                flexGrow: 1
+            }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
                     <Chip
                         icon={<CalendarTodayIcon sx={{ fontSize: '14px !important', color: '#f97316 !important' }} />}
-                        label={item.date}
+                        label={item.date || ''}
                         sx={{
                             bgcolor: alpha('#fff', 0.1),
                             color: '#fff',
@@ -69,7 +92,7 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
 
                 <Box sx={{ mt: 'auto' }}>
                     <Button
-                        onClick={() => onReadMore(item.id)}
+                        onClick={() => onReadMore?.(item.id)}
                         variant="contained"
                         sx={{
                             px: 5, py: 1.5,
@@ -81,44 +104,58 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                             }
                         }}
                     >
-                        {isExpanded ? t('collapse') : t('readMore')}
+                        {isExpanded ? t?.('collapse') || 'Collapse' : t?.('readMore') || 'Read More'}
                     </Button>
                 </Box>
             </Box>
 
             {/* Секція Зображень */}
-            <Box sx={{
-                width: { xs: '100%', md: '40%' },
-                display: 'flex', flexDirection: 'column', gap: 0.5,
-                bgcolor: '#0c1865',
-                height: { xs: isExpanded ? '500px' : '300px', md: 'auto' },
-                minHeight: { md: isExpanded ? 600 : 450 },
-                position: 'relative'
-            }}>
-                {displayImages.map((img, index) => (
-                    <Box
-                        key={index}
-                        onClick={() => onImageClick(photos, index)}
-                        sx={{
-                            position: 'relative', flex: index === 0 ? 2 : 1,
-                            width: '100%', cursor: 'pointer', overflow: 'hidden',
-                            '&:hover img': { transform: 'scale(1.1)' }
-                        }}
-                    >
-                        <Image src={img} alt="News" fill style={{ objectFit: 'cover' }} />
-                        <Box className="overlay" sx={{
-                            position: 'absolute', inset: 0,
-                            bgcolor: alpha('#182BA1', 0.6),
-                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            opacity: 0, transition: '0.4s', '&:hover': { opacity: 1 }
-                        }}>
-                            <Typography sx={{ color: '#fff', border: '2px solid #fff', px: 3, py: 1, borderRadius: 10, fontWeight: 900 }}>
-                                {t('viewMore')}
-                            </Typography>
+            {hasPhotos && (
+                <Box sx={{
+                    width: { xs: '100%', md: '40%' },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 0.5,
+                    bgcolor: '#0c1865',
+                    height: { xs: isExpanded ? '500px' : '300px', md: 'auto' },
+                    minHeight: { md: isExpanded ? 600 : 450 },
+                    position: 'relative'
+                }}>
+                    {displayImages.map((img, index) => (
+                        <Box
+                            key={`${item.id}-img-${index}`}
+                            onClick={() => onImageClick?.(photos, index)}
+                            sx={{
+                                position: 'relative',
+                                flex: index === 0 ? 2 : 1,
+                                width: '100%',
+                                cursor: 'pointer',
+                                overflow: 'hidden',
+                                '&:hover img': { transform: 'scale(1.1)' }
+                            }}
+                        >
+                            {/* Додано unoptimized або priority залежно від потреби */}
+                            <Image
+                                src={img}
+                                alt={localized.title}
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                sizes="(max-width: 768px) 100vw, 40vw"
+                            />
+                            <Box className="overlay" sx={{
+                                position: 'absolute', inset: 0,
+                                bgcolor: alpha('#182BA1', 0.6),
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                opacity: 0, transition: '0.4s', '&:hover': { opacity: 1 }
+                            }}>
+                                <Typography sx={{ color: '#fff', border: '2px solid #fff', px: 3, py: 1, borderRadius: 10, fontWeight: 900 }}>
+                                    {t?.('viewMore') || 'View'}
+                                </Typography>
+                            </Box>
                         </Box>
-                    </Box>
-                ))}
-            </Box>
+                    ))}
+                </Box>
+            )}
         </Box>
     );
 }
