@@ -1,41 +1,40 @@
 FROM node:20-alpine
 
+# 1. Встановлюємо необхідні системні залежності для sharp та prisma
+RUN apk add --no-cache libc6-compat
+
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install --include=dev
+
+# 2. Встановлюємо залежності, включаючи sharp для конкретної платформи
+RUN npm install
+# Явно додаємо sharp для Linux Alpine (musl)
+RUN npm install --os=linux --libc=musl --cpu=x64 sharp
 
 COPY . .
 
-# Build arguments for environment variables needed during build
+# Build arguments (залиш як було)
 ARG NEXTAUTH_SECRET
 ARG NEXTAUTH_URL
-ARG JWT_SECRET
 ARG DATABASE_URL
+ARG AUTH_URL
 
-# Set as environment variables for the build process
 ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
 ENV NEXTAUTH_URL=$NEXTAUTH_URL
-ENV JWT_SECRET=$JWT_SECRET
 ENV DATABASE_URL=$DATABASE_URL
+ENV AUTH_URL=$AUTH_URL
+ENV NODE_ENV=production 
 
-# Generate Prisma client
+# 3. Prisma та Build
 RUN npx prisma generate
-
-# Build for production
 RUN npm run build
 
-# Copy static files and public folder to standalone directory (required for standalone mode)
+# 4. Standalone setup
 RUN cp -r .next/static .next/standalone/.next/static
 RUN cp -r public/* .next/standalone/public/ 2>/dev/null || true
 
-ENV NODE_ENV=production
-
 EXPOSE 3001
 
-# якщо standalone
 WORKDIR /app/.next/standalone
 CMD ["node", "server.js"]
-
-# або звичайний Next.js build
-# CMD ["npm", "run", "start"]

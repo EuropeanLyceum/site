@@ -1,67 +1,14 @@
-export type PasswordRuleId =
-  | 'minLength'
-  | 'uppercase'
-  | 'lowercase'
-  | 'digit'
-  | 'special';
+export type PasswordRuleId = 'minLength' | 'uppercase' | 'lowercase' | 'digit' | 'special';
 
-export type PasswordRule = {
-  id: PasswordRuleId;
-  test: (value: string) => boolean;
-  description: string;
-  error: string;
-};
-
-export const PASSWORD_RULES: PasswordRule[] = [
-  {
-    id: 'minLength',
-    test: value => value.length >= 8,
-    description: 'Мінімум 8 символів',
-    error: 'Пароль повинен містити мінімум 8 символів',
-  },
-  {
-    id: 'uppercase',
-    test: value => /[A-ZА-ЯІЇЄ]/.test(value),
-    description: 'Принаймні одна велика літера (A-Z, А-Я)',
-    error: 'Пароль повинен містити принаймні одну велику літеру',
-  },
-  {
-    id: 'lowercase',
-    test: value => /[a-zа-яіїє]/.test(value),
-    description: 'Принаймні одна мала літера (a-z, а-я)',
-    error: 'Пароль повинен містити принаймні одну малу літеру',
-  },
-  {
-    id: 'digit',
-    test: value => /\d/.test(value),
-    description: 'Принаймні одна цифра (0-9)',
-    error: 'Пароль повинен містити принаймні одну цифру',
-  },
-  {
-    id: 'special',
-    test: value => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(value),
-    description: 'Принаймні один спеціальний символ (!@#$%^&*()_+-=[]{}|;:,.<>?)',
-    error: 'Пароль повинен містити принаймні один спеціальний символ (!@#$%^&*()_+-=[]{}|;:,.<>?)',
-  },
+export const PASSWORD_RULES = [
+  { id: 'minLength', test: (v: string) => v.length >= 8, error: 'Мінімум 8 символів' },
+  { id: 'uppercase', test: (v: string) => /[A-ZА-ЯІЇЄ]/.test(v), error: 'Принаймні одна велика літера' },
+  { id: 'lowercase', test: (v: string) => /[a-zа-яіїє]/.test(v), error: 'Принаймні одна мала літера' },
+  { id: 'digit', test: (v: string) => /\d/.test(v), error: 'Принаймні одна цифра' },
+  { id: 'special', test: (v: string) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(v), error: 'Принаймні один спеціальний символ' },
 ];
 
-export type PasswordValidationResult =
-  | { valid: true }
-  | { valid: false; failedRule: PasswordRule; error: string };
-
-export function validatePassword(password: string): PasswordValidationResult {
+export function validatePassword(password: string) {
   const failedRule = PASSWORD_RULES.find(rule => !rule.test(password));
-
-  if (!failedRule) {
-    return { valid: true };
-  }
-
-  return {
-    valid: false,
-    failedRule,
-    error: failedRule.error,
-  };
+  return failedRule ? { valid: false, error: failedRule.error } : { valid: true };
 }
-
-export const PASSWORD_REQUIREMENTS = PASSWORD_RULES.map(rule => rule.description);
-

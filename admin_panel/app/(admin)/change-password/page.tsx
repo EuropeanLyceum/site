@@ -14,12 +14,10 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { PASSWORD_REQUIREMENTS, validatePassword } from '@/lib/auth/password';
-
-type StepType = 'verify' | 'update';
+// Використовуємо твій новий консолідований файл
+import { PASSWORD_RULES, validatePassword } from '@/lib/auth/password';
 
 type FormState = {
-  currentUsername: string;
   currentPassword: string;
   newUsername: string;
   newPassword: string;
@@ -31,7 +29,6 @@ type RequestState = {
 };
 
 const INITIAL_FORM_STATE: FormState = {
-  currentUsername: '',
   currentPassword: '',
   newUsername: '',
   newPassword: ''
@@ -49,43 +46,46 @@ export default function ChangePasswordPage() {
 
   const isLoading = verificationState.status === 'loading' || updateState.status === 'loading';
 
+  // Валідація пароля "на льоту"
   const passwordValidationError = useMemo(() => {
     if (formState.newPassword.length === 0) return '';
     const validation = validatePassword(formState.newPassword);
-    return validation.valid ? '' : validation.error;
+    return validation.valid ? '' : (validation as any).error;
   }, [formState.newPassword]);
 
   const handleInputChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setFormState(prev => ({ ...prev, [name]: value }));
+    // Скидаємо помилки при введенні
     setVerificationState({ status: 'idle', message: '' });
     setUpdateState({ status: 'idle', message: '' });
   }, []);
 
+  // КРОК 1: Тільки перевірка пароля
   const handleVerifyCredentials = async (event: FormEvent) => {
     event.preventDefault();
     setVerificationState({ status: 'loading', message: '' });
 
     try {
-      const response = await fetch('/admin/api/auth/verify-credentials', {
-        method: 'POST',
+      const response = await fetch('/api/admin/profile', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formState.currentUsername.trim(),
-          password: formState.currentPassword
+          currentPassword: formState.currentPassword
         })
       });
 
       const payload = await response.json();
-      if (!response.ok || !payload?.success) throw new Error(payload?.error || 'Неправильні дані');
+      if (!response.ok) throw new Error(payload?.error || 'Неправильний пароль');
 
-      setVerificationState({ status: 'success', message: 'Дані підтверджено' });
+      setVerificationState({ status: 'success', message: 'Особу підтверджено' });
       setActiveStep(1);
     } catch (error: any) {
       setVerificationState({ status: 'error', message: error.message });
     }
   };
 
+  // КРОК 2: Оновлення даних
   const handleChangeData = async (event: FormEvent) => {
     event.preventDefault();
     if (passwordValidationError) return;
@@ -93,61 +93,54 @@ export default function ChangePasswordPage() {
     setUpdateState({ status: 'loading', message: '' });
 
     try {
-      const response = await fetch('/admin/api/auth/change-password', {
-        method: 'POST',
+      const response = await fetch('/api/admin/profile', {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           currentPassword: formState.currentPassword,
-          newPassword: formState.newPassword,
+          newPassword: formState.newPassword || undefined,
           newUsername: formState.newUsername.trim() || undefined
         })
       });
 
       const payload = await response.json();
-      if (!response.ok || !payload?.success) throw new Error(payload?.error || 'Помилка оновлення');
+      if (!response.ok) throw new Error(payload?.error || 'Помилка оновлення');
 
       setUpdateState({ status: 'success', message: 'Дані успішно змінено!' });
-      setTimeout(() => router.push('/dashboard'), 2000);
+
+      // Даємо час користувачу побачити успіх і рефрешимо сесію
+      setTimeout(() => {
+        router.refresh();
+        router.push('/dashboard');
+      }, 1500);
     } catch (error: any) {
       setUpdateState({ status: 'error', message: error.message });
     }
   };
 
   return (
-      <Box sx={{ maxWidth: 600, mx: 'auto', py: 4 }}>
+      <Box sx={{ maxWidth: 600, mx: 'auto', py: 4, px: 2 }}>
         <Typography variant="h4" sx={{
-          fontWeight: 900, mb: 4, color: '#0c1865', textAlign: 'center',
-          fontFamily: 'var(--font-montserrat-alternates), sans-serif'
+          fontWeight: 900, mb: 4, color: '#0c1865', textAlign: 'center'
         }}>
-          Зміна даних входу
+          Налаштування акаунту
         </Typography>
 
         <Stepper activeStep={activeStep} sx={{ mb: 5 }}>
           <Step><StepLabel>Перевірка</StepLabel></Step>
-          <Step><StepLabel>Оновлення</StepLabel></Step>
+          <Step><StepLabel>Нові дані</StepLabel></Step>
         </Stepper>
 
-        <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: 6, border: '1px solid #e2e8f0' }}>
+        <Paper sx={{ p: { xs: 3, md: 5 }, borderRadius: 6, border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
           {activeStep === 0 ? (
+              /* ФОРМА КРОКУ 1 */
               <Box component="form" onSubmit={handleVerifyCredentials} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Підтвердіть особу</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>Підтвердіть пароль</Typography>
+                <Typography variant="body2" color="text.secondary">Для зміни налаштувань потрібно підтвердити, що це ви.</Typography>
 
                 {verificationState.status === 'error' && (
                     <Alert severity="error" sx={{ borderRadius: 3 }}>{verificationState.message}</Alert>
                 )}
-
-                <TextField
-                    fullWidth
-                    label="Поточний логін"
-                    name="currentUsername"
-                    value={formState.currentUsername}
-                    onChange={handleInputChange}
-                    required
-                    InputProps={{
-                      startAdornment: <InputAdornment position="start"><PersonIcon color="primary"/></InputAdornment>,
-                      sx: { borderRadius: 3 }
-                    }}
-                />
 
                 <TextField
                     fullWidth
@@ -178,22 +171,23 @@ export default function ChangePasswordPage() {
                       onClick={() => router.back()}
                       sx={{ py: 1.5, borderRadius: 3, fontWeight: 700 }}
                   >
-                    Назад
+                    Скасувати
                   </Button>
                   <Button
                       fullWidth
                       type="submit"
                       variant="contained"
                       disabled={isLoading}
-                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, bgcolor: '#182BA1' }}
+                      sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, bgcolor: '#182BA1', '&:hover': { bgcolor: '#0c1865' } }}
                   >
                     {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Продовжити'}
                   </Button>
                 </Box>
               </Box>
           ) : (
+              /* ФОРМА КРОКУ 2 */
               <Box component="form" onSubmit={handleChangeData} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Нові дані</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>Оновлення профілю</Typography>
 
                 {updateState.status === 'success' ? (
                     <Alert severity="success" sx={{ borderRadius: 3 }}>{updateState.message}</Alert>
@@ -203,7 +197,7 @@ export default function ChangePasswordPage() {
 
                 <TextField
                     fullWidth
-                    label="Новий логін (необов'язково)"
+                    label="Новий логін"
                     name="newUsername"
                     placeholder="Залиште порожнім, якщо не змінюєте"
                     value={formState.newUsername}
@@ -240,13 +234,24 @@ export default function ChangePasswordPage() {
 
                 <Box sx={{ bgcolor: alpha('#182BA1', 0.04), p: 2, borderRadius: 3 }}>
                   <Typography variant="caption" sx={{ fontWeight: 700, color: '#0c1865', display: 'block', mb: 1 }}>
-                    Вимоги до пароля:
+                    Вимоги до нового пароля:
                   </Typography>
                   <List dense disablePadding>
-                    {PASSWORD_REQUIREMENTS.map((req, i) => (
-                        <ListItem key={i} disablePadding sx={{ py: 0.2 }}>
-                          <ListItemIcon sx={{ minWidth: 28 }}><CheckCircleOutlineIcon sx={{ fontSize: 16, color: '#10b981' }} /></ListItemIcon>
-                          <ListItemText primaryTypographyProps={{ variant: 'caption', color: '#64748b' }} primary={req} />
+                    {PASSWORD_RULES.map((rule) => (
+                        <ListItem key={rule.id} disablePadding sx={{ py: 0.2 }}>
+                          <ListItemIcon sx={{ minWidth: 28 }}>
+                            <CheckCircleOutlineIcon sx={{
+                              fontSize: 16,
+                              color: rule.test(formState.newPassword) ? '#10b981' : '#cbd5e1'
+                            }} />
+                          </ListItemIcon>
+                          <ListItemText
+                              primaryTypographyProps={{
+                                variant: 'caption',
+                                color: rule.test(formState.newPassword) ? 'text.primary' : 'text.secondary'
+                              }}
+                              primary={rule.error}
+                          />
                         </ListItem>
                     ))}
                   </List>
@@ -266,7 +271,7 @@ export default function ChangePasswordPage() {
                       type="submit"
                       variant="contained"
                       color="secondary"
-                      disabled={isLoading || !!passwordValidationError}
+                      disabled={isLoading || !!passwordValidationError || (!formState.newPassword && !formState.newUsername)}
                       sx={{ py: 1.5, borderRadius: 3, fontWeight: 700, color: '#fff' }}
                   >
                     {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Зберегти зміни'}

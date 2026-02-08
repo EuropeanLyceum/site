@@ -13,7 +13,6 @@ import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import Image from 'next/image';
 
-import kogutPhoto from '@/assets/photos/kogut.jpg';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
 
@@ -138,7 +137,7 @@ export default function PsychologicalSupport() {
                 <Grid container>
                   <Grid item size={{xs: 12, md: 4}}>
                     <Box sx={{ position: 'relative', height: { xs: 400, md: '100%' }, minHeight: 450 }}>
-                      <Image src={data.psychologist.photo || kogutPhoto} alt="Psychologist" fill style={{ objectFit: 'cover' }} />
+                      <Image src={data.psychologist.photo} alt="Psychologist" fill style={{ objectFit: 'cover' }} />
                     </Box>
                   </Grid>
                   <Grid item size={{xs: 12, md: 8}} sx={{ p: { xs: 4, md: 6 } }}>

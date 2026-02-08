@@ -2,68 +2,60 @@
 
 import { signOut } from 'next-auth/react';
 import { useEffect } from 'react';
-import { Box, Typography, CircularProgress, Paper, Container } from '@mui/material';
+import { Box, Typography, CircularProgress, Paper, Container, alpha } from '@mui/material';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 export default function LogoutPage() {
     useEffect(() => {
-        // Невелика затримка, щоб користувач зрозумів, що відбувається вихід
-        const timer = setTimeout(() => {
-            signOut({ callbackUrl: '/login' });
-        }, 1500);
+        // We use a slight delay just for visual feedback
+        const performLogout = async () => {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await signOut({ callbackUrl: '/login' });
+        };
 
-        return () => clearTimeout(timer);
+        performLogout();
     }, []);
 
     return (
-        <Container maxWidth="sm">
-            <Box
-                sx={{
-                    minHeight: '100vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}
-            >
+        <Box sx={{
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            bgcolor: '#f1f5f9'
+        }}>
+            <Container maxWidth="xs">
                 <Paper
                     elevation={0}
                     sx={{
-                        p: 6,
+                        p: 5,
                         textAlign: 'center',
-                        borderRadius: 4,
-                        border: '1px solid #e2e8f0',
-                        boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
-                        width: '100%'
+                        borderRadius: 6,
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        boxShadow: '0 20px 25px -5px rgba(0,0,0,0.05)'
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            mb: 3,
-                            color: '#182BA1'
-                        }}
-                    >
-                        <ExitToAppIcon sx={{ fontSize: 60 }} />
+                    <Box sx={{
+                        width: 70, height: 70,
+                        bgcolor: alpha('#182BA1', 0.1),
+                        borderRadius: '50%',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        mx: 'auto', mb: 3
+                    }}>
+                        <ExitToAppIcon sx={{ fontSize: 40, color: '#182BA1' }} />
                     </Box>
 
-                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 2, color: '#0f172a' }}>
+                    <Typography variant="h5" sx={{ fontWeight: 800, mb: 1.5, color: '#0f172a' }}>
                         Вихід із системи
                     </Typography>
 
-                    <Typography variant="body1" sx={{ color: '#64748b', mb: 4 }}>
-                        Будь ласка, зачекайте. Ми завершуємо вашу сесію та готуємо перехід до сторінки входу.
+                    <Typography variant="body2" sx={{ color: '#64748b', mb: 4 }}>
+                        Завершуємо вашу сесію. <br />Це займе лише мить...
                     </Typography>
 
-                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                        <CircularProgress
-                            size={50}
-                            thickness={4}
-                            sx={{ color: '#182BA1' }}
-                        />
-                    </Box>
+                    <CircularProgress size={32} thickness={5} sx={{ color: '#182BA1' }} />
                 </Paper>
-            </Box>
-        </Container>
+            </Container>
+        </Box>
     );
 }

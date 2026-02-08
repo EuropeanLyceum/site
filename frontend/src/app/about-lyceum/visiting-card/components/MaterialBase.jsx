@@ -2,7 +2,6 @@
 import { Box, Grid, Typography, Container, alpha } from "@mui/material";
 import Image from "next/image";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import materialDefault from "@/assets/photos/building/material_basis.jpg";
 
 export default function MaterialBase({ t, stats, locale }) {
     if (!stats) return null;
@@ -27,7 +26,7 @@ export default function MaterialBase({ t, stats, locale }) {
                     {/* Зображення */}
                     <Grid size={{ xs: 12, lg: 6 }} sx={{ position: 'relative', minHeight: 400 }}>
                         <Image
-                            src={stats.materialBasePhotoUrl || materialDefault}
+                            src={stats.materialBasePhotoUrl}
                             alt="Material Base"
                             fill
                             style={{ objectFit: 'cover' }}

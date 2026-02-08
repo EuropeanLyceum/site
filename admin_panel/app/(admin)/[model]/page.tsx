@@ -118,7 +118,6 @@ export default function ListPage() {
                     label={value}
                     size="small"
                     color="primary"
-                    variant="soft"
                     sx={{ fontWeight: 700, fontSize: '0.65rem', textTransform: 'uppercase' }}
                 />
             );

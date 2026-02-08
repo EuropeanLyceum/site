@@ -15,14 +15,59 @@ import {
 import { styled } from '@mui/material/styles';
 import { ADMIN_MODELS, FIELD_LABELS } from '@/lib/admin-config';
 
-// --- CONFIG: PREDEFINED ICONS ---
-const ICON_OPTIONS = [
-    "MeetingRoom", "Class", "Science", "Biotech", "Computer",
-    "LaptopMac", "LibraryBooks", "MenuBook", "SportsBasketball",
-    "Pool", "Restaurant", "LocalCafe", "Wc", "LocalHospital",
-    "TheaterComedy", "School", "BusinessCenter", "SupervisorAccount",
-    "Park", "Apartment", "Stairs", "Elevator", "InfoOutlined", "Map"
-];
+import {
+    MeetingRoom, Class, Science, Biotech, Computer,
+    LaptopMac, LibraryBooks, MenuBook, SportsBasketball,
+    Pool, Restaurant, LocalCafe, Wc, LocalHospital,
+    TheaterComedy, School, BusinessCenter, SupervisorAccount,
+    Park, Apartment, Stairs, Elevator, InfoOutlined, Map,
+    HelpOutline
+} from '@mui/icons-material';
+
+/* ------------------------------------------------------------------ */
+/* TYPES – тільки локальні, без втручання в логіку */
+/* ------------------------------------------------------------------ */
+
+type GenericRecord = Record<string, unknown>;
+
+type RelationOption = {
+    id: number | string;
+    name?: string;
+    nameUk?: string;
+    titleUk?: string;
+    fullNameUk?: string;
+};
+
+type FileAsset = {
+    id: number;
+    nameUk: string;
+    fileType?: string;
+    fileSize?: string;
+};
+
+type TestQuestionOption = {
+    option: string;
+    optionEn?: string | null;
+    specializationId?: number | null;
+};
+
+type Specialization = {
+    id: number;
+    nameUk?: string;
+    nameEn?: string;
+};
+
+/* ------------------------------------------------------------------ */
+
+const ICON_COMPONENTS: Record<string, React.ElementType> = {
+    MeetingRoom, Class, Science, Biotech, Computer,
+    LaptopMac, LibraryBooks, MenuBook, SportsBasketball,
+    Pool, Restaurant, LocalCafe, Wc, LocalHospital,
+    TheaterComedy, School, BusinessCenter, SupervisorAccount,
+    Park, Apartment, Stairs, Elevator, InfoOutlined, Map
+};
+
+const ICON_OPTIONS = Object.keys(ICON_COMPONENTS);
 
 const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
@@ -45,22 +90,23 @@ export default function EditPage() {
     const id = params?.id as string;
     const config = ADMIN_MODELS[model as keyof typeof ADMIN_MODELS];
 
-    const [options, setOptions] = useState<Record<string, any[]>>({});
-    const [data, setData] = useState<any>(null);
+    const [options, setOptions] = useState<Record<string, RelationOption[]>>({});
+    const [data, setData] = useState<GenericRecord | null>(null);
     const [loading, setLoading] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [fileUploading, setFileUploading] = useState(false);
 
+    /* -------------------- LOAD DATA -------------------- */
+
     useEffect(() => {
         const load = async () => {
             if (id === 'new') {
-                const initialData: any = {};
+                const initialData: GenericRecord = {};
                 searchParams.forEach((val, key) => { initialData[key] = val; });
                 if (model === 'content') initialData.photoGallery = [];
                 if (model === 'location') initialData.imagePhotos = [];
                 if (model === 'documentreport') initialData.documents = [];
-                // Default icon
-                if (model === 'location') initialData.iconName = "MeetingRoom";
+                if (model === 'location') initialData.iconName = 'MeetingRoom';
 
                 setData(initialData);
                 setLoading(false);
@@ -70,10 +116,9 @@ export default function EditPage() {
             try {
                 const res = await fetch(`/admin/api/admin/${model}/${id}`);
                 if (!res.ok) throw new Error();
-                const json = await res.json();
-                setData(json);
+                setData(await res.json());
             } catch (err) {
-                console.error("Load error", err);
+                console.error('Load error', err);
             } finally {
                 setLoading(false);
             }
@@ -81,78 +126,104 @@ export default function EditPage() {
         load();
     }, [id, model, searchParams]);
 
+    /* -------------------- RELATION OPTIONS -------------------- */
+
     useEffect(() => {
         const fetchOptions = async () => {
             if (loading || !data || !config?.relations) return;
 
-            const newOptions: Record<string, any[]> = {};
+            const newOptions: Record<string, RelationOption[]> = {};
 
             for (const [field, rel] of Object.entries(config.relations)) {
-                const targetModel = (rel as any).model;
+                const targetModel = (rel as { model: string }).model;
                 let url = `/admin/api/admin/options/${targetModel}`;
 
                 const query = new URLSearchParams();
-                if (data.category) query.append('category', data.category);
+                if (data.category) query.append('category', String(data.category));
                 if (model.toLowerCase() === 'disciplinesubitem' && field === 'disciplineId') {
                     query.append('hasSubItems', 'true');
                 }
 
-                const finalUrl = query.toString() ? `${url}?${query.toString()}` : url;
+                const finalUrl = query.toString() ? `${url}?${query}` : url;
 
                 try {
                     const res = await fetch(finalUrl);
-                    if (res.ok) {
-                        newOptions[field] = await res.json();
-                    }
+                    if (res.ok) newOptions[field] = await res.json();
                 } catch (err) {
-                    console.error("Error fetching options", err);
+                    console.error('Error fetching options', err);
                 }
             }
+
             setOptions(newOptions);
         };
 
         fetchOptions();
     }, [loading, model, config, data?.category]);
 
-    const [specializations, setSpecializations] = useState<any[]>([]);
+    /* -------------------- SPECIALIZATIONS -------------------- */
+
+    const [specializations, setSpecializations] = useState<Specialization[]>([]);
 
     useEffect(() => {
         if (model === 'testQuestion' || model === 'testquestion') {
             (async () => {
                 try {
                     const res = await fetch('/admin/api/admin/specialization?limit=1000');
-                    if (res.ok) setSpecializations(await res.json().then(r => r.data || r));
-                } catch (e) { console.error(e); }
+                    if (res.ok) {
+                        const json = await res.json();
+                        setSpecializations(json.data || json);
+                    }
+                } catch (e) {
+                    console.error(e);
+                }
             })();
         }
     }, [model]);
 
+    /* -------------------- HELPERS -------------------- */
+
     const generateSlug = () => {
-        const source = data.titleUk || data.nameUk || data.fullNameUk || '';
+        if (!data) return;
+        const source =
+            (data.titleUk as string) ||
+            (data.nameUk as string) ||
+            (data.fullNameUk as string) ||
+            '';
+
         const slug = source
             .toLowerCase()
             .trim()
             .replace(/[^\w\sа-яіїєґ-]/gi, '')
             .replace(/\s+/g, '-')
             .replace(/-+/g, '-');
+
         setData({ ...data, slug });
     };
 
+    /* -------------------- UPLOADS -------------------- */
+
     const handleUpload = async (event: React.ChangeEvent<HTMLInputElement>, key: string) => {
+        if (!data) return;
         const files = event.target.files;
         if (!files || files.length === 0) return;
+
         setUploading(true);
         const formData = new FormData();
         Array.from(files).forEach(file => formData.append('files', file));
+
         try {
             const res = await fetch('/admin/api/upload', { method: 'POST', body: formData });
             const { urls } = await res.json();
+
             if (Array.isArray(data[key])) {
-                setData((prev: any) => ({ ...prev, [key]: [...(prev[key] || []), ...urls] }));
+                setData(prev => ({
+                    ...prev!,
+                    [key]: [...((prev![key] as string[]) || []), ...urls]
+                }));
             } else {
-                setData((prev: any) => ({ ...prev, [key]: urls[0] }));
+                setData(prev => ({ ...prev!, [key]: urls[0] }));
             }
-        } catch (error) {
+        } catch {
             alert('Помилка завантаження зображень');
         } finally {
             setUploading(false);
@@ -160,10 +231,12 @@ export default function EditPage() {
     };
 
     const handleDocumentUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (!data) return;
         const files = event.target.files;
         if (!files || files.length === 0) return;
+
         if (id === 'new') {
-            alert("Спочатку збережіть документ, щоб додати до нього файли");
+            alert('Спочатку збережіть документ, щоб додати до нього файли');
             return;
         }
 
@@ -178,27 +251,25 @@ export default function EditPage() {
 
             for (let i = 0; i < urls.length; i++) {
                 const originalFile = fileList[i];
-                const fileName = filesMeta?.[i]?.originalName || originalFile.name;
-                const mimeType = filesMeta?.[i]?.mimetype || originalFile.type;
-                const size = filesMeta?.[i]?.size || `${(originalFile.size / 1024).toFixed(1)} KB`;
+                const meta = filesMeta?.[i];
 
                 await fetch('/admin/api/admin/fileasset', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        nameUk: fileName,
-                        nameEn: fileName,
+                        nameUk: meta?.originalName || originalFile.name,
+                        nameEn: meta?.originalName || originalFile.name,
                         url: urls[i],
                         reportId: Number(id),
-                        fileType: mimeType,
-                        fileSize: String(size)
-                    })
+                        fileType: meta?.mimetype || originalFile.type,
+                        fileSize: meta?.size || `${(originalFile.size / 1024).toFixed(1)} KB`,
+                    }),
                 });
             }
 
             const refresh = await fetch(`/admin/api/admin/${model}/${id}`);
             setData(await refresh.json());
-        } catch (error) {
+        } catch {
             alert('Помилка при завантаженні документів');
         } finally {
             setFileUploading(false);
@@ -206,45 +277,39 @@ export default function EditPage() {
     };
 
     const handleDeleteFile = async (fileId: number) => {
+        if (!data) return;
         if (!confirm('Видалити цей файл?')) return;
+
         try {
             await fetch(`/admin/api/admin/fileasset/${fileId}`, { method: 'DELETE' });
-            setData({ ...data, documents: data.documents.filter((f: any) => f.id !== fileId) });
-        } catch (e) {
+            setData({
+                ...data,
+                documents: (data.documents as FileAsset[]).filter(f => f.id !== fileId),
+            });
+        } catch {
             alert('Помилка видалення');
         }
     };
 
+    /* -------------------- SAVE -------------------- */
+
     const handleSave = async () => {
+        if (!data) return;
+
         const isNew = id === 'new';
         const url = isNew ? `/admin/api/admin/${model}` : `/admin/api/admin/${model}/${id}`;
 
-        // 1. Clone the data to avoid mutating state
-        const payload = JSON.parse(JSON.stringify(data));
-        const dataType = payload.type;
-        const dataCategory = payload.category;
+        const payload: any = JSON.parse(JSON.stringify(data));
 
-        // 2. CLEANUP: Specific fix for testQuestion options
-        if ((model.toLowerCase() === 'testquestion' || model.toLowerCase() === 'testquestion') && payload.options) {
-            payload.options = payload.options.map((opt: any) => {
-                const cleanedOpt = { ...opt };
-
-                // Convert empty string or 0 to null for the relation field
-                if (!cleanedOpt.specializationId || cleanedOpt.specializationId === '') {
-                    delete cleanedOpt.specializationId;
-                    delete cleanedOpt.specialization; // Remove if exists to avoid Prisma conflicts
-                } else {
-                    cleanedOpt.specializationId = Number(cleanedOpt.specializationId);
-                }
-
-                // Ensure Enums or other fields aren't empty strings if they should be null
-                if (cleanedOpt.optionEn === "") cleanedOpt.optionEn = null;
-
-                return cleanedOpt;
+        if (model.toLowerCase() === 'testquestion' && payload.options) {
+            payload.options = (payload.options as TestQuestionOption[]).map(opt => {
+                const cleaned = { ...opt };
+                if (!cleaned.specializationId) delete cleaned.specializationId;
+                if (cleaned.optionEn === '') cleaned.optionEn = null;
+                return cleaned;
             });
         }
 
-        // Existing deletions
         delete payload.documents;
         delete payload.subReports;
         delete payload.id;
@@ -260,18 +325,19 @@ export default function EditPage() {
         if (res.ok) {
             if (isNew) {
                 const saved = await res.json();
-                router.replace(`/${model}/${saved.id}`);
+                router.push(`/admin/${model}`);
             } else {
-                let query = '';
-                if (dataType) query = `?type=${dataType}`;
-                else if (dataCategory) query = `?category=${dataCategory}`;
-                router.push(`/${model}${query}`);
+                router.push(`/admin/${model}`);
                 router.refresh();
             }
         }
     };
 
-    if (loading) return <Box p={8} textAlign="center"><CircularProgress /></Box>;
+    /* -------------------- RENDER -------------------- */
+
+    if (loading) {
+        return <Box p={8} textAlign="center"><CircularProgress /></Box>;
+    }
 
     const fields = config?.allFields || Object.keys(data || {}).filter(k =>
         !['id', 'createdAt', 'updatedAt', 'attributes', 'documents', 'subReports'].includes(k)
@@ -309,8 +375,10 @@ export default function EditPage() {
 
                         // 1. SPECIFIC FIELD: ICON NAME (AUTOCOMPLETE)
                         if (key === 'iconName') {
+                            const SelectedIcon = ICON_COMPONENTS[value] || HelpOutline;
+
                             return (
-                                <Grid size={{xs: 12, sm: 6}} key={key}>
+                                <Grid size={{ xs: 12, sm: 6 }} key={key}>
                                     <Autocomplete
                                         options={ICON_OPTIONS}
                                         value={value || "MeetingRoom"}
@@ -318,11 +386,28 @@ export default function EditPage() {
                                             setData({ ...data, [key]: newValue });
                                         }}
                                         freeSolo
+                                        renderOption={(props, option) => {
+                                            const IconComponent = ICON_COMPONENTS[option] || HelpOutline;
+                                            return (
+                                                <Box component="li" {...props} sx={{ display: 'flex', alignItems: 'center', gap: 2, py: 1 }}>
+                                                    <IconComponent sx={{ color: '#182BA1', fontSize: 20 }} />
+                                                    <Typography variant="body2">{option}</Typography>
+                                                </Box>
+                                            );
+                                        }}
                                         renderInput={(params) => (
                                             <TextField
                                                 {...params}
                                                 label={label}
-                                                helperText="Оберіть іконку зі списку або введіть назву"
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <>
+                                                            <SelectedIcon sx={{ ml: 1, mr: -0.5, color: '#182BA1' }} />
+                                                            {params.InputProps.startAdornment}
+                                                        </>
+                                                    ),
+                                                }}
                                             />
                                         )}
                                     />

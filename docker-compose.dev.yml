@@ -29,6 +29,7 @@ services:
       context: ./admin_panel
       dockerfile: Dockerfile
       args:
+        AUTH_URL: http://localhost:8080/admin/api/auth
         NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-local-secret-key-change-in-production}
         NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost/admin}
         JWT_SECRET: ${JWT_SECRET:-local-jwt-secret-change-in-production}
@@ -37,6 +38,7 @@ services:
     ports:
       - "3001:3001"  # Exposed for direct access
     environment:
+      - AUTH_URL=http://localhost:8080/admin/api/auth
       - NODE_ENV=development
       - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:${DATABASE_PASSWORD:-postgres}@postgres_db:5432/liceum}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET:-local-secret-key-change-in-production}
@@ -57,7 +59,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
     container_name: frontend-local
     ports:
       - "3000:3000"
