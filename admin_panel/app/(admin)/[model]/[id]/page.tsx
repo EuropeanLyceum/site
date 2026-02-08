@@ -325,9 +325,9 @@ export default function EditPage() {
         if (res.ok) {
             if (isNew) {
                 const saved = await res.json();
-                router.push(`/admin/${model}`);
+                router.push(`/${model}`);
             } else {
-                router.push(`/admin/${model}`);
+                router.push(`/${model}`);
                 router.refresh();
             }
         }
