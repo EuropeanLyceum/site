@@ -212,7 +212,7 @@ export default function EditPage() {
         Array.from(files).forEach(file => formData.append('files', file));
 
         try {
-            const res = await fetch('/admin/api/upload', { method: 'POST', body: formData });
+            const res = await fetch('/admin/api/upload?mode=temp', { method: 'POST', body: formData });
             const { urls } = await res.json();
 
             if (Array.isArray(data[key])) {
@@ -246,14 +246,14 @@ export default function EditPage() {
         fileList.forEach(file => formData.append('files', file));
 
         try {
-            const res = await fetch('/admin/api/upload', { method: 'POST', body: formData });
+            const res = await fetch('/admin/api/upload?mode=permanent', { method: 'POST', body: formData });
             const { urls, files: filesMeta } = await res.json();
 
             for (let i = 0; i < urls.length; i++) {
                 const originalFile = fileList[i];
                 const meta = filesMeta?.[i];
 
-                await fetch('/admin/api/admin/fileasset', {
+                await fetch('/admin/api/admin/fileAsset', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -281,7 +281,7 @@ export default function EditPage() {
         if (!confirm('Видалити цей файл?')) return;
 
         try {
-            await fetch(`/admin/api/admin/fileasset/${fileId}`, { method: 'DELETE' });
+            await fetch(`/admin/api/admin/fileAsset/${fileId}`, { method: 'DELETE' });
             setData({
                 ...data,
                 documents: (data.documents as FileAsset[]).filter(f => f.id !== fileId),

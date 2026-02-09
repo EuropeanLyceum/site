@@ -1,4 +1,3 @@
-// app/api/media/[filename]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
@@ -6,29 +5,30 @@ import { existsSync } from 'fs';
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { filename: string } }
+    { params }: { params: { path?: string[] } } // Змінюємо на масив
 ) {
-    const { filename } = params;
+    const segments = (await params).path || [];
 
-    // ВАЖЛИВО: Шлях має збігатися з тим, куди пише POST-роут
-    const filePath = join(process.cwd(), 'public/files/uploads', filename);
+    // segments буде або ['file.webp'], або ['temp', 'file.webp']
+    const filePath = join(process.cwd(), 'public/files/uploads', ...segments);
 
     if (!existsSync(filePath)) {
-        return new NextResponse('Image Not Found', { status: 404 });
+        return new NextResponse('File Not Found', { status: 404 });
     }
 
     try {
         const fileBuffer = await readFile(filePath);
-
-        // Визначаємо Content-Type на основі розширення
+        const filename = segments[segments.length - 1];
         const ext = filename.split('.').pop()?.toLowerCase();
+
         const mimeTypes: Record<string, string> = {
+            webp: 'image/webp',
             png: 'image/png',
             jpg: 'image/jpeg',
             jpeg: 'image/jpeg',
-            webp: 'image/webp',
-            svg: 'image/svg+xml',
-            gif: 'image/gif'
+            pdf: 'application/pdf',
+            doc: 'application/msword',
+            docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         };
 
         return new NextResponse(fileBuffer, {

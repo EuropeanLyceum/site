@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
+import {persistTempFiles} from "@/lib/file-utils";
 
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ model: string }> }) {
@@ -81,36 +82,44 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ mode
 export async function POST(req: NextRequest, { params }: { params: Promise<{ model: string }> }) {
     try {
         const { model: modelName } = await params;
-        const body = await req.json();
 
+        // 1. Отримуємо "брудні" дані (з посиланнями на temp)
+        let body = await req.json();
+
+        // 2. 🔥 МАГІЯ: Чистимо дані та переміщуємо файли
+        // Це працює рекурсивно, тому знайде картинки навіть глибоко в options
+        body = await persistTempFiles(body);
 
         const prismaKey = Object.keys(prisma).find(k => k.toLowerCase() === modelName.toLowerCase());
         const model = (prisma as any)[prismaKey || ''];
 
+        if (!model) return NextResponse.json({ error: 'Model not found' }, { status: 404 });
 
-// Винятковий випадок: testquestion з опціями
+        // --- Логіка для TestQuestion ---
         if (modelName.toLowerCase() === 'testquestion') {
-            const { options, ...rest } = body;
+            const { options, ...rest } = body; // body вже "чистий"
+
             const preparedOptions = Array.isArray(options) ? options.map((o: any) => ({
                 option: o.option,
                 optionEn: o.optionEn || null,
                 specializationId: o.specializationId || o.specialization || null
             })) : undefined;
 
-
             const dataToCreate: any = { ...rest };
             if (preparedOptions && preparedOptions.length > 0) {
                 dataToCreate.options = { create: preparedOptions };
             }
 
-
-            const item = await (prisma as any).testQuestion.create({ data: dataToCreate, include: { options: { include: { specialization: true } } } });
+            const item = await (prisma as any).testQuestion.create({
+                data: dataToCreate,
+                include: { options: { include: { specialization: true } } }
+            });
             return NextResponse.json(item);
         }
 
+        // --- Загальна логіка ---
+        const { id, createdAt, updatedAt, ...data } = body; // body вже "чистий"
 
-// Загальна логіка (без вкладених опцій)
-        const { id, createdAt, updatedAt, ...data } = body;
         const formattedData = Object.fromEntries(
             Object.entries(data)
                 .map(([key, value]) => {
@@ -129,10 +138,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ mod
                 .filter(([_, v]) => v !== undefined)
         );
 
-
         const item = await model.create({ data: formattedData });
         return NextResponse.json(item);
     } catch (e: any) {
+        console.error(e); // Додай лог помилки для дебагу
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }

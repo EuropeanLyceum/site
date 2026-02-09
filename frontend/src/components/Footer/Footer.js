@@ -82,8 +82,8 @@ const Footer = () => {
                         <Typography variant="h6" sx={{ fontFamily: 'Montserrat Alternates, sans-serif', fontWeight: 700, mb: 2, fontSize: { xs: 18, md: 20 } }}>
                             {t("address")}
                         </Typography>
-                        <Typography sx={{ fontFamily: 'Montserrat Alternates, sans-serif', fontSize: 16, lineHeight: 1.6, color: alpha('#fff', 0.9) }}>
-                            {(locale === 'uk' ? stats.addressUk : (stats.addressEn || stats.addressUk))}
+                        <Typography>
+                            {stats ? (locale === 'uk' ? stats.addressUk : (stats.addressEn || stats.addressUk)) : "..."}
                         </Typography>
                     </Grid>
 
@@ -111,8 +111,8 @@ const Footer = () => {
                 </Grid>
 
                 <Box sx={{ mt: 8, pt: 3, borderTop: `1px solid ${alpha('#fff', 0.05)}`, textAlign: 'center' }}>
-                    <Typography sx={{ fontSize: 13, color: alpha('#fff', 0.5), fontFamily: 'Montserrat Alternates, sans-serif' }}>
-                        © {new Date().getFullYear()} {(locale === 'uk' ? stats.name : stats.nameEn)}. All rights reserved.
+                    <Typography>
+                        © {new Date().getFullYear()} {stats ? (locale === 'uk' ? stats.name : stats.nameEn) : "..."}.
                     </Typography>
                 </Box>
             </Container>

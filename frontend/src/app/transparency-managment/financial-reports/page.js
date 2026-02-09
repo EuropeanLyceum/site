@@ -86,8 +86,8 @@ const FinancialReportsPage = () => {
 
             {/* Пошук */}
             <Box sx={{mb: 4, display: 'flex', justifyContent: 'center'}}>
-                <Box sx={{maxWidth: 600}}>
                     <TextField
+                        sx={{maxWidth: 600}}
                         fullWidth
                         placeholder={t('searchPlaceholder') || "Пошук документів..."}
                         value={searchQuery}
@@ -100,9 +100,7 @@ const FinancialReportsPage = () => {
                                 color="primary"/></InputAdornment>,
                             sx: {borderRadius: 3, bgcolor: '#fff'}
                         }}
-                        sx={{maxWidth: 600}}
                     />
-                </Box>
             </Box>
 
             {isLoading ? (

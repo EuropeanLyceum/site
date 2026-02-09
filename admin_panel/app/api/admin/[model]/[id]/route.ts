@@ -2,6 +2,8 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import {persistTempFiles} from "@/lib/file-utils";
+import { Prisma } from '@prisma/client';
 
 const isStringId = (model: string) =>
     ['location', 'user'].includes(model.toLowerCase());
@@ -40,31 +42,38 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
 export async function PATCH(req: NextRequest, { params }: RouteContext) {
     try {
         const { model, id } = await params;
-        const body = await req.json();
-        const prismaModel = (prisma as any)[
-        Object.keys(prisma).find(k => k.toLowerCase() === model.toLowerCase()) || ''
-            ];
 
+        // 1. Отримуємо дані
+        let body = await req.json();
+
+        // 2. 🔥 ПЕРЕМІЩУЄМО ФАЙЛИ перед будь-якою логікою
+        body = await persistTempFiles(body);
+
+        const prismaModel = (prisma as any)[Object.keys(prisma).find(k => k.toLowerCase() === model.toLowerCase()) || ''];
         const lowerModel = model.toLowerCase();
 
-        // 🔥 СПЕЦ-ЛОГІКА ДЛЯ TESTQUESTION
+        const modelInfo = Prisma.dmmf.datamodel.models.find(
+            (m: { name: string; }) => m.name.toLowerCase() === lowerModel
+        );
+
+        // --- TestQuestion ---
         if (lowerModel === 'testquestion') {
             const { options, id: _, createdAt, updatedAt, ...rest } = body;
 
-            await prisma.$transaction(async (tx) => {
-                // 1. оновлюємо питання
+            await prisma.$transaction(async (tx: { testQuestion: { update: (arg0: { where: { id: number; }; data: any; }) => any; }; testOption: { deleteMany: (arg0: { where: { questionId: number; }; }) => any; createMany: (arg0: { data: { option: any; optionEn: any; specializationId: any; questionId: number; }[]; }) => any; }; }) => {
+                // 1. Оновлюємо саме питання
                 await tx.testQuestion.update({
                     where: { id: Number(id) },
                     data: rest,
                 });
 
                 if (Array.isArray(options)) {
-                    // 2. видаляємо старі відповіді
+                    // 2. Видаляємо старі (жорсткий підхід, але надійний для зв'язків)
                     await tx.testOption.deleteMany({
                         where: { questionId: Number(id) }
                     });
 
-                    // 3. створюємо нові
+                    // 3. Створюємо нові (тут вже посилання на картинки виправлені persistTempFiles)
                     if (options.length > 0) {
                         await tx.testOption.createMany({
                             data: options.map((o: any) => ({
@@ -86,22 +95,34 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
             return NextResponse.json(updated);
         }
 
-        // ===== УНІВЕРСАЛЬНА ЛОГІКА (без змін) =====
+        // --- Універсальна логіка ---
         const { id: _, createdAt, updatedAt, ...data } = body;
 
         const formattedData = Object.fromEntries(
             Object.entries(data).map(([key, value]) => {
-                if (value === '' || value === null) return [key, null];
+                // 1. Обробка порожніх значень
+                if (value === '' || value === null || value === undefined) return [key, null];
 
+                // Знаходимо опис поля в схемі Prisma
+                const fieldInfo = modelInfo?.fields.find((f: { name: string; }) => f.name === key);
+                const fieldType = fieldInfo?.type;
+
+                // 2. Автоматичне приведення до числа (Int або Float)
+                if (fieldType === 'Int' || fieldType === 'Float' || fieldType === 'BigInt') {
+                    return [key, Number(value)];
+                }
+
+                // 3. Обробка ID (якщо це не рядок)
                 if (key.endsWith('Id') && !isStringId(key.replace('Id', ''))) {
                     return [key, Number(value)];
                 }
-                if (typeof value === 'string' && (key.endsWith('At') || key.includes('Date'))) {
-                    return [key, new Date(value)];
+
+                // 4. Обробка дат
+                if (typeof value === 'string' && (fieldType === 'DateTime' || key.endsWith('At') || key.includes('Date'))) {
+                    const date = new Date(value);
+                    return [key, isNaN(date.getTime()) ? null : date];
                 }
-                if (typeof value === 'string' && (key.endsWith('Count') || key === 'order' || key.endsWith('Real'))) {
-                    return [key, Number(value)];
-                }
+
                 return [key, value];
             })
         );
@@ -113,6 +134,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
 
         return NextResponse.json(updated);
     } catch (e: any) {
+        console.error(e);
         return NextResponse.json({ error: e.message }, { status: 400 });
     }
 }
