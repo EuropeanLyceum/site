@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer/Footer";
 import { TranslationProvider } from "@/contexts/TranslationProvider";
+import {Box} from "@mui/material";
 
 const montserratAlternates = Montserrat_Alternates({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -20,11 +21,11 @@ export default function RootLayout({ children }) {
     <html lang="uk">
       <body className={montserratAlternates.className}>
         <TranslationProvider>
-          <div className="pageWrapper">
+          <Box className="pageWrapper">
             <Header />
-            <main className="mainContent">{children}</main>
+            <Box>{children}</Box>
             <Footer />
-          </div>
+          </Box>
         </TranslationProvider>
       </body>
     </html>

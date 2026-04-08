@@ -1,106 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { join, extname } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import sharp from 'sharp';
 
 export async function POST(req: NextRequest) {
-  try {
-    const formData = await req.formData();
-    const file = formData.get('file') as File;
+    try {
+        const formData = await req.formData();
+        const files = formData.getAll('files') as File[];
 
-    if (!file) {
-      return NextResponse.json({ error: 'Файл не надано' }, { status: 400 });
+        // Отримуємо режим із Query параметрів (temp за замовчуванням)
+        const { searchParams } = new URL(req.url);
+        const mode = searchParams.get('mode') === 'permanent' ? 'permanent' : 'temp';
+
+        if (!files || files.length === 0) {
+            return NextResponse.json({ error: 'No files provided' }, { status: 400 });
+        }
+
+        // Визначаємо папку залежно від режиму
+        const relativePath = mode === 'permanent'
+            ? '/files/uploads'
+            : '/files/uploads/temp';
+
+        const uploadDir = join(process.cwd(), 'public', relativePath);
+
+        try {
+            await mkdir(uploadDir, { recursive: true });
+        } catch (e) {}
+
+        const resultData = await Promise.all(
+            files.map(async (file) => {
+                const uniqueId = uuidv4();
+                const originalExtension = extname(file.name).toLowerCase();
+                const isImage = file.type.startsWith('image/');
+
+                const fileName = isImage ? `${uniqueId}.webp` : `${uniqueId}${originalExtension}`;
+                const filePath = join(uploadDir, fileName);
+
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+
+                let processedBuffer: Buffer<ArrayBufferLike> = buffer;
+
+                if (isImage) {
+                    processedBuffer = await sharp(buffer)
+                        .rotate()
+                        .resize({ width: 1920, withoutEnlargement: true })
+                        .webp({ quality: 80 })
+                        .toBuffer();
+                }
+
+                await writeFile(filePath, processedBuffer);
+
+                // Повертаємо шлях для фронтенду
+                // Важливо: в URL ми використовуємо аліас, який налаштуємо в Nginx (media)
+                // Але фізично файли лежать там де треба.
+                const publicUrl = `/admin/api/media${mode === 'temp' ? '/temp' : ''}/${fileName}`;
+
+                return {
+                    url: publicUrl,
+                    originalName: file.name,
+                    mimetype: file.type,
+                    size: `${(file.size / 1024).toFixed(1)} KB`
+                };
+            })
+        );
+
+        // Повертаємо структуру, сумісну з твоїм клієнтом
+        return NextResponse.json({
+            urls: resultData.map(f => f.url),
+            files: resultData // Метадані для документів
+        });
+
+    } catch (e: any) {
+        console.error('Upload Error:', e);
+        return NextResponse.json({ error: 'Failed to upload' }, { status: 500 });
     }
-
-    // Перевіряємо тип файлу
-    if (!file.type.startsWith('image/')) {
-      return NextResponse.json({ error: 'Тільки зображення дозволені' }, { status: 400 });
-    }
-
-    // Перевіряємо розмір файлу (максимум 5MB)
-    const maxSize = 5 * 1024 * 1024; // 5MB
-    if (file.size > maxSize) {
-      return NextResponse.json({ error: 'Файл занадто великий. Максимальний розмір: 5MB' }, { status: 400 });
-    }
-
-    console.log('📤 Завантаження файлу:', file.name, 'розмір:', file.size, 'тип:', file.type);
-
-    // Створюємо папку uploads якщо її немає
-    const uploadsDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true });
-      console.log('📁 Створено папку uploads');
-    }
-
-    // Валідація розширення файлу (тільки безпечні зображення)
-    const allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
-    const fileExtension = file.name.split('.').pop()?.toLowerCase();
-    
-    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
-      return NextResponse.json({ 
-        error: 'Недозволений тип файлу. Дозволені: jpg, jpeg, png, gif, webp' 
-      }, { status: 400 });
-    }
-
-    // Генеруємо унікальне ім'я файлу (без використання оригінального імені для безпеки)
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const fileName = `${timestamp}_${randomString}.${fileExtension}`;
-    
-    // Захист від path traversal - використовуємо join для безпечного шляху
-    const filePath = join(uploadsDir, fileName);
-    
-    // Додаткова перевірка - переконуємось, що шлях всередині uploadsDir
-    const resolvedPath = require('path').resolve(filePath);
-    const resolvedUploadsDir = require('path').resolve(uploadsDir);
-    if (!resolvedPath.startsWith(resolvedUploadsDir)) {
-      return NextResponse.json({ error: 'Недозволений шлях до файлу' }, { status: 400 });
-    }
-
-    // Конвертуємо File в Buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Зберігаємо файл
-    await writeFile(filePath, buffer);
-    console.log('💾 Файл збережено:', filePath);
-    
-    // Перевіряємо, чи файл дійсно існує
-    const fs = require('fs');
-    if (fs.existsSync(filePath)) {
-      const stats = fs.statSync(filePath);
-      console.log('✅ Файл існує, розмір:', stats.size, 'байт');
-      
-      // Додаткова перевірка - читаємо файл назад
-      const readBuffer = fs.readFileSync(filePath);
-      console.log('📖 Файл прочитано назад, розмір:', readBuffer.length, 'байт');
-      
-      if (buffer.length !== readBuffer.length) {
-        console.error('⚠️ Розмір збереженого файлу не співпадає з оригіналом!');
-      }
-    } else {
-      console.error('❌ Файл не знайдено після збереження!');
-    }
-
-    // Повертаємо URL для доступу до файлу через API
-    const fileUrl = `/api/images/${fileName}`;
-    
-    console.log('✅ Файл успішно завантажено:', fileUrl);
-    console.log('📁 Повний шлях до файлу:', filePath);
-    console.log('🌐 URL для браузера:', fileUrl);
-    
-    return NextResponse.json({ 
-      url: fileUrl,
-      fileName: fileName,
-      originalName: file.name,
-      size: file.size,
-      type: file.type
-    });
-  } catch (err) {
-    console.error('❌ Помилка завантаження файлу:', err);
-    return NextResponse.json(
-      { error: 'Помилка при завантаженні файлу', details: err instanceof Error ? err.message : 'Unknown error' },
-      { status: 500 }
-    );
-  }
 }

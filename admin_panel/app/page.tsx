@@ -1,95 +1,110 @@
+'use client';
+
 import Link from 'next/link';
+import {
+  Box, Typography, Container, Grid, Paper, Button,
+  alpha, Stack, SxProps, Theme
+} from '@mui/material';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import React from 'react';
+
+// Визначаємо інтерфейс для карток
+interface InfoCard {
+  title: string;
+  desc: string;
+  icon: React.ReactNode;
+  color: string;
+  link: string;
+  btnText: string;
+}
 
 export default function HomePage() {
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Хедер */}
-      <header className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="flex justify-between items-center">
-            <h1 className="text-4xl font-bold text-gray-900">
-              Ліцей "Європейський"
-            </h1>
-            <Link 
-              href="/admin"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Адмін панель
-            </Link>
-          </div>
-          <p className="text-xl text-gray-600 mt-2">
-            Офіційний сайт
-          </p>
-        </div>
-      </header>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC' }}>
 
-      {/* Основний контент */}
-      <main className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
-          {/* Новини */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">📰 Новини</h2>
-            <p className="text-gray-600 mb-6">
-              Останні новини та події нашого ліцею
-            </p>
-            <Link 
-              href="/news"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition inline-block"
-            >
-              Переглянути новини
-            </Link>
-          </div>
+        {/* HERO SECTION */}
+        <Box sx={{
+          position: 'relative',
+          py: { xs: 8, md: 12 },
+          background: 'linear-gradient(135deg, #0c1865 0%, #182BA1 100%)',
+          color: '#fff',
+          clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)',
+          mb: 6
+        }}>
+          <Container maxWidth="lg">
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box>
+                <Typography variant="h4" sx={{ fontWeight: 300, opacity: 0.9, mb: 1 }}>
+                  Ліцей
+                </Typography>
+                <Typography variant="h1" sx={{
+                  fontSize: { xs: 42, md: 72 },
+                  fontWeight: 900,
+                  fontFamily: "'Montserrat Alternates', sans-serif",
+                  lineHeight: 1.1
+                }}>
+                  ЄВРОПЕЙСЬКИЙ <span style={{ color: '#f97316' }}>.</span>
+                </Typography>
+                <Typography sx={{ mt: 3, fontSize: '1.2rem', maxWidth: 600, opacity: 0.8 }}>
+                  Творимо майбутнє разом: якісна освіта, сучасні підходи та розвиток особистості.
+                </Typography>
+              </Box>
 
-          {/* Вчителі */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">👨‍🏫 Педагогічний колектив</h2>
-            <p className="text-gray-600 mb-6">
-              Знайомство з нашими вчителями та адміністрацією
-            </p>
-            <Link 
-              href="/teachers"
-              className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition inline-block"
-            >
-              Переглянути вчителів
-            </Link>
-          </div>
+              <Button
+                  component={Link}
+                  href="/admin"
+                  variant="outlined"
+                  startIcon={<AdminPanelSettingsIcon />}
+                  sx={{
+                    color: '#fff',
+                    borderColor: 'rgba(255,255,255,0.3)',
+                    '&:hover': { borderColor: '#f97316', color: '#f97316' }
+                  }}
+              >
+                Адмін
+              </Button>
+            </Box>
+          </Container>
+        </Box>
 
-          {/* Інформація про ліцей */}
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">🏫 Про ліцей</h2>
-            <p className="text-gray-600 mb-6">
-              Інформація про наш навчальний заклад
-            </p>
-            <Link 
-              href="/about"
-              className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition inline-block"
-            >
-              Дізнатися більше
-            </Link>
-          </div>
+        <Container maxWidth="lg" sx={{ mt: -4, pb: 10 }}>
+          <Paper sx={{
+            mt: 10,
+            p: { xs: 4, md: 8 },
+            borderRadius: 8,
+            bgcolor: '#fff',
+            border: '1px solid #e2e8f0',
+            textAlign: 'center'
+          }}>
+            <Typography variant="h3" sx={{ fontWeight: 900, mb: 4, color: '#0c1865' }}>
+              Про наш ліцей
+            </Typography>
+            <Typography sx={{
+              fontSize: '1.1rem',
+              color: '#475569',
+              lineHeight: 1.8,
+              maxWidth: 800,
+              mx: 'auto'
+            }}>
+              Ліцей "Європейський" — це простір, де кожен учень знаходить свій шлях.
+              Ми поєднуємо класичні академічні знання з інноваційними методиками навчання.
+              Наші випускники успішно вступають до провідних університетів світу,
+              зберігаючи цінності поваги, критичного мислення та відповідальності.
+            </Typography>
+          </Paper>
+        </Container>
 
-        </div>
-
-        {/* Додаткова інформація */}
-        <div className="mt-12 bg-white rounded-lg shadow-md p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">
-            Про наш ліцей
-          </h2>
-          <p className="text-gray-700 text-lg leading-relaxed text-center max-w-4xl mx-auto">
-            Ліцей "Європейський" - це сучасний навчальний заклад, який надає якісну освіту 
-            та створює умови для розвитку талантів кожного учня. Наші вчителі - це 
-            досвідчені педагоги, які допомагають учням досягати успіхів у навчанні та житті.
-          </p>
-        </div>
-      </main>
-
-      {/* Футер */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <p>&copy; 2024 Ліцей "Європейський". Всі права захищені.</p>
-        </div>
-      </footer>
-    </div>
+        {/* ФУТЕР */}
+        <Box component="footer" sx={{ bgcolor: '#0c1865', color: 'rgba(255,255,255,0.6)', py: 6 }}>
+          <Container maxWidth="lg">
+            <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" spacing={2}>
+              <Typography variant="body2">
+                © {new Date().getFullYear()} Ліцей "Європейський". Всі права захищені.
+              </Typography>
+            </Stack>
+          </Container>
+        </Box>
+      </Box>
   );
 }

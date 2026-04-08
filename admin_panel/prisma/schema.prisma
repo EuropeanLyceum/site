@@ -1,370 +1,409 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-model News {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
+// =============================================
+// 1. CONTENT & NEWS
+// =============================================
+
+model Content {
+  id    Int         @id @default(autoincrement())
+  type  ContentType
+  slug  String?     @unique // Optimized for SEO/URL lookups
+
+  titleUk String
+  titleEn String?
+  textUk  String? @db.Text
+  textEn  String? @db.Text
+
+  photoGallery String[] @default([])
+  videoUrl     String?
+
   publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
+  attributes      Json?
 
-model StaffCategory {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  nameEn    String?  // English name
-  order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  staff     Staff[]
+
+  @@index([type, publicationDate])
 }
 
-model Staff {
-  id            Int           @id @default(autoincrement())
-  fullName      String
-  description   String
-  fullNameEn    String?       // English full name
-  descriptionEn String?       // English description
-  photoUrl      String?
-  categoryId    Int
-  order         Int           @default(0)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  category      StaffCategory @relation(fields: [categoryId], references: [id])
-}
+// =============================================
+// 2. PAGES & SETTINGS
+// =============================================
 
-model Link {
-  id        Int       @id @default(autoincrement())
-  title     String
-  url       String?
-  content   String?
-  year      Int?
-  subject   String?
-  category  String
-  createdAt DateTime? @default(now())
-  updatedAt DateTime? @updatedAt
-}
+model PageSection {
+  id   Int             @id @default(autoincrement())
+  type PageSectionType @unique
 
-model BusinessCard {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  photoUrls String   @default("[]")
+  titleUk   String?
+  titleEn   String?
+  contentUk String? @db.Text
+  contentEn String? @db.Text
+
+  imagePhoto String?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model SchoolHistory {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  photoUrls String   @default("[]")
+model ExternalLink {
+  id      Int             @id @default(autoincrement())
+  pageKey ExternalPageKey
+
+  titleUk String
+  titleEn String?
+  url     String
+  order   Int             @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pageKey, order])
+}
+
+model LyceumStats {
+  id Int @id @default(1)
+
+  name      String
+  nameEn    String
+  addressUk String
+  addressEn String
+  email     String
+  phone     String
+  logoPhoto String
+
+  quoteUk String @db.Text
+  quoteEn String @db.Text
+
+  teachingLanguage   String
+  teachingLanguageEn String
+  specialization     String
+  specializationEn   String
+
+  anthemUrl     String?
+  teachersPhoto String
+  materialBasePhoto String
+  materialBaseDescriptionUk String @db.Text
+  materialBaseDescriptionEn String @db.Text
+
+  socialLinks Json?
+
+  studentsCount     Int @default(0)
+  studentsCountReal Int @default(0)
+  teachersCount     Int @default(0)
+  staffCount        Int @default(0)
+  classesCount      Int @default(0)
+  flexParticipants  Int @default(0)
+  topScorersCount   Int @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model InnovationActivity {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  photoUrls String   @default("[]")
+model FAQ {
+  id         Int      @id @default(autoincrement())
+  questionUk String
+  questionEn String?
+  answerUk   String   @db.Text
+  answerEn   String?  @db.Text
+  order      Int      @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+model Clubs {
+  id            Int    @id @default(autoincrement())
+  nameUk        String @db.Text
+  nameEn        String @db.Text
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
+
+  order         Int    @default(0)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model WorkingArea {
+  id     Int     @id @default(autoincrement())
+  nameUk String  @db.Text
+  nameEn String? @db.Text
+
+  order  Int     @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model RegulatoryDocuments {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  url       String?
-  photoUrls String   @default("[]")
+// =============================================
+// 3. PEOPLE & STAFF
+// =============================================
+
+model Person {
+  id Int @id @default(autoincrement())
+
+  fullNameUk    String
+  fullNameEn    String
+  positionUk    String
+  positionEn    String
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
+
+  photo String?
+  email String?
+  phone String?
+
+  specializationUk String?
+  specializationEn String?
+
+  type  PersonType @default(TEACHER)
+  order Int        @default(0)
+
+  categoryId Int?
+  category   PersonCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  linkText  String?
-  linkTextEn String? // English link text
+
+  @@index([type, order])
 }
 
-model FinancialReports {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  url       String?
-  linkText  String?
-  linkTextEn String? // English link text
-  photoUrls String   @default("[]")
+model PersonCategory {
+  id      Int      @id @default(autoincrement())
+  nameUk  String   @unique
+  nameEn  String?
+  persons Person[]
+  order   Int      @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model PublicInformation {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  url       String?
-  linkText  String?
-  linkTextEn String? // English link text
-  photoUrls String   @default("[]")
+// =============================================
+// 4. DOCUMENTS & ASSETS
+// =============================================
+
+model DocumentReport {
+  id       Int              @id @default(autoincrement())
+  category DocumentCategory @default(GENERAL)
+
+  titleUk       String
+  titleEn       String
+  descriptionUk String? @db.Text
+  descriptionEn String? @db.Text
+
+  parentId   Int?
+  parent     DocumentReport?  @relation("SubReports", fields: [parentId], references: [id], onDelete: Cascade)
+  subReports DocumentReport[] @relation("SubReports")
+
+  documents FileAsset[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category, createdAt])
+}
+
+model FileAsset {
+  id       Int     @id @default(autoincrement())
+  nameUk   String
+  nameEn   String
+  url      String
+  fileType String?
+  fileSize String?
+
+  reportId Int?
+  report   DocumentReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([reportId])
+}
+
+// =============================================
+// 5. INTERACTIVE & ACADEMICS
+// =============================================
+
+model Location {
+  id    String  @id @default(cuid())
+  floor String?
+
+  nameUk        String
+  nameEn        String
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
+
+  highlightsTextUk String @db.Text
+  highlightsTextEn String @db.Text
+  imagePhotos  String[]
+  iconName     String? @db.Text  @default("MeetingRoom")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([floor])
+}
+
+model TestQuestion {
+  id Int @id @default(autoincrement())
+  question String
+  questionEn String?
+
+
+  options TestOption[]
+
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model IntellectTalent {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+
+model TestOption {
+  id Int @id @default(autoincrement())
+  option String
+  optionEn String?
+
+
+  // Замінив поле `specialization String` на явну FK-пов'язку
+  specializationId Int
+  specialization Specialization @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+
+
+  question TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int
+
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model StudentGovernment {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+
+model Specialization {
+  id Int @id @default(autoincrement())
+  nameUk String
+  nameEn String
+  descriptionUk String @db.Text
+  descriptionEn String @db.Text
+
+  options TestOption[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model ProjectResearch {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model PatrioticEducation {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model EvaluationCriteria {
-  id          Int      @id @default(autoincrement())
+model Discipline {
+  id          Int                 @id @default(autoincrement())
   name        String
-  nameEn      String?  // English name
-  url         String?
-  color       String   @default("#FF6B6B")
-  hasSubItems Boolean  @default(false)
-  subItems    String   @default("[]")
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
+  nameEn      String
+  color       String
+  url         String              @default("#")
+  hasSubItems Boolean             @default(false)
+  subItems    DisciplineSubItem[]
 
-model PsychologicalSupport {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  text      String?
-  link      String?
-  linkText  String?
-  titleEn   String?  // English title (for accordion)
-  contentEn String?  // English content (for accordion)
-  textEn    String?  // English additional text
-  linkTextEn String? // English link text
-  order     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model ClubsStudios {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
+model DisciplineSubItem {
+  id           Int        @id @default(autoincrement())
+  name         String
+  link         String
+  disciplineId Int
+  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
-model SportLife {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  photoUrls       String
-  imagePosition   String   @default("center")
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model AntiBullying {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  text      String?
-  link      String?
-  linkText  String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  linkTextEn String? // English link text
-  photoUrls String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Accordion {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  photoUrl  String?
-  url       String?
-  category  String
-  order     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model MethodologicalEvents {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  photoUrls       String   @default("[]")
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  imagePosition   String?  @default("center")
-}
-
-model ForParents {
-  id              Int      @id @default(autoincrement())
-  heading         String?
-  content         String?
-  url             String?
-  photoUrls       String   @default("[]")
-  headingEn       String?  // English heading
-  contentEn       String?  // English content
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model ForStudents {
-  id              Int      @id @default(autoincrement())
-  heading         String?
-  content         String?
-  url             String?
-  photoUrls       String   @default("[]")
-  headingEn       String?  // English heading (for accordion)
-  contentEn       String?  // English content (for accordion)
-  textOnlyEn      String?  // English text without heading
-  textOnly        String?
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-model HelpTeacher {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  text      String?
-  link      String?
-  linkText  String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  textEn    String?  // English additional text
-  linkTextEn String? // English link text
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model QualificationImprovement {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  content   String?
-  photoUrls String   @default("[]")
-  text      String?
-  link      String?
-  linkText  String?
-  titleEn   String?  // English title
-  contentEn String?  // English content
-  textEn    String?  // English additional text
-  linkTextEn String? // English link text
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model TeacherCertification {
-  id              Int      @id @default(autoincrement())
-  heading         String
-  description     String
-  text            String?
-  url             String?
-  linkText        String?
-  photoUrls       String   @default("[]")
-  headingEn       String?  // English heading
-  descriptionEn   String?  // English description
-  textEn          String?  // English additional text
-  linkTextEn      String?  // English link text
-  publicationDate DateTime @default(now())
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  imagePosition   String?  @default("center")
-}
+// =============================================
+// 6. ADMINISTRATION
+// =============================================
 
 model AdminUser {
   id        Int       @id @default(autoincrement())
   username  String    @unique
   password  String
-  email     String?   @unique
   role      String    @default("admin")
-  isActive  Boolean   @default(true)
   lastLogin DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  isActive  Boolean   @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =============================================
+// ENUMS
+// =============================================
+
+enum ContentType {
+  NEWS
+  RESEARCH_PROJECT
+  INNOVATION
+  HISTORY
+  BUILDING
+  FOUNDERS
+  FOR_PARENTS
+  FOR_STUDENTS
+  FOR_TEACHERS
+  PATRIOTIC
+  CLUBS
+  SPORT
+  METHODOLOGICAL
+  PSYCHOLOGICAL
+  ANTI_BULLYING
+  QUALIFICATION
+  CERTIFICATION
+  INTELLECT
+  GOVERNMENT
+}
+
+enum PersonType {
+  TEACHER
+  PRINCIPALS
+  COMMISSION_MEMBER
+  FAMOUS_PERSON
+  ALUMNI
+  STUDENT_COUNCIL
+  PSYCHOLOGIST
+}
+
+enum DocumentCategory {
+  REGULATORY
+  FINANCIAL
+  PUBLIC_INFO
+  GENERAL
+}
+
+enum PageSectionType {
+  HOME_HERO
+  PARENTS_INFO
+  TEACHERS_INFO
+  STUDENTS_INFO
+  PSYCHOLOGICAL
+  CERTIFICATION
+  ANTI_BULLYING
+  INNOVATIVE
+  PROJECT_RESEARCH
+  QUALIFICATION
+}
+
+enum ExternalPageKey {
+  PARENTS
+  STUDENTS
+  TEACHER_HELP
+  PSYCHOLOGICAL
+  BULLYING
+  CERTIFICATION
+  METHODOLOGICAL
+  QUALIFICATION
 }
