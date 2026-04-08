@@ -1,61 +1,74 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
-import { translations } from "@/locales/locale";
+import { createContext, useContext, useEffect, useState } from "react";
+import { translations } from "@/locales";
 
-const TranslationContext = createContext();
+const DEFAULT_LOCALE = "uk";
+
+const TranslationContext = createContext(null);
 
 export const TranslationProvider = ({ children }) => {
-  const [locale, setLocale] = useState("uk");
+  const [locale, setLocale] = useState(DEFAULT_LOCALE);
   const [isInitialized, setIsInitialized] = useState(false);
   const [hasSeenTooltip, setHasSeenTooltip] = useState(false);
 
   useEffect(() => {
-    // Завжди починаємо з української мови
-    // Check if we're in browser environment
-    if (typeof window !== 'undefined') {
-      const savedLocale = localStorage.getItem("locale");
-      if (savedLocale && translations[savedLocale]) {
-        setLocale(savedLocale);
-      } else {
-        setLocale("uk");
-        localStorage.setItem("locale", "uk");
-      }
+    if (typeof window === "undefined") return;
+
+    const savedLocale = localStorage.getItem("locale");
+
+    if (savedLocale && translations[savedLocale]) {
+      setLocale(savedLocale);
     } else {
-      setLocale("uk");
+      localStorage.setItem("locale", DEFAULT_LOCALE);
     }
+
     setIsInitialized(true);
   }, []);
 
-  const t = (key) => {
-    return translations[locale]?.[key] || key;
-  };
-
   const changeLanguage = (newLocale) => {
-    console.log("Changing language to:", newLocale);
-    if (translations[newLocale]) {
-      setLocale(newLocale);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem("locale", newLocale);
-      }
-    }
+    if (!translations[newLocale]) return;
+
+    setLocale(newLocale);
+    localStorage.setItem("locale", newLocale);
   };
 
-  if (!isInitialized) {
-    return null;
-  }
+  // 🔥 ГОЛОВНА МАГІЯ ТУТ
+  const t = (namespace) => (key) => {
+    return (
+        translations[locale]?.[namespace]?.[key] ??
+        `❌ ${namespace}.${key}`
+    );
+  };
+
+  if (!isInitialized) return null;
 
   return (
-    <TranslationContext.Provider value={{ t, locale, changeLanguage, hasSeenTooltip, setHasSeenTooltip }}>
-      {children}
-    </TranslationContext.Provider>
+      <TranslationContext.Provider
+          value={{
+            locale,
+            t,
+            changeLanguage,
+            hasSeenTooltip,
+            setHasSeenTooltip,
+          }}
+      >
+        {children}
+      </TranslationContext.Provider>
   );
 };
 
-export const useTranslation = () => {
+export const useTranslation = (namespace) => {
   const context = useContext(TranslationContext);
+
   if (!context) {
-    throw new Error("useTranslation must be used within a TranslationProvider");
+    throw new Error(
+        "useTranslation must be used within TranslationProvider"
+    );
   }
-  return context;
+
+  return {
+    ...context,
+    t: context.t(namespace),
+  };
 };

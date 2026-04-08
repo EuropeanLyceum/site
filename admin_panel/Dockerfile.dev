@@ -1,0 +1,28 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Встановлюємо залежності (кешуємо цей шар)
+COPY package*.json ./
+COPY prisma ./prisma/
+RUN npm install
+
+# Копіюємо все інше
+COPY . .
+
+# Аргументи
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Генеруємо Prisma Client (важливо для типізації)
+RUN npx prisma generate
+
+# Відкриваємо порт
+EXPOSE 3001
+ENV PORT 3001
+
+# Хитрість тут: ми не робимо RUN npm run build всередині Dockerfile,
+# якщо хочемо динамічних змін. Ми виносимо це в CMD або використовуємо DEV режим.
+
+# Скрипт запуску: якщо бачимо, що ми в DEV — запускаємо dev, якщо ні — білдимо і стартуємо.
+CMD npx prisma generate && npm run dev

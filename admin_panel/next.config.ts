@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   basePath: '/admin',
   reactStrictMode: true,
   experimental: {
+    clientInstrumentationHook: true,
     // Видалив serverActions: true - воно включене за замовчуванням в Next.js 14+
     // Або можеш використовувати новий формат:
     // serverActions: {

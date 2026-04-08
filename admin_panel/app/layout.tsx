@@ -1,26 +1,26 @@
+import type { Metadata } from "next";
 import Providers from '@/components/layout/Providers';
+import { Montserrat_Alternates } from 'next/font/google';
 
-// Temporarily disable Google Fonts during Docker build (no network access)
-// const { Montserrat_Alternates } = require('next/font/google');
-// const montserratAlternates = Montserrat_Alternates({
-//   subsets: ['latin', 'cyrillic'],
-//   weight: ['400', '500', '600', '700'],
-//   variable: '--font-montserrat-alternates',
-//   display: 'swap',
-//   fallback: ['system-ui', 'arial'],
-// });
+const montserrat = Montserrat_Alternates({
+    subsets: ['latin', 'cyrillic'],
+    weight: ['400', '700'],
+    display: 'swap',
+});
+
+export const metadata = {
+    title: "European Lyceum Admin",
+    description: "European Lyceum Admin Panel",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="uk">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      </head>
-      <body style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+    return (
+        <html lang="uk">
+        <body className={montserrat.className}>
         <Providers>
-          {children}
+            {children}
         </Providers>
-      </body>
-    </html>
-  );
+        </body>
+        </html>
+    );
 }
