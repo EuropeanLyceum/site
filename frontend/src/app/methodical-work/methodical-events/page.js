@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import {
-    Box, Typography, Container, CircularProgress, IconButton, Button, alpha, Grid, TextField, InputAdornment, Pagination
+    Box, Typography, Container, CircularProgress, IconButton, Button, Grid, TextField, InputAdornment, Pagination
 } from '@mui/material';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
@@ -26,7 +26,9 @@ export default function MethodicalEventsPage() {
 
     const handleImageClick = (images, index) => {
         if (!images || images.length === 0) return;
-        setGallery({ open: true, images, index });
+        // Переконуємося, що індекс не виходить за межі переданого масиву
+        const safeIndex = index >= images.length ? 0 : index;
+        setGallery({ open: true, images, index: safeIndex });
         document.body.style.overflow = 'hidden';
     };
 
@@ -35,9 +37,13 @@ export default function MethodicalEventsPage() {
         document.body.style.overflow = 'unset';
     };
 
-    const navigateImage = (direction) => {
-        const newIndex = (gallery.index + direction + gallery.images.length) % gallery.images.length;
-        setGallery(prev => ({ ...prev, index: newIndex }));
+    const navigateImage = (e, direction) => {
+        e.stopPropagation(); // Зупиняємо закриття галереї при кліку на стрілки
+        setGallery(prev => {
+            const total = prev.images.length;
+            const newIndex = (prev.index + direction + total) % total;
+            return { ...prev, index: newIndex };
+        });
     };
 
     useEffect(() => {
@@ -61,14 +67,13 @@ export default function MethodicalEventsPage() {
         fetchData();
     }, []);
 
-    // Фільтрація та Мапінг даних
     const filteredEvents = useMemo(() => {
         return events
             .map(item => ({
                 id: item.id,
                 title: locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk,
                 text: locale === 'en' ? (item.textEn || item.textUk) : item.textUk,
-                images: item.photoGallery || (item.imagePhoto ? [item.imagePhoto] : []),
+                images: item.photoGallery?.length > 0 ? item.photoGallery : (item.imagePhoto ? [item.imagePhoto] : []),
                 date: new Date(item.publicationDate || item.createdAt).toLocaleDateString(locale === 'en' ? 'en-US' : 'uk-UA')
             }))
             .filter(event =>
@@ -77,7 +82,6 @@ export default function MethodicalEventsPage() {
             );
     }, [events, searchQuery, locale]);
 
-    // Розрахунок пагінації
     const totalPages = Math.ceil(filteredEvents.length / itemsPerPage);
     const paginatedEvents = filteredEvents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -97,13 +101,12 @@ export default function MethodicalEventsPage() {
     return (
         <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh', pb: 10 }}>
 
-            {/* HERO SECTION З РИЗКОЮ НАВСКОСИ */}
+            {/* HERO SECTION */}
             <Box sx={{
                 background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
                 pt: 8,
                 pb: { xs: 12, md: 20 },
                 color: '#fff',
-                // Риска навскоси (як у прикладі з атестацією)
                 clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)',
                 position: 'relative',
                 zIndex: 1,
@@ -131,7 +134,7 @@ export default function MethodicalEventsPage() {
                                     {photo && (
                                         <Grid item xs={12} md={5}>
                                             <Box
-                                                onClick={() => handleImageClick(heroPhotos, idx)}
+                                                onClick={() => handleImageClick([photo], 0)}
                                                 sx={{
                                                     position: 'relative',
                                                     height: { xs: 250, md: 350 },
@@ -166,11 +169,9 @@ export default function MethodicalEventsPage() {
             </Box>
 
             <Container maxWidth="lg">
-                {/* ПОШУК */}
                 <Box sx={{ mb: 6, display: 'flex', justifyContent: 'center' }}>
                     <TextField
                         fullWidth
-                        maxWidth="md"
                         variant="outlined"
                         placeholder={isEn ? "Search events..." : "Пошук заходів..."}
                         value={searchQuery}
@@ -191,7 +192,6 @@ export default function MethodicalEventsPage() {
                     />
                 </Box>
 
-                {/* СПИСОК ЗАХОДІВ */}
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                     {paginatedEvents.length > 0 ? (
                         paginatedEvents.map((event) => (
@@ -211,7 +211,6 @@ export default function MethodicalEventsPage() {
                     )}
                 </Box>
 
-                {/* ПАГІНАЦІЯ */}
                 {totalPages > 1 && (
                     <Box sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
                         <Pagination
@@ -227,19 +226,62 @@ export default function MethodicalEventsPage() {
 
             {/* MODAL GALLERY */}
             {gallery.open && (
-                <Box onClick={closeGallery} sx={{
-                    position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.95)',
-                    zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2
-                }}>
-                    <IconButton onClick={closeGallery} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff' }}>
+                <Box
+                    onClick={closeGallery}
+                    sx={{
+                        position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.95)',
+                        zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', p: { xs: 1, md: 4 }
+                    }}
+                >
+                    <IconButton
+                        onClick={closeGallery}
+                        sx={{ position: 'absolute', top: 20, right: 20, color: '#fff', zIndex: 10001 }}
+                    >
                         <CloseIcon fontSize="large" />
                     </IconButton>
-                    <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '90%', maxWidth: 1100, height: '80vh' }}>
-                        <Image src={gallery.images[gallery.index]} alt="Full view" fill style={{ objectFit: 'contain' }} />
+
+                    <Box
+                        onClick={(e) => e.stopPropagation()}
+                        sx={{ position: 'relative', width: '100%', maxWidth: '1000px', height: '80vh' }}
+                    >
+                        <Image
+                            src={gallery.images[gallery.index]}
+                            alt="Full view"
+                            fill
+                            priority
+                            style={{ objectFit: 'contain' }}
+                        />
+
                         {gallery.images.length > 1 && (
                             <>
-                                <Button onClick={() => navigateImage(-1)} sx={{ position: 'absolute', left: { xs: 0, md: -70 }, color: '#fff', fontSize: 40, height: '100%' }}>❮</Button>
-                                <Button onClick={() => navigateImage(1)} sx={{ position: 'absolute', right: { xs: 0, md: -70 }, color: '#fff', fontSize: 40, height: '100%' }}>❯</Button>
+                                <IconButton
+                                    onClick={(e) => navigateImage(e, -1)}
+                                    sx={{
+                                        position: 'absolute', left: { xs: 0, md: -80 },
+                                        top: '50%', transform: 'translateY(-50%)',
+                                        color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                                    }}
+                                >
+                                    <Typography variant="h3" sx={{ fontSize: { xs: 40, md: 60 } }}>❮</Typography>
+                                </IconButton>
+
+                                <IconButton
+                                    onClick={(e) => navigateImage(e, 1)}
+                                    sx={{
+                                        position: 'absolute', right: { xs: 0, md: -80 },
+                                        top: '50%', transform: 'translateY(-50%)',
+                                        color: '#fff', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' }
+                                    }}
+                                >
+                                    <Typography variant="h3" sx={{ fontSize: { xs: 40, md: 60 } }}>❯</Typography>
+                                </IconButton>
+
+                                <Typography sx={{
+                                    position: 'absolute', bottom: -40, left: '50%',
+                                    transform: 'translateX(-50%)', color: '#fff', fontWeight: 600
+                                }}>
+                                    {gallery.index + 1} / {gallery.images.length}
+                                </Typography>
                             </>
                         )}
                     </Box>

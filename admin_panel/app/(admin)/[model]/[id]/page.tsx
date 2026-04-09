@@ -310,6 +310,17 @@ export default function EditPage() {
             });
         }
 
+        // 1. Identify the classification from your payload
+        const targetClassification = payload.type || payload.category || payload.pageKey;
+
+        // 2. Build the exact query string URL requested
+        // If targetClassification is 'NEWS' and model is 'content',
+        // this outputs: /admin/content?type=NEWS&page=1
+        const redirectPath = targetClassification
+            ? `/${model}?type=${targetClassification}&page=1`
+            : `/${model}`;
+
+        // Clean up payload
         delete payload.documents;
         delete payload.subReports;
         delete payload.id;
@@ -323,11 +334,10 @@ export default function EditPage() {
         });
 
         if (res.ok) {
-            if (isNew) {
-                const saved = await res.json();
-                router.push(`/${model}`);
-            } else {
-                router.push(`/${model}`);
+            // 3. Redirect using the query parameter path
+            router.push(redirectPath);
+
+            if (!isNew) {
                 router.refresh();
             }
         }
