@@ -301,6 +301,7 @@ export default function EditPage() {
 
         const payload: any = JSON.parse(JSON.stringify(data));
 
+        // Cleanup TestQuestion options if applicable
         if (model.toLowerCase() === 'testquestion' && payload.options) {
             payload.options = (payload.options as TestQuestionOption[]).map(opt => {
                 const cleaned = { ...opt };
@@ -310,29 +311,60 @@ export default function EditPage() {
             });
         }
 
+        // 1. Map models to their specific classification fields based on your schema
+        const classificationMap: Record<string, string> = {
+            content: 'type',
+            pagesection: 'type',
+            externallink: 'pageKey',
+            person: 'type',
+            documentreport: 'category',
+        };
+
+        const currentModel = model.toLowerCase();
+
+        // Determine the correct field name for this specific model (e.g., "pageKey")
+        const queryParamName = classificationMap[currentModel];
+
+        // Extract the actual value from the payload (e.g., "PARENTS")
+        const classificationValue = queryParamName ? payload[queryParamName] : null;
+
+        // 2. Build the redirect path using the dynamic query parameter name
+        // Example outputs:
+        // /content?type=NEWS&page=1
+        // /externallink?pageKey=PARENTS&page=1
+        // /documentreport?category=GENERAL&page=1
+        const redirectPath = classificationValue
+            ? `/${model}?${queryParamName}=${classificationValue}&page=1`
+            : `/${model}`;
+
+        // Clean up payload before sending to the database
         delete payload.documents;
         delete payload.subReports;
         delete payload.id;
         delete payload.createdAt;
         delete payload.updatedAt;
 
-        const res = await fetch(url, {
-            method: isNew ? 'POST' : 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-        });
+        try {
+            const res = await fetch(url, {
+                method: isNew ? 'POST' : 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
 
-        if (res.ok) {
-            if (isNew) {
-                const saved = await res.json();
-                router.push(`/${model}`);
+            if (res.ok) {
+                // 3. Redirect using the dynamically generated path
+                router.push(redirectPath);
+
+                if (!isNew) {
+                    router.refresh();
+                }
             } else {
-                router.push(`/${model}`);
-                router.refresh();
+                console.error("Failed to save data", await res.text());
             }
+        } catch (error) {
+            console.error("Error during save operation:", error);
         }
     };
-
     /* -------------------- RENDER -------------------- */
 
     if (loading) {
@@ -636,7 +668,7 @@ export default function EditPage() {
                                     <Typography variant="h5" fontWeight={800} color="#182BA1">Файли та активи</Typography>
                                     <Typography variant="body2" color="text.secondary">PDF, DOCX та інші документи</Typography>
                                 </Box>
-                                <Button component="label" variant="outlined" startIcon={fileUploading ? <CircularProgress size={20} /> : <CloudUpload />} disabled={id === 'new' || fileUploading}>
+                                <Button component="label" variant="outlined" startIcon={fileUploading ? <CircularProgress size={20} /> : <CloudUpload />} disabled={fileUploading}>
                                     Завантажити файли
                                     <VisuallyHiddenInput type="file" onChange={handleDocumentUpload} multiple />
                                 </Button>
