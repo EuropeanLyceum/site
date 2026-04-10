@@ -1,14 +1,14 @@
 'use client';
 
 import Link from "next/link";
-import {usePathname, useSearchParams} from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
     Box, Drawer, List, ListItem, ListItemButton, ListItemText,
     Typography, Divider, alpha, Collapse
 } from "@mui/material";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import React, {useState, useEffect, Suspense} from 'react';
+import React, { useState, useEffect, Suspense, useMemo } from 'react';
 
 const groupedLinks = [
     // ===================================
@@ -186,24 +186,23 @@ const groupedLinks = [
     },
 ];
 
+const checkIsActive = (href: string, pathname: string, searchParams: URLSearchParams) => {
+    if (!href) return false;
+    const [path, query] = href.split('?');
+    const isPathMatch = pathname === path;
+
+    if (query) {
+        const urlParams = new URLSearchParams(query);
+        return isPathMatch && Array.from(urlParams.entries()).every(([key, value]) =>
+            searchParams.get(key) === value
+        );
+    }
+    return isPathMatch;
+};
+
 function SidebarItem({ href, label, pathname }: { href: string; label: string; pathname: string }) {
     const searchParams = useSearchParams();
-
-    const checkIsActive = () => {
-        if (!href) return false;
-        const [path, query] = href.split('?');
-        const isPathMatch = pathname === path;
-
-        if (query) {
-            const urlParams = new URLSearchParams(query);
-            return isPathMatch && Array.from(urlParams.entries()).every(([key, value]) =>
-                searchParams.get(key) === value
-            );
-        }
-        return isPathMatch;
-    };
-
-    const isActive = checkIsActive();
+    const isActive = useMemo(() => checkIsActive(href, pathname, searchParams), [href, pathname, searchParams]);
 
     return (
         <ListItem disablePadding>
@@ -230,15 +229,19 @@ function SidebarItem({ href, label, pathname }: { href: string; label: string; p
     );
 }
 
-// 2. Компонент для другого рівня вкладеності (наприклад, "🏠 Головна")
 function SubNavGroup({ item, pathname }: { item: any; pathname: string }) {
+    const searchParams = useSearchParams();
+    // Перевіряємо, чи є хоч одне активне посилання в підгрупі
+    const hasActiveChild = useMemo(() =>
+            item.subLinks?.some((sub: any) => checkIsActive(sub.href, pathname, searchParams)),
+        [item.subLinks, pathname, searchParams]);
+
     const [open, setOpen] = useState(false);
 
-    // Авто-розкриття, якщо активна "дитина"
+    // Розкриваємо підгрупу, якщо активна дитина
     useEffect(() => {
-        const hasActive = item.subLinks?.some((sub: any) => sub.href.split('?')[0] === pathname);
-        if (hasActive) setOpen(true);
-    }, [pathname, item.subLinks]);
+        if (hasActiveChild) setOpen(true);
+    }, [hasActiveChild]);
 
     return (
         <>
@@ -248,16 +251,18 @@ function SubNavGroup({ item, pathname }: { item: any; pathname: string }) {
             >
                 <ListItemText
                     primary={item.label}
-                    primaryTypographyProps={{ fontSize: '0.85rem', fontWeight: 600, color: '#475569' }}
+                    primaryTypographyProps={{
+                        fontSize: '0.85rem',
+                        fontWeight: 600,
+                        color: hasActiveChild ? '#182BA1' : '#475569'
+                    }}
                 />
                 {open ? <ExpandLess sx={{ fontSize: 16 }} /> : <ExpandMore sx={{ fontSize: 16 }} />}
             </ListItemButton>
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding sx={{ pl: 2 }}>
                     {item.subLinks.map((sub: any) => (
-                        <Suspense key={sub.href} fallback={null}>
-                            <SidebarItem href={sub.href} label={sub.label} pathname={pathname} />
-                        </Suspense>
+                        <SidebarItem key={sub.href} href={sub.href} label={sub.label} pathname={pathname} />
                     ))}
                 </List>
             </Collapse>
@@ -265,9 +270,25 @@ function SubNavGroup({ item, pathname }: { item: any; pathname: string }) {
     );
 }
 
-// 3. Компонент для головних груп (наприклад, "🏛️ Про ліцей")
 function NavGroup({ group, pathname }: { group: any; pathname: string }) {
+    const searchParams = useSearchParams();
+
+    // Перевірка на активність будь-якого елемента всередині групи (включаючи підгрупи)
+    const hasActiveInside = useMemo(() => {
+        return group.links.some((link: any) => {
+            if (link.subLinks) {
+                return link.subLinks.some((sub: any) => checkIsActive(sub.href, pathname, searchParams));
+            }
+            return checkIsActive(link.href, pathname, searchParams);
+        });
+    }, [group.links, pathname, searchParams]);
+
     const [open, setOpen] = useState(false);
+
+    // Авто-розкриття при завантаженні, якщо ми всередині цієї секції
+    useEffect(() => {
+        if (hasActiveInside) setOpen(true);
+    }, [hasActiveInside]);
 
     return (
         <>
@@ -284,7 +305,7 @@ function NavGroup({ group, pathname }: { group: any; pathname: string }) {
                     primaryTypographyProps={{
                         fontSize: '0.75rem',
                         fontWeight: 800,
-                        color: open ? '#182BA1' : '#64748b',
+                        color: open || hasActiveInside ? '#182BA1' : '#64748b',
                         textTransform: 'uppercase'
                     }}
                 />
@@ -294,13 +315,11 @@ function NavGroup({ group, pathname }: { group: any; pathname: string }) {
             <Collapse in={open} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding sx={{ pl: 1 }}>
                     {group.links.map((link: any, idx: number) => (
-                        <React.Fragment key={link.href || idx}>
+                        <React.Fragment key={link.href || `group-${idx}`}>
                             {link.subLinks ? (
                                 <SubNavGroup item={link} pathname={pathname} />
                             ) : (
-                                <Suspense fallback={null}>
-                                    <SidebarItem href={link.href} label={link.label} pathname={pathname} />
-                                </Suspense>
+                                <SidebarItem href={link.href} label={link.label} pathname={pathname} />
                             )}
                         </React.Fragment>
                     ))}
@@ -333,9 +352,7 @@ export default function Sidebar() {
                     LYCEUM <span style={{ color: '#f97316' }}>ADMIN</span>
                 </Typography>
             </Box>
-
             <Divider sx={{ mx: 2, mb: 1 }} />
-
             <Box sx={{ overflowY: 'auto', px: 2, pb: 4 }}>
                 <Suspense fallback={<Typography p={2}>Завантаження меню...</Typography>}>
                     <List>
