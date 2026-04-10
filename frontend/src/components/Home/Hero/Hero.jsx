@@ -59,7 +59,7 @@ export default function Hero({ t, locale, data }) {
                         mb: 3,
                         textTransform: "uppercase"
                     }}>
-                        {title || t("heroDefaultTitle")}
+                        {title}
                     </Typography>
 
                     <Typography sx={{
@@ -69,7 +69,7 @@ export default function Hero({ t, locale, data }) {
                         fontFamily: "'Montserrat Alternates', sans-serif",
                         textAlign: "justify"
                     }}>
-                        {description || t("heroDefaultDesc")}
+                        {description}
                     </Typography>
                 </Box>
             </Container>
