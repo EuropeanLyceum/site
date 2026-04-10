@@ -26,7 +26,7 @@ export default function MaterialBase({ t, stats, locale }) {
                     {/* Зображення */}
                     <Grid size={{ xs: 12, lg: 6 }} sx={{ position: 'relative', minHeight: 400 }}>
                         <Image
-                            src={stats.materialBasePhotoUrl}
+                            src={stats.materialBasePhoto}
                             alt="Material Base"
                             fill
                             style={{ objectFit: 'cover' }}

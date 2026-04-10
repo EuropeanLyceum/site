@@ -33,7 +33,7 @@ export default function BusinessCard({ t, stats, locale }) {
                             boxShadow: '0 20px 40px rgba(12, 43, 161, 0.2)', border: '1px solid #fff'
                         }}>
                             <Image
-                                src={stats.photoTeacherUrl}
+                                src={stats.teachersPhoto}
                                 alt="Teachers Team"
                                 fill
                                 style={{ objectFit: 'cover' }}
@@ -70,7 +70,7 @@ export default function BusinessCard({ t, stats, locale }) {
                                         </Box>
                                         <Box sx={{ bgcolor: '#fff', p: 1, borderRadius: 4, display: { xs: 'none', sm: 'block' } }}>
                                             <Image
-                                                src={stats.logoUrl || logoDefault}
+                                                src={stats.logoPhoto || logoDefault}
                                                 alt="logo"
                                                 width={80}
                                                 height={80}
