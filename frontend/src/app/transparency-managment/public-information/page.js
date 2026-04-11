@@ -33,7 +33,7 @@ const PublicInformationPage = () => {
                     page: page.toString(),
                     limit: '10',
                     parentId: 'null',
-                    category: 'PUBLIC', // Категорія для цієї сторінки
+                    category: 'PUBLIC_INFO', // Категорія для цієї сторінки
                 });
                 if (searchQuery) params.append('search', searchQuery);
 
