@@ -38,31 +38,19 @@ export default function UnifiedNewsLayout({
     return (
         <Box sx={{ minHeight: '100vh', pb: 10, bgcolor: '#F8FAFC' }}>
             {!heroOff && (
-                <Container maxWidth="lg" sx={{ pt: 8, mb: 4 }}>
-                    <Typography
-                        variant="h2"
-                        sx={{
-                            fontSize: { xs: 28, md: 42 },
-                            fontWeight: 800,
-                            color: '#0c1865',
-                            textAlign: 'left', // Можна змінити на center, якщо хочеться
-                            position: 'relative',
-                            fontFamily: "'Montserrat Alternates', sans-serif",
-                            '&::after': { // Стильна лінія під текстом
-                                content: '""',
-                                position: 'absolute',
-                                bottom: -10,
-                                left: 0,
-                                width: 60,
-                                height: 4,
-                                bgcolor: '#182BA1',
-                                borderRadius: 2
-                            }
-                        }}
-                    >
-                        {t('pageTitle')}
-                    </Typography>
-                </Container>
+            <Box sx={{ mb: { xs: 4, md: 6 }, pt: { xs: 6, md: 8 }, textAlign: 'center' }}>
+                <Typography variant="h1" sx={{
+                    fontSize: { xs: 32, md: 58 },
+                    color: '#182BA1',
+                    fontWeight: 900,
+                    fontFamily: "'Montserrat Alternates', sans-serif",
+                    textTransform: 'uppercase',
+                    px: 2
+                }}>
+                    {t('pageTitle')}
+                </Typography>
+                <Box sx={{ width: 80, height: 5, bgcolor: '#f97316', mx: 'auto', mt: 2, borderRadius: 2 }} />
+            </Box>
             )}
 
             <Container maxWidth="lg">
