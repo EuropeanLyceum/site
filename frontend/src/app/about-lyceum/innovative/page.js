@@ -1,20 +1,77 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { Box, Typography, Container, CircularProgress, IconButton, Button, alpha, Grid } from '@mui/material';
+import { useState, useEffect, useCallback } from 'react';
+import { Box, Typography, Container, CircularProgress, IconButton, Button, alpha, Grid, TextField, InputAdornment, Pagination } from '@mui/material';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import InnovativePost from './components/InnovativePost';
 
 export default function InnovativePage() {
     const { t, locale } = useTranslation('innovative');
-    const [loading, setLoading] = useState(true);
+
+    // Стани для даних
+    const [loadingSection, setLoadingSection] = useState(true);
+    const [loadingPosts, setLoadingPosts] = useState(false);
     const [pageData, setPageData] = useState(null);
     const [posts, setPosts] = useState([]);
+    const [totalPosts, setTotalPosts] = useState(0);
 
-    // --- Логіка Галереї ---
+    // Стани для фільтрів
+    const [searchQuery, setSearchQuery] = useState("");
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 5;
+
     const [gallery, setGallery] = useState({ open: false, images: [], index: 0 });
 
+    // 1. Завантаження статичної Hero-секції (1 раз)
+    useEffect(() => {
+        const fetchSection = async () => {
+            try {
+                const res = await fetch(`/admin/api/admin/pageSection?type=INNOVATIVE`);
+                const json = await res.json();
+                setPageData(Array.isArray(json.data) ? json.data[0] : json);
+            } catch (error) {
+                console.error("Section fetch error:", error);
+            } finally {
+                setLoadingSection(false);
+            }
+        };
+        fetchSection();
+    }, []);
+
+    // 2. СЕРВЕРНИЙ ПОШУК (fetchPosts)
+    const fetchPosts = useCallback(async (search, currentPage) => {
+        setLoadingPosts(true);
+        try {
+            const query = new URLSearchParams({
+                type: 'INNOVATION',
+                limit: itemsPerPage.toString(),
+                page: currentPage.toString(),
+                search: search || ''
+            });
+
+            const res = await fetch(`/admin/api/admin/content?${query}`);
+            const json = await res.json();
+
+            setPosts(json.data || []);
+            setTotalPosts(json.meta?.total || 0);
+        } catch (error) {
+            console.error("Posts fetch error:", error);
+        } finally {
+            setLoadingPosts(false);
+        }
+    }, []);
+
+    // Дебаунс для пошуку
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            fetchPosts(searchQuery, page);
+        }, 400);
+        return () => clearTimeout(handler);
+    }, [searchQuery, page, fetchPosts]);
+
+    // Логіка галереї
     const handleImageClick = (images, index) => {
         if (!images || images.length === 0) return;
         setGallery({ open: true, images, index });
@@ -31,28 +88,7 @@ export default function InnovativePage() {
         setGallery(prev => ({ ...prev, index: newIndex }));
     };
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [sectionRes, contentRes] = await Promise.all([
-                    fetch(`/admin/api/admin/pageSection?type=INNOVATIVE`),
-                    fetch(`/admin/api/admin/content?type=INNOVATION`)
-                ]);
-                const sectionJson = await sectionRes.json();
-                const contentJson = await contentRes.json();
-
-                setPageData(Array.isArray(sectionJson.data) ? sectionJson.data[0] : sectionJson);
-                setPosts(contentJson.data || []);
-            } catch (error) {
-                console.error("Fetch error:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-    if (loading) return (
+    if (loadingSection) return (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
             <CircularProgress sx={{ color: '#0c1865' }} />
         </Box>
@@ -61,77 +97,50 @@ export default function InnovativePage() {
     const isEn = locale === 'en';
     const displayTitle = isEn ? (pageData?.titleEn || pageData?.titleUk) : pageData?.titleUk;
     const displayDesc = isEn ? (pageData?.contentEn || pageData?.contentUk) : pageData?.contentUk;
-
-    // Розбиваємо опис Hero на абзаци для шахової логіки
     const heroParagraphs = displayDesc?.split(/\n\n+/).filter(p => p.trim()) || [];
-    // Якщо у PageSection лише одне фото imagePhoto, кладемо його в масив
     const heroPhotos = pageData?.imagePhoto ? [pageData.imagePhoto] : [];
 
     return (
-        <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh', pb: 10 }} lang={locale}>
+        <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh', pb: 10 }}>
 
             {/* HERO SECTION */}
             <Box sx={{
                 background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
                 pt: 8,
-                // Збільшуємо нижній відступ, щоб вигин не "налізав" на текст
                 pb: { xs: 15, md: 28 },
                 color: '#fff',
-                // Повертаємо ефект півкола
                 clipPath: { md: 'ellipse(140% 100% at 50% 0%)', xs: 'none' },
                 position: 'relative',
                 zIndex: 1
             }}>
                 <Container maxWidth="lg">
                     <Typography variant="h1" sx={{
-                        fontSize: { xs: 32, md: 56 },
-                        fontWeight: 900,
-                        fontFamily: "'Montserrat Alternates', sans-serif",
-                        mb: 8,
-                        textAlign: 'center',
-                        textShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                        fontSize: { xs: 32, md: 56 }, fontWeight: 900, mb: 8, textAlign: 'center'
                     }}>
                         {displayTitle}
                     </Typography>
 
-                    {/* ШАХОВА ЛОГІКА В HERO */}
                     <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
                         {heroParagraphs.map((paragraph, idx) => {
                             const photo = heroPhotos[idx];
-                            const direction = idx % 2 === 0 ? 'row' : 'row-reverse';
-
                             return (
-                                <Grid container spacing={photo ? 6 : 0} key={idx} direction={direction} alignItems="center" sx={{ mb: 4 }}>
+                                <Grid container spacing={photo ? 6 : 0} key={idx} direction={idx % 2 === 0 ? 'row' : 'row-reverse'} alignItems="center" sx={{ mb: 4 }}>
                                     {photo && (
-                                        <Grid item size={{xs: 12, md: 5}}>
+                                        <Grid item xs={12} md={5}>
                                             <Box
                                                 onClick={() => handleImageClick(heroPhotos, idx)}
                                                 sx={{
-                                                    position: 'relative',
-                                                    height: { xs: 250, md: 350 },
-                                                    borderRadius: 6,
-                                                    overflow: 'hidden',
-                                                    cursor: 'pointer',
-                                                    border: `1px solid ${alpha('#fff', 0.2)}`,
-                                                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                                                    '&:hover img': { transform: 'scale(1.05)' },
-                                                    transition: '0.4s'
+                                                    position: 'relative', height: { xs: 250, md: 350 }, borderRadius: 6,
+                                                    overflow: 'hidden', cursor: 'pointer', boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                                                    '&:hover img': { transform: 'scale(1.05)' }, transition: '0.4s'
                                                 }}
                                             >
-                                                <Image src={photo} fill style={{ objectFit: 'cover', transition: '0.6s' }} alt="Hero" />
+                                                <Image src={photo} fill style={{ objectFit: 'cover' }} alt="Hero" />
                                             </Box>
                                         </Grid>
                                     )}
-                                    <Grid item size={{xs: 12, md: photo ? 7 : 12}} >
-                                        <Typography sx={{
-                                            fontSize: { xs: 16, md: 20 },
-                                            lineHeight: 1.8,
-                                            opacity: 0.9,
-                                            whiteSpace: 'pre-line',
-                                            textAlign: photo ? 'left' : 'center',
-                                            // Додаємо легку тінь для читабельності на градієнті
-                                            textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                                        }}>
+                                    <Grid item xs={12} md={photo ? 7 : 12}>
+                                        <Typography sx={{ fontSize: { xs: 16, md: 20 }, lineHeight: 1.8, opacity: 0.9, whiteSpace: 'pre-line', textAlign: photo ? 'left' : 'center' }}>
                                             {paragraph}
                                         </Typography>
                                     </Grid>
@@ -142,18 +151,64 @@ export default function InnovativePage() {
                 </Container>
             </Box>
 
-            {/* POSTS SECTION */}
+            {/* POSTS SECTION WITH SEARCH */}
             <Container maxWidth="lg" sx={{ mt: -8, position: 'relative', zIndex: 5 }}>
-                {posts.map((post, index) => (
-                    <InnovativePost
-                        key={post.id}
-                        item={post}
-                        index={index}
-                        locale={locale}
-                        t={t}
-                        onImageClick={handleImageClick}
+                <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+                    <TextField
+                        fullWidth
+                        placeholder={t('searchPlaceholder') || "Пошук інновацій..."}
+                        value={searchQuery}
+                        onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                        sx={{
+                            maxWidth: 600, bgcolor: '#fff', borderRadius: 4,
+                            boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                            '& .MuiOutlinedInput-root': { borderRadius: 4 }
+                        }}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon sx={{ color: '#182BA1' }} />
+                                </InputAdornment>
+                            ),
+                        }}
                     />
-                ))}
+                </Box>
+
+                {loadingPosts ? (
+                    <Box sx={{ py: 10, textAlign: 'center' }}>
+                        <CircularProgress sx={{ color: '#182BA1' }} />
+                    </Box>
+                ) : (
+                    <>
+                        {posts.map((post, index) => (
+                            <InnovativePost
+                                key={post.id}
+                                item={post}
+                                index={index}
+                                locale={locale}
+                                t={t}
+                                onImageClick={handleImageClick}
+                            />
+                        ))}
+
+                        {posts.length === 0 && (
+                            <Typography sx={{ textAlign: 'center', py: 10, color: 'text.secondary' }}>
+                                Нічого не знайдено за вашим запитом
+                            </Typography>
+                        )}
+
+                        {totalPosts > itemsPerPage && (
+                            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+                                <Pagination
+                                    count={Math.ceil(totalPosts / itemsPerPage)}
+                                    page={page}
+                                    onChange={(e, v) => setPage(v)}
+                                    color="primary"
+                                />
+                            </Box>
+                        )}
+                    </>
+                )}
             </Container>
 
             {/* MODAL GALLERY */}

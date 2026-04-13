@@ -1,6 +1,10 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { Box, Typography, Button, Menu, MenuItem, CircularProgress, Grid, Container, TextField, InputAdornment } from '@mui/material';
+
+import { useState, useEffect, useCallback } from 'react';
+import {
+    Box, Typography, Button, Menu, MenuItem, CircularProgress,
+    Grid, Container, TextField, InputAdornment, Pagination, Stack
+} from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from '@/contexts/TranslationProvider';
@@ -8,16 +12,24 @@ import StaffCard from "@/app/teaching-staff/components/StaffCard.jsx";
 
 export default function TeachingStaffPage() {
     const { t, locale } = useTranslation("teachers");
-    const [staffData, setStaffData] = useState([]);
+
+    // Категорії
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
+
+    // Дані персоналу та пагінація
+    const [staffData, setStaffData] = useState([]);
+    const [totalStaff, setTotalStaff] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [searchQuery, setSearchQuery] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6; // Кількість карток на сторінці
 
     const isEn = locale === 'en';
 
-    // 1. Завантажуємо категорії лише один раз при старті
+    // 1. Завантажуємо категорії лише один раз
     useEffect(() => {
         const fetchCats = async () => {
             try {
@@ -33,41 +45,52 @@ export default function TeachingStaffPage() {
         fetchCats();
     }, []);
 
-    // 2. Завантажуємо персонал кожного разу, коли змінюється категорія АБО пошуковий запит
+    // 2. Функція серверного завантаження персоналу
+    const fetchStaff = useCallback(async (category, search, page) => {
+        setIsLoading(true);
+        try {
+            const params = new URLSearchParams({
+                type: 'TEACHER',
+                limit: itemsPerPage.toString(),
+                page: page.toString(),
+            });
+
+            if (category?.id) params.append('categoryId', category.id);
+            if (search) params.append('search', search);
+
+            const res = await fetch(`/admin/api/admin/person?${params}`);
+            const json = await res.json();
+
+            setStaffData(json.data || []);
+            setTotalStaff(json.meta?.total || 0);
+        } catch (error) {
+            console.error('Error fetching staff:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
+    // 3. Дебаунс для пошуку та вибору категорії
     useEffect(() => {
-        const fetchStaff = async () => {
-            setIsLoading(true);
-            try {
-                // Формуємо параметри: тип, категорія та пошук (якщо є)
-                let url = `/admin/api/admin/person?type=TEACHER`;
-                if (selectedCategory) url += `&categoryId=${selectedCategory.id}`;
-                if (searchQuery) url += `&search=${encodeURIComponent(searchQuery)}`;
-
-                const res = await fetch(url);
-                const json = await res.json();
-                setStaffData(json.data || []);
-            } catch (error) {
-                console.error('Error fetching staff:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        // Реалізуємо Debounce для пошуку (чекаємо 400мс після останнього натискання клавіші)
-        const timeoutId = setTimeout(() => {
+        const handler = setTimeout(() => {
+            // Завантажуємо дані лише якщо категорії вже завантажені або список порожній
             if (selectedCategory || categories.length === 0) {
-                fetchStaff();
+                fetchStaff(selectedCategory, searchQuery, currentPage);
             }
         }, 400);
 
-        return () => clearTimeout(timeoutId);
-    }, [selectedCategory, searchQuery, categories.length]);
+        return () => clearTimeout(handler);
+    }, [selectedCategory, searchQuery, currentPage, categories.length, fetchStaff]);
 
-    const handleSelect = (category) => {
+    const handleSelectCategory = (category) => {
         setSelectedCategory(category);
+        setCurrentPage(1); // Скидаємо на першу сторінку при зміні категорії
         setAnchorEl(null);
-        // Не скидаємо пошук, щоб можна було шукати в межах нової категорії,
-        // або скиньте за потреби: setSearchQuery("");
+    };
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+        setCurrentPage(1); // Скидаємо на першу сторінку при пошуку
     };
 
     const displayCategoryName = selectedCategory
@@ -106,7 +129,7 @@ export default function TeachingStaffPage() {
                             <MenuItem
                                 key={cat.id}
                                 selected={selectedCategory?.id === cat.id}
-                                onClick={() => handleSelect(cat)}
+                                onClick={() => handleSelectCategory(cat)}
                                 sx={{ py: 1.5, fontWeight: 500 }}
                             >
                                 {isEn ? cat.nameEn || cat.nameUk : cat.nameUk}
@@ -114,11 +137,11 @@ export default function TeachingStaffPage() {
                         ))}
                     </Menu>
 
-                    {/* Пошук — тепер працює через API */}
+                    {/* Пошук */}
                     <TextField
                         placeholder={t('searchTeacher') || "Пошук викладача..."}
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={handleSearchChange}
                         sx={{
                             maxWidth: { xs: '100%', md: 400 }, width: '100%', bgcolor: '#fff', borderRadius: '12px',
                             '& .MuiOutlinedInput-root': { borderRadius: '12px' }
@@ -133,20 +156,43 @@ export default function TeachingStaffPage() {
             <Container maxWidth="xl">
                 {isLoading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}><CircularProgress size={60} /></Box>
-                ) : staffData.length === 0 ? (
-                    <Box sx={{ textAlign: 'center', py: 10 }}>
-                        <Typography sx={{ color: '#64748B', fontSize: 18 }}>
-                            {searchQuery ? t('noMatches') : t('noTeachersInCategory')}
-                        </Typography>
-                    </Box>
                 ) : (
-                    <Grid container spacing={4}>
-                        {staffData.map((staff) => (
-                            <Grid item size={{xs: 12, lg: 6}} key={staff.id}>
-                                <StaffCard staff={staff} locale={locale} t={t} />
+                    <>
+                        {staffData.length === 0 ? (
+                            <Box sx={{ textAlign: 'center', py: 10 }}>
+                                <Typography sx={{ color: '#64748B', fontSize: 18 }}>
+                                    {searchQuery ? t('noMatches') : t('noTeachersInCategory')}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <Grid container spacing={4}>
+                                {staffData.map((staff) => (
+                                    <Grid item xs={12} lg={6} key={staff.id}>
+                                        <StaffCard staff={staff} locale={locale} t={t} />
+                                    </Grid>
+                                ))}
                             </Grid>
-                        ))}
-                    </Grid>
+                        )}
+
+                        {/* ПАГІНАЦІЯ */}
+                        {totalStaff > itemsPerPage && (
+                            <Stack alignItems="center" sx={{ mt: 8 }}>
+                                <Pagination
+                                    count={Math.ceil(totalStaff / itemsPerPage)}
+                                    page={currentPage}
+                                    onChange={(_, v) => {
+                                        setCurrentPage(v);
+                                        window.scrollTo({ top: 200, behavior: 'smooth' });
+                                    }}
+                                    color="primary"
+                                    size="large"
+                                    sx={{
+                                        '& .MuiPaginationItem-root': { fontWeight: 700 }
+                                    }}
+                                />
+                            </Stack>
+                        )}
+                    </>
                 )}
             </Container>
         </Box>

@@ -1,36 +1,53 @@
 'use client';
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout";
 
 export default function DynamicNewsPage() {
     const [news, setNews] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [total, setTotal] = useState(0);
+    const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            try {
-                const res = await fetch('/admin/api/admin/content?type=NEWS');
-                const json = await res.json();
+    const fetchNews = useCallback(async ({ search, page }) => {
+        setLoading(true);
+        try {
+            // Формуємо URL з параметрами для сервера
+            const limit = 5;
+            const query = new URLSearchParams({
+                type: 'NEWS',
+                limit: limit.toString(),
+                page: page.toString(),
+                search: search || ''
+            });
 
-                const formattedData = (json.data || []).map(item => ({
-                    id: item.id,
-                    title: item.titleUk,
-                    titleEn: item.titleEn,
-                    text: item.textUk,
-                    textEn: item.textEn,
-                    images: item.photoGallery || [],
-                    date: new Date(item.publicationDate || item.createdAt).toLocaleDateString('uk-UA')
-                }));
+            const res = await fetch(`/admin/api/admin/content?${query}`);
+            const json = await res.json();
 
-                setNews(formattedData);
-            } catch (error) {
-                console.error("Fetch error:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchNews();
+            const formattedData = (json.data || []).map(item => ({
+                id: item.id,
+                title: item.titleUk,
+                titleEn: item.titleEn,
+                text: item.textUk,
+                textEn: item.textEn,
+                images: item.photoGallery || [],
+                date: new Date(item.publicationDate || item.createdAt).toLocaleDateString('uk-UA')
+            }));
+
+            setNews(formattedData);
+            setTotal(json.meta?.total || 0);
+        } catch (error) {
+            console.error("Fetch error:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    return <UnifiedNewsLayout translationKey="news" data={news} isLoading={loading} />;
+    return (
+        <UnifiedNewsLayout
+            translationKey="news"
+            data={news}
+            totalCount={total}
+            isLoading={loading}
+            onParamsChange={fetchNews} // Передаємо функцію завантаження в лейаут
+        />
+    );
 }
