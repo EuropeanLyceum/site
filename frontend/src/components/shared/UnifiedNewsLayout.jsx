@@ -11,7 +11,7 @@ export default function UnifiedNewsLayout({
                                               isLoading = false,
                                               totalCount = 0,
                                               onParamsChange,
-                                                heroOff = false,
+                                              heroOff = false,
                                           }) {
     const { t, locale } = useTranslation(translationKey);
     const [searchQuery, setSearchQuery] = useState("");
@@ -37,27 +37,33 @@ export default function UnifiedNewsLayout({
 
     return (
         <Box sx={{ minHeight: '100vh', pb: 10, bgcolor: '#F8FAFC' }}>
-            {!heroOff &&
-            <Box sx={{
-                py: { xs: 6, md: 10 },
-                background: 'linear-gradient(135deg, #0c1865 0%, #182BA1 100%)',
-                color: '#fff',
-                mb: 6,
-                clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)'
-            }}>
-                <Container maxWidth="lg">
-                    <Typography variant="h1" sx={{
-                        fontSize: { xs: 32, md: 52 },
-                        fontWeight: 900,
-                        textAlign: 'center',
-                        textTransform: 'uppercase',
-                        fontFamily: "'Montserrat Alternates', sans-serif"
-                    }}>
+            {!heroOff && (
+                <Container maxWidth="lg" sx={{ pt: 8, mb: 4 }}>
+                    <Typography
+                        variant="h2"
+                        sx={{
+                            fontSize: { xs: 28, md: 42 },
+                            fontWeight: 800,
+                            color: '#0c1865',
+                            textAlign: 'left', // Можна змінити на center, якщо хочеться
+                            position: 'relative',
+                            fontFamily: "'Montserrat Alternates', sans-serif",
+                            '&::after': { // Стильна лінія під текстом
+                                content: '""',
+                                position: 'absolute',
+                                bottom: -10,
+                                left: 0,
+                                width: 60,
+                                height: 4,
+                                bgcolor: '#182BA1',
+                                borderRadius: 2
+                            }
+                        }}
+                    >
                         {t('pageTitle')}
                     </Typography>
                 </Container>
-            </Box>
-            }
+            )}
 
             <Container maxWidth="lg">
                 <Box sx={{ mb: 6, display: 'flex', justifyContent: 'center' }}>
