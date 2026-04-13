@@ -27,9 +27,9 @@ CREATE TYPE "ExternalPageKey" AS ENUM (
 -- 1. Content
 CREATE TABLE "Content" (
                            "id" SERIAL PRIMARY KEY,
-                           "type" "ContentType" NOT NULL,
+                           "type" "ContentType",
                            "slug" TEXT UNIQUE,
-                           "titleUk" TEXT NOT NULL,
+                           "titleUk" TEXT,
                            "titleEn" TEXT,
                            "textUk" TEXT,
                            "textEn" TEXT,
@@ -44,7 +44,7 @@ CREATE TABLE "Content" (
 -- 2. PageSection
 CREATE TABLE "PageSection" (
                                "id" SERIAL PRIMARY KEY,
-                               "type" "PageSectionType" UNIQUE NOT NULL,
+                               "type" "PageSectionType" UNIQUE,
                                "titleUk" TEXT,
                                "titleEn" TEXT,
                                "contentUk" TEXT,
@@ -57,10 +57,10 @@ CREATE TABLE "PageSection" (
 -- 3. ExternalLink
 CREATE TABLE "ExternalLink" (
                                 "id" SERIAL PRIMARY KEY,
-                                "pageKey" "ExternalPageKey" NOT NULL,
-                                "titleUk" TEXT NOT NULL,
+                                "pageKey" "ExternalPageKey",
+                                "titleUk" TEXT,
                                 "titleEn" TEXT,
-                                "url" TEXT NOT NULL,
+                                "url" TEXT,
                                 "order" INTEGER DEFAULT 0,
                                 "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                 "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -71,29 +71,29 @@ CREATE TABLE "LyceumStats" (
                                "id" INTEGER PRIMARY KEY DEFAULT 1,
                                "name" TEXT NOT NULL,
                                "nameEn" TEXT NOT NULL,
-                               "addressUk" TEXT NOT NULL,
-                               "addressEn" TEXT NOT NULL,
-                               "email" TEXT NOT NULL,
-                               "phone" TEXT NOT NULL,
-                               "logoPhoto" TEXT NOT NULL,
-                               "quoteUk" TEXT NOT NULL,
-                               "quoteEn" TEXT NOT NULL,
-                               "teachingLanguage" TEXT NOT NULL,
-                               "teachingLanguageEn" TEXT NOT NULL,
-                               "specialization" TEXT NOT NULL,
-                               "specializationEn" TEXT NOT NULL,
+                               "addressUk" TEXT,
+                               "addressEn" TEXT,
+                               "email" TEXT,
+                               "phone" TEXT,
+                               "logoPhoto" TEXT,
+                               "quoteUk" TEXT,
+                               "quoteEn" TEXT,
+                               "teachingLanguage" TEXT,
+                               "teachingLanguageEn" TEXT,
+                               "specialization" TEXT,
+                               "specializationEn" TEXT,
                                "anthemUrl" TEXT,
-                               "teachersPhoto" TEXT NOT NULL,
-                               "materialBasePhoto" TEXT NOT NULL,
-                               "materialBaseDescriptionUk" TEXT NOT NULL,
-                               "materialBaseDescriptionEn" TEXT NOT NULL,
+                               "teachersPhoto" TEXT,
+                               "materialBasePhoto" TEXT,
+                               "materialBaseDescriptionUk" TEXT,
+                               "materialBaseDescriptionEn" TEXT,
                                "socialLinks" JSONB,
                                "studentsCount" INTEGER DEFAULT 0,
                                "studentsCountReal" INTEGER DEFAULT 0,
                                "teachersCount" INTEGER DEFAULT 0,
                                "staffCount" INTEGER DEFAULT 0,
                                "classesCount" INTEGER DEFAULT 0,
-                               "flexParticipants" INTEGER DEFAULT 0,
+                               "flexParticipantsCount" INTEGER DEFAULT 0,
                                "topScorersCount" INTEGER DEFAULT 0,
                                "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -102,9 +102,9 @@ CREATE TABLE "LyceumStats" (
 -- 5. FAQ
 CREATE TABLE "FAQ" (
                        "id" SERIAL PRIMARY KEY,
-                       "questionUk" TEXT NOT NULL,
+                       "questionUk" TEXT,
                        "questionEn" TEXT,
-                       "answerUk" TEXT NOT NULL,
+                       "answerUk" TEXT,
                        "answerEn" TEXT,
                        "order" INTEGER DEFAULT 0,
                        "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -115,7 +115,7 @@ CREATE TABLE "FAQ" (
 CREATE TABLE "PersonCategory" (
                                   "id" SERIAL PRIMARY KEY,
                                   "nameUk" TEXT UNIQUE NOT NULL,
-                                  "nameEn" TEXT,
+                                  "nameEn" TEXT NOT NULL,
                                   "order" INTEGER DEFAULT 0,
                                   "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                   "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -146,8 +146,8 @@ CREATE TABLE "Person" (
 CREATE TABLE "DocumentReport" (
                                   "id" SERIAL PRIMARY KEY,
                                   "category" "DocumentCategory" DEFAULT 'GENERAL',
-                                  "titleUk" TEXT NOT NULL,
-                                  "titleEn" TEXT NOT NULL,
+                                  "titleUk" TEXT,
+                                  "titleEn" TEXT,
                                   "descriptionUk" TEXT,
                                   "descriptionEn" TEXT,
                                   "parentId" INTEGER REFERENCES "DocumentReport"("id") ON DELETE CASCADE,
@@ -160,7 +160,7 @@ CREATE TABLE "FileAsset" (
                              "id" SERIAL PRIMARY KEY,
                              "nameUk" TEXT NOT NULL,
                              "nameEn" TEXT NOT NULL,
-                             "url" TEXT NOT NULL,
+                             "url" TEXT,
                              "fileType" TEXT,
                              "fileSize" TEXT,
                              "reportId" INTEGER REFERENCES "DocumentReport"("id") ON DELETE CASCADE,
@@ -174,45 +174,45 @@ CREATE TABLE "Location" (
                             "floor" TEXT,
                             "nameUk" TEXT NOT NULL,
                             "nameEn" TEXT NOT NULL,
-                            "descriptionUk" TEXT NOT NULL,
-                            "descriptionEn" TEXT NOT NULL,
-                            "highlightsTextUk" TEXT NOT NULL,
-                            "highlightsTextEn" TEXT NOT NULL,
+                            "descriptionUk" TEXT,
+                            "descriptionEn" TEXT,
+                            "highlightsTextUk" TEXT,
+                            "highlightsTextEn" TEXT,
                             "imagePhotos" TEXT[],
-                            "iconName" TEXT,
+                            "iconName" TEXT DEFAULT 'MeetingRoom',
                             "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                             "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 1. Створення таблиці Спеціалізацій (спочатку, бо на неї посилаються інші)
+-- 11. Створення таблиці Спеціалізацій (спочатку, бо на неї посилаються інші)
 CREATE TABLE "Specialization" (
                                   "id" SERIAL PRIMARY KEY,
                                   "nameUk" TEXT NOT NULL,
                                   "nameEn" TEXT NOT NULL,
-                                  "descriptionUk" TEXT NOT NULL,
-                                  "descriptionEn" TEXT NOT NULL,
-                                  "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                  "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                  "descriptionUk" TEXT,
+                                  "descriptionEn" TEXT,
+                                  "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                  "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Створення таблиці Питань
+-- 12. Створення таблиці Питань
 CREATE TABLE "TestQuestion" (
                                 "id" SERIAL PRIMARY KEY,
-                                "question" TEXT NOT NULL,
+                                "question" TEXT,
                                 "questionEn" TEXT,
-                                "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                                "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Створення таблиці Варіантів Відповідей
+-- 13. Створення таблиці Варіантів Відповідей
 CREATE TABLE "TestOption" (
                               "id" SERIAL PRIMARY KEY,
-                              "option" TEXT NOT NULL,
+                              "option" TEXT,
                               "optionEn" TEXT,
-                              "specializationId" INTEGER NOT NULL,
-                              "questionId" INTEGER NOT NULL,
-                              "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                              "updatedAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                              "specializationId" INTEGER,
+                              "questionId" INTEGER,
+                              "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                              "updatedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     -- Зовнішні ключі
                               CONSTRAINT "TestOption_specializationId_fkey"
@@ -226,33 +226,33 @@ CREATE TABLE "TestOption" (
                                       ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- 13. Discipline
+-- 14. Discipline
 CREATE TABLE "Discipline" (
                               "id" SERIAL PRIMARY KEY,
                               "name" TEXT NOT NULL,
                               "nameEn" TEXT NOT NULL,
-                              "color" TEXT NOT NULL,
+                              "color" TEXT,
                               "url" TEXT DEFAULT '#',
                               "hasSubItems" BOOLEAN DEFAULT FALSE,
                               "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                               "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 14. DisciplineSubItem
+-- 15. DisciplineSubItem
 CREATE TABLE "DisciplineSubItem" (
                                      "id" SERIAL PRIMARY KEY,
                                      "name" TEXT NOT NULL,
-                                     "link" TEXT NOT NULL,
-                                     "disciplineId" INTEGER NOT NULL REFERENCES "Discipline"("id") ON DELETE CASCADE,
+                                     "link" TEXT,
+                                     "disciplineId" INTEGER REFERENCES "Discipline"("id") ON DELETE CASCADE,
                                      "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                      "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- 15. AdminUser
+-- 16. AdminUser
 CREATE TABLE "AdminUser" (
                              "id" SERIAL PRIMARY KEY,
                              "username" TEXT UNIQUE NOT NULL,
-                             "password" TEXT NOT NULL,
+                             "password" TEXT,
                              "role" TEXT DEFAULT 'admin',
                              "lastLogin" TIMESTAMP WITH TIME ZONE,
                              "isActive" BOOLEAN DEFAULT TRUE,
@@ -277,17 +277,16 @@ RETURN NEW;
 END;
 $$ language 'plpgsql';
 
--- Apply to tables (Example for Content, repeat for others as needed)
+-- Apply to tables
 CREATE TRIGGER update_content_modtime BEFORE UPDATE ON "Content" FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_person_modtime BEFORE UPDATE ON "Person" FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
--- ... add for other tables as required
 
 CREATE TABLE "Clubs" (
                          "id" SERIAL PRIMARY KEY,
                          "nameUk" TEXT NOT NULL,
                          "nameEn" TEXT NOT NULL,
-                         "descriptionUk" TEXT NOT NULL,
-                         "descriptionEn" TEXT NOT NULL,
+                         "descriptionUk" TEXT,
+                         "descriptionEn" TEXT,
                          "order" INTEGER DEFAULT 0,
                          "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                          "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
@@ -296,12 +295,12 @@ CREATE TABLE "Clubs" (
 CREATE TABLE "WorkingArea" (
                                "id" SERIAL PRIMARY KEY,
                                "nameUk" TEXT NOT NULL,
-                               "nameEn" TEXT,
+                               "nameEn" TEXT NOT NULL,
                                "order" INTEGER DEFAULT 0,
                                "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                                "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Додаємо тригери для updatedAt (якщо ти використовував функцію з попередньої відповіді)
+-- Додаємо тригери для updatedAt
 CREATE TRIGGER update_clubs_modtime BEFORE UPDATE ON "Clubs" FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
 CREATE TRIGGER update_workingarea_modtime BEFORE UPDATE ON "WorkingArea" FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();

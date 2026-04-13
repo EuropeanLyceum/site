@@ -12,23 +12,23 @@ datasource db {
 // =============================================
 
 model Content {
-  id    Int         @id @default(autoincrement())
-  type  ContentType
-  slug  String?     @unique // Optimized for SEO/URL lookups
+  id    Int          @id @default(autoincrement())
+  type  ContentType?
+  slug  String?      @unique
 
-  titleUk String
+  titleUk String?
   titleEn String?
-  textUk  String? @db.Text
-  textEn  String? @db.Text
+  textUk  String?  @db.Text
+  textEn  String?  @db.Text
 
   photoGallery String[] @default([])
   videoUrl     String?
 
-  publicationDate DateTime @default(now())
+  publicationDate DateTime? @default(now())
   attributes      Json?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([type, publicationDate])
 }
@@ -38,8 +38,8 @@ model Content {
 // =============================================
 
 model PageSection {
-  id   Int             @id @default(autoincrement())
-  type PageSectionType @unique
+  id   Int              @id @default(autoincrement())
+  type PageSectionType? @unique
 
   titleUk   String?
   titleEn   String?
@@ -48,21 +48,21 @@ model PageSection {
 
   imagePhoto String?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model ExternalLink {
-  id      Int             @id @default(autoincrement())
-  pageKey ExternalPageKey
+  id      Int              @id @default(autoincrement())
+  pageKey ExternalPageKey?
 
-  titleUk String
+  titleUk String?
   titleEn String?
-  url     String
-  order   Int             @default(0)
+  url     String?
+  order   Int?             @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([pageKey, order])
 }
@@ -72,76 +72,76 @@ model LyceumStats {
 
   name      String
   nameEn    String
-  addressUk String
-  addressEn String
-  email     String
-  phone     String
-  logoPhoto String
+  addressUk String?
+  addressEn String?
+  email     String?
+  phone     String?
+  logoPhoto String?
 
-  quoteUk String @db.Text
-  quoteEn String @db.Text
+  quoteUk String? @db.Text
+  quoteEn String? @db.Text
 
-  teachingLanguage   String
-  teachingLanguageEn String
-  specialization     String
-  specializationEn   String
+  teachingLanguage   String?
+  teachingLanguageEn String?
+  specialization     String?
+  specializationEn   String?
 
-  anthemUrl     String?
-  teachersPhoto String
-  materialBasePhoto String
-  materialBaseDescriptionUk String @db.Text
-  materialBaseDescriptionEn String @db.Text
+  anthemUrl                 String?
+  teachersPhoto             String?
+  materialBasePhoto         String?
+  materialBaseDescriptionUk String? @db.Text
+  materialBaseDescriptionEn String? @db.Text
 
   socialLinks Json?
 
-  studentsCount     Int @default(0)
-  studentsCountReal Int @default(0)
-  teachersCount     Int @default(0)
-  staffCount        Int @default(0)
-  classesCount      Int @default(0)
-  flexParticipants  Int @default(0)
-  topScorersCount   Int @default(0)
+  studentsCount     Int? @default(0)
+  studentsCountReal Int? @default(0)
+  teachersCount     Int? @default(0)
+  staffCount        Int? @default(0)
+  classesCount      Int? @default(0)
+  flexParticipantsCount  Int? @default(0)
+  topScorersCount   Int? @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model FAQ {
-  id         Int      @id @default(autoincrement())
-  questionUk String
+  id         Int     @id @default(autoincrement())
+  questionUk String?
   questionEn String?
-  answerUk   String   @db.Text
-  answerEn   String?  @db.Text
-  order      Int      @default(0)
+  answerUk   String? @db.Text
+  answerEn   String? @db.Text
+  order      Int?    @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([order])
 }
 
 model Clubs {
-  id            Int    @id @default(autoincrement())
-  nameUk        String @db.Text
-  nameEn        String @db.Text
-  descriptionUk String @db.Text
-  descriptionEn String @db.Text
+  id            Int     @id @default(autoincrement())
+  nameUk        String  @db.Text
+  nameEn        String  @db.Text
+  descriptionUk String? @db.Text
+  descriptionEn String? @db.Text
 
-  order         Int    @default(0)
+  order         Int?    @default(0)
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime? @default(now())
+  updatedAt     DateTime? @updatedAt
 }
 
 model WorkingArea {
-  id     Int     @id @default(autoincrement())
-  nameUk String  @db.Text
-  nameEn String? @db.Text
+  id     Int    @id @default(autoincrement())
+  nameUk String @db.Text
+  nameEn String @db.Text
 
-  order  Int     @default(0)
+  order  Int?   @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // =============================================
@@ -165,14 +165,14 @@ model Person {
   specializationUk String?
   specializationEn String?
 
-  type  PersonType @default(TEACHER)
-  order Int        @default(0)
+  type  PersonType? @default(TEACHER)
+  order Int?        @default(0)
 
   categoryId Int?
   category   PersonCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([type, order])
 }
@@ -180,12 +180,12 @@ model Person {
 model PersonCategory {
   id      Int      @id @default(autoincrement())
   nameUk  String   @unique
-  nameEn  String?
+  nameEn  String
   persons Person[]
-  order   Int      @default(0)
+  order   Int?     @default(0)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // =============================================
@@ -193,11 +193,11 @@ model PersonCategory {
 // =============================================
 
 model DocumentReport {
-  id       Int              @id @default(autoincrement())
-  category DocumentCategory @default(GENERAL)
+  id       Int               @id @default(autoincrement())
+  category DocumentCategory? @default(GENERAL)
 
-  titleUk       String
-  titleEn       String
+  titleUk       String?
+  titleEn       String?
   descriptionUk String? @db.Text
   descriptionEn String? @db.Text
 
@@ -207,8 +207,8 @@ model DocumentReport {
 
   documents FileAsset[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([category, createdAt])
 }
@@ -217,15 +217,15 @@ model FileAsset {
   id       Int     @id @default(autoincrement())
   nameUk   String
   nameEn   String
-  url      String
+  url      String?
   fileType String?
   fileSize String?
 
   reportId Int?
   report   DocumentReport? @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([reportId])
 }
@@ -240,89 +240,81 @@ model Location {
 
   nameUk        String
   nameEn        String
-  descriptionUk String @db.Text
-  descriptionEn String @db.Text
+  descriptionUk String? @db.Text
+  descriptionEn String? @db.Text
 
-  highlightsTextUk String @db.Text
-  highlightsTextEn String @db.Text
-  imagePhotos  String[]
-  iconName     String? @db.Text  @default("MeetingRoom")
+  highlightsTextUk String?  @db.Text
+  highlightsTextEn String?  @db.Text
+  imagePhotos      String[]
+  iconName         String?  @db.Text @default("MeetingRoom")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 
   @@index([floor])
 }
 
 model TestQuestion {
-  id Int @id @default(autoincrement())
-  question String
+  id         Int     @id @default(autoincrement())
+  question   String?
   questionEn String?
 
-
   options TestOption[]
 
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
-
 
 model TestOption {
-  id Int @id @default(autoincrement())
-  option String
+  id       Int     @id @default(autoincrement())
+  option   String?
   optionEn String?
 
+  specializationId Int?
+  specialization   Specialization? @relation(fields: [specializationId], references: [id], onDelete: Cascade)
 
-  // Замінив поле `specialization String` на явну FK-пов'язку
-  specializationId Int
-  specialization Specialization @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+  question   TestQuestion? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  questionId Int?
 
-
-  question TestQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  questionId Int
-
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
-
 model Specialization {
-  id Int @id @default(autoincrement())
-  nameUk String
-  nameEn String
-  descriptionUk String @db.Text
-  descriptionEn String @db.Text
+  id            Int     @id @default(autoincrement())
+  nameUk        String
+  nameEn        String
+  descriptionUk String? @db.Text
+  descriptionEn String? @db.Text
 
   options TestOption[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Discipline {
   id          Int                 @id @default(autoincrement())
   name        String
   nameEn      String
-  color       String
-  url         String              @default("#")
-  hasSubItems Boolean             @default(false)
+  color       String?
+  url         String?             @default("#")
+  hasSubItems Boolean?            @default(false)
   subItems    DisciplineSubItem[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model DisciplineSubItem {
-  id           Int        @id @default(autoincrement())
+  id           Int         @id @default(autoincrement())
   name         String
-  link         String
-  disciplineId Int
-  discipline   Discipline @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  link         String?
+  disciplineId Int?
+  discipline   Discipline? @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // =============================================
@@ -332,13 +324,13 @@ model DisciplineSubItem {
 model AdminUser {
   id        Int       @id @default(autoincrement())
   username  String    @unique
-  password  String
-  role      String    @default("admin")
+  password  String?
+  role      String?   @default("admin")
   lastLogin DateTime?
-  isActive  Boolean   @default(true)
+  isActive  Boolean?  @default(true)
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime? @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 // =============================================

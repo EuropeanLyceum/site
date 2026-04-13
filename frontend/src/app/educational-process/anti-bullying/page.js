@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import {
   Box, Typography, Container, Grid, Paper,
-  Button, CircularProgress, alpha, Stack, TextField, InputAdornment, IconButton, Pagination
+  Button, CircularProgress, Stack, TextField, InputAdornment, IconButton, Pagination
 } from '@mui/material';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -16,63 +16,89 @@ import firebird3 from '@/assets/photos/firebird/firebird3.png';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
 
-const ITEMS_PER_PAGE = 5;
-
 export default function Antibullying() {
   const { t, locale } = useTranslation("anti");
 
-  const [data, setData] = useState({
-    section: null,      // Hero дані
-    articles: [],       // Статті (Content)
-    externalLinks: [],  // Документи (ExternalLink)
-  });
+  // Статичні дані (Hero та посилання)
+  const [staticData, setStaticData] = useState({ section: null, externalLinks: [] });
+  // Динамічні дані (Статті з пошуком)
+  const [articles, setArticles] = useState([]);
+  const [totalArticles, setTotalArticles] = useState(0);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState(1);
+  const [isLoadingStatic, setIsLoadingStatic] = useState(true);
+  const [isLoadingArticles, setIsLoadingArticles] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
   const [expandedItem, setExpandedItem] = useState(null);
   const [gallery, setGallery] = useState({ open: false, images: [], index: 0 });
 
   const isEn = locale === 'en';
   const l = (uk, en) => (isEn ? en || uk : uk);
 
+  // 1. Завантаження статики (Hero та Документи) - 1 раз
   useEffect(() => {
-    const loadAllData = async () => {
+    const loadStatic = async () => {
       try {
-        setIsLoading(true);
-        const [secRes, artRes, linkRes] = await Promise.all([
+        const [secRes, linkRes] = await Promise.all([
           fetch('/admin/api/admin/pageSection?type=ANTI_BULLYING'),
-          fetch('/admin/api/admin/content?type=ANTI_BULLYING'),
           fetch('/admin/api/admin/externalLink?pageKey=BULLYING')
         ]);
-
         const sectionJson = await secRes.json();
-        const articlesJson = await artRes.json();
         const linksJson = await linkRes.json();
-
-        setData({
+        setStaticData({
           section: sectionJson.data?.[0] || null,
-          articles: (articlesJson.data || []).map(item => ({
-            ...item,
-            title: item.titleUk,
-            titleEn: item.titleEn,
-            text: item.textUk,
-            textEn: item.textEn,
-            images: item.photoGallery || [],
-            date: item.publicationDate ? new Date(item.publicationDate).toLocaleDateString(locale === 'en' ? 'en-GB' : 'uk-UA') : ''
-          })),
           externalLinks: linksJson.data || []
         });
-      } catch (err) {
-        console.error("Fetch error:", err);
       } finally {
-        setIsLoading(false);
+        setIsLoadingStatic(false);
       }
     };
-    loadAllData();
-  }, [locale]);
+    loadStatic();
+  }, []);
 
-  // --- Логіка галереї ---
+  // 2. СЕРВЕРНИЙ ПОШУК ТА ПАГІНАЦІЯ (onParamsChange logic)
+  const fetchArticles = useCallback(async (search, currentPage) => {
+    setIsLoadingArticles(true);
+    try {
+      const limit = 5;
+      const params = new URLSearchParams({
+        type: 'ANTI_BULLYING',
+        limit: limit.toString(),
+        page: currentPage.toString(),
+        search: search || ''
+      });
+
+      const res = await fetch(`/admin/api/admin/content?${params}`);
+      const json = await res.json();
+
+      const formatted = (json.data || []).map(item => ({
+        ...item,
+        title: item.titleUk,
+        titleEn: item.titleEn,
+        text: item.textUk,
+        textEn: item.textEn,
+        images: item.photoGallery || [],
+        date: item.publicationDate ? new Date(item.publicationDate).toLocaleDateString(isEn ? 'en-GB' : 'uk-UA') : ''
+      }));
+
+      setArticles(formatted);
+      setTotalArticles(json.meta?.total || 0);
+    } catch (err) {
+      console.error("Articles fetch error:", err);
+    } finally {
+      setIsLoadingArticles(false);
+    }
+  }, [isEn]);
+
+  // Дебаунс для пошуку
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      fetchArticles(searchQuery, page);
+    }, 400);
+    return () => clearTimeout(handler);
+  }, [searchQuery, page, fetchArticles]);
+
   const handleImageClick = (images, index) => {
     setGallery({ open: true, images, index });
     document.body.style.overflow = 'hidden';
@@ -83,28 +109,7 @@ export default function Antibullying() {
     document.body.style.overflow = 'unset';
   };
 
-  const navigateImage = (direction) => {
-    const newIndex = (gallery.index + direction + gallery.images.length) % gallery.images.length;
-    setGallery(prev => ({ ...prev, index: newIndex }));
-  };
-
-  // --- Пошук та Пагінація ---
-  const filteredArticles = useMemo(() => {
-    return data.articles.filter(item => {
-      const search = searchQuery.toLowerCase();
-      return (
-          item.titleUk?.toLowerCase().includes(search) ||
-          item.titleEn?.toLowerCase().includes(search) ||
-          item.textUk?.toLowerCase().includes(search) ||
-          item.textEn?.toLowerCase().includes(search)
-      );
-    });
-  }, [data.articles, searchQuery]);
-
-  const totalPages = Math.ceil(filteredArticles.length / ITEMS_PER_PAGE);
-  const paginatedArticles = filteredArticles.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
-
-  if (isLoading) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
+  if (isLoadingStatic) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
 
   return (
       <Box sx={{ minHeight: '100vh', bgcolor: '#F5F7FA', pb: 10 }}>
@@ -119,13 +124,12 @@ export default function Antibullying() {
             fontFamily: 'Montserrat Alternates, sans-serif', fontWeight: 900,
             fontSize: { xs: '32px', md: '52px' }, color: '#182BA1', zIndex: 2, mb: 2
           }}>
-            {l(data.section?.titleUk, data.section?.titleEn) || t("antiBullying")}
+            {l(staticData.section?.titleUk, staticData.section?.titleEn) || t("antiBullying")}
           </Typography>
           <Box sx={{ width: 80, height: 4, bgcolor: '#f97316', mb: 3, borderRadius: 2, zIndex: 2 }} />
           <Typography sx={{ maxWidth: '800px', color: '#475569', zIndex: 2, fontSize: '1.1rem', lineHeight: 1.8 }}>
-            {l(data.section?.contentUk, data.section?.contentEn)}
+            {l(staticData.section?.contentUk, staticData.section?.contentEn)}
           </Typography>
-
           <Box sx={{ position: 'absolute', top: '10%', right: '-5%', width: { xs: '200px', md: '350px' }, opacity: 0.1, zIndex: 1 }}>
             <Image src={firebird3} alt="" priority style={{ width: '100%', height: 'auto' }} />
           </Box>
@@ -150,81 +154,69 @@ export default function Antibullying() {
               <Typography variant="h6" sx={{ opacity: 0.95, fontWeight: 500, maxWidth: 700, mx: 'auto' }}>
                 {t("chatbotDescription")}
               </Typography>
-              <Box>
-                <Button variant="contained" href="http://t.me/ProBullyingBot" target="_blank"
-                        sx={{ bgcolor: '#fff', color: '#ea580c', fontWeight: 900, px: 6, py: 2, fontSize: '1.1rem', borderRadius: 10, '&:hover': { bgcolor: '#f1f1f1', transform: 'scale(1.05)' }, transition: '0.3s' }}>
-                  @ProBullyingBot
-                </Button>
-              </Box>
+              <Button variant="contained" href="http://t.me/ProBullyingBot" target="_blank"
+                      sx={{ bgcolor: '#fff', color: '#ea580c', fontWeight: 900, px: 6, py: 2, width: 'fit-content', mx: 'auto', borderRadius: 10 }}>
+                @ProBullyingBot
+              </Button>
             </Stack>
-            <SmartToyIcon sx={{ position: 'absolute', left: -40, bottom: -40, fontSize: 250, opacity: 0.1, transform: 'rotate(15deg)' }} />
           </Paper>
 
           <Grid container spacing={6}>
-            {/* 3. EXTERNAL LINKS (Корисні документи) */}
+            {/* 3. EXTERNAL LINKS */}
             <Grid item size={{xs: 12, md: 4}}>
               <Box sx={{ position: 'sticky', top: 100 }}>
                 <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
                   <DescriptionIcon sx={{ color: '#f97316' }} /> {t("usefulDocuments")}
                 </Typography>
                 <Stack spacing={2}>
-                  {data.externalLinks.map((link) => (
+                  {staticData.externalLinks.map((link) => (
                       <Paper key={link.id} component="a" href={link.url} target="_blank"
-                             sx={{
-                               p: 3, borderRadius: 4, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 2,
-                               border: '1px solid #e2e8f0', bgcolor: '#fff', transition: '0.3s',
-                               '&:hover': { borderColor: '#182BA1', transform: 'translateX(8px)', boxShadow: '0 8px 20px rgba(24,43,161,0.08)' }
-                             }}>
+                             sx={{ p: 3, borderRadius: 4, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 2, border: '1px solid #e2e8f0', transition: '0.3s', '&:hover': { transform: 'translateX(8px)', borderColor: '#182BA1' } }}>
                         <LaunchIcon sx={{ color: '#182BA1', fontSize: 20 }} />
-                        <Typography sx={{ color: '#334155', fontWeight: 700 }}>
-                          {l(link.titleUk, link.titleEn)}
-                        </Typography>
+                        <Typography sx={{ color: '#334155', fontWeight: 700 }}>{l(link.titleUk, link.titleEn)}</Typography>
                       </Paper>
                   ))}
                 </Stack>
               </Box>
             </Grid>
 
-            {/* 4. DYNAMIC ARTICLES (Пошук + Картки) */}
+            {/* 4. DYNAMIC ARTICLES */}
             <Grid item size={{xs: 12, md: 8}}>
               <Box id="articles-section">
-                <Box sx={{ mb: 6 }}>
-                  <TextField
-                      fullWidth placeholder={t('searchPlaceholder') || "Пошук статтей..."}
-                      value={searchQuery}
-                      onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
-                      sx={{ bgcolor: '#fff', borderRadius: 4, '& .MuiOutlinedInput-root': { borderRadius: 4 } }}
-                      InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon color="primary" /></InputAdornment> }}
-                  />
-                </Box>
+                <TextField
+                    fullWidth placeholder={t('searchPlaceholder') || "Пошук статтей..."}
+                    value={searchQuery}
+                    onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
+                    sx={{ mb: 4, bgcolor: '#fff', borderRadius: 4 }}
+                    InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon color="primary" /></InputAdornment> }}
+                />
 
-                <Stack spacing={4}>
-                  {paginatedArticles.map(article => (
-                      <UndefinedNewsCard
-                          key={article.id}
-                          item={article}
-                          locale={locale}
-                          t={t}
-                          isExpanded={expandedItem === article.id}
-                          onReadMore={(id) => setExpandedItem(expandedItem === id ? null : id)}
-                          onImageClick={handleImageClick}
-                      />
-                  ))}
-                  {paginatedArticles.length === 0 && (
-                      <Typography sx={{ textAlign: 'center', py: 10, color: 'text.secondary' }}>
-                        За вашим запитом нічого не знайдено
-                      </Typography>
-                  )}
-                </Stack>
+                {isLoadingArticles ? (
+                    <Box sx={{ py: 10, textAlign: 'center' }}><CircularProgress /></Box>
+                ) : (
+                    <Stack spacing={4}>
+                      {articles.map(article => (
+                          <UndefinedNewsCard
+                              key={article.id}
+                              item={article}
+                              locale={locale}
+                              t={t}
+                              isExpanded={expandedItem === article.id}
+                              onReadMore={(id) => setExpandedItem(expandedItem === id ? null : id)}
+                              onImageClick={handleImageClick}
+                          />
+                      ))}
+                      {articles.length === 0 && <Typography sx={{ textAlign: 'center', py: 5 }}>Нічого не знайдено</Typography>}
+                    </Stack>
+                )}
 
-                {totalPages > 1 && (
+                {totalArticles > 5 && (
                     <Box sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
                       <Pagination
-                          count={totalPages}
+                          count={Math.ceil(totalArticles / 5)}
                           page={page}
-                          onChange={(e, v) => { setPage(v); document.getElementById('articles-section').scrollIntoView({ behavior: 'smooth' }); }}
+                          onChange={(e, v) => { setPage(v); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
                           color="primary"
-                          size="large"
                       />
                     </Box>
                 )}
@@ -235,16 +227,10 @@ export default function Antibullying() {
 
         {/* 5. GALLERY MODAL */}
         {gallery.open && (
-            <Box onClick={closeGallery} sx={{ position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.92)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2 }}>
+            <Box onClick={closeGallery} sx={{ position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.92)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <IconButton onClick={closeGallery} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff' }}><CloseIcon fontSize="large" /></IconButton>
-              <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '100%', maxWidth: 1000, height: '75vh' }}>
+              <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '90%', height: '80vh' }}>
                 <Image src={gallery.images[gallery.index]} alt="Gallery" fill style={{ objectFit: 'contain' }} />
-                {gallery.images.length > 1 && (
-                    <>
-                      <Button onClick={() => navigateImage(-1)} sx={{ position: 'absolute', left: { xs: 0, md: -70 }, color: '#fff', fontSize: 50 }}>❮</Button>
-                      <Button onClick={() => navigateImage(1)} sx={{ position: 'absolute', right: { xs: 0, md: -70 }, color: '#fff', fontSize: 50 }}>❯</Button>
-                    </>
-                )}
               </Box>
             </Box>
         )}

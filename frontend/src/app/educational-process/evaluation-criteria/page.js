@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Box, Typography, Container, Grid, Paper,
-  Collapse, alpha, CircularProgress, Link as MuiLink
+  Collapse, alpha, CircularProgress, Link as MuiLink,
+  TextField, InputAdornment
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LaunchIcon from '@mui/icons-material/Launch';
+import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 
 export default function EvaluationCriteria() {
@@ -14,19 +16,21 @@ export default function EvaluationCriteria() {
   const [expandedSubject, setExpandedSubject] = useState(null);
   const [subjects, setSubjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const getLocalizedName = (subject) => {
-    return locale === 'en' ? (subject.nameEn || subject.name) : subject.name;
-  };
+  const isEn = locale === 'en';
 
-  const loadSubjects = async () => {
+  // 1. Функція завантаження з параметром пошуку
+  const loadSubjects = useCallback(async (query = "") => {
     try {
       setIsLoading(true);
-      // Міняємо тестові дані на реальний запит до твого API
-      const res = await fetch('/admin/api/admin/discipline'); // перевір шлях до свого API
+      const params = new URLSearchParams({
+        search: query // Передаємо запит на сервер
+      });
+
+      const res = await fetch(`/admin/api/admin/discipline?${params}`);
       if (res.ok) {
         const json = await res.json();
-        // Якщо API повертає об'єкт { data: [...] }
         setSubjects(json.data || json);
       }
     } catch (error) {
@@ -34,14 +38,23 @@ export default function EvaluationCriteria() {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  useEffect(() => {
-    loadSubjects();
   }, []);
+
+  // 2. Дебаунс для пошуку (щоб не "бити" по API на кожну літеру)
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      loadSubjects(searchQuery);
+    }, 400);
+
+    return () => clearTimeout(handler);
+  }, [searchQuery, loadSubjects]);
 
   const toggleSubject = (id) => {
     setExpandedSubject(expandedSubject === id ? null : id);
+  };
+
+  const getLocalizedName = (subject) => {
+    return isEn ? (subject.nameEn || subject.name) : subject.name;
   };
 
   return (
@@ -52,7 +65,7 @@ export default function EvaluationCriteria() {
         background: 'linear-gradient(180deg, #F5F7FA 0%, #E8ECF2 100%)'
       }}>
         {/* Header */}
-        <Box sx={{ mb: { xs: 4, md: 8 }, pt: { xs: 6, md: 8 }, textAlign: 'center' }}>
+        <Box sx={{ mb: { xs: 4, md: 6 }, pt: { xs: 6, md: 8 }, textAlign: 'center' }}>
           <Typography variant="h1" sx={{
             fontSize: { xs: 32, md: 58 },
             color: '#182BA1',
@@ -67,6 +80,35 @@ export default function EvaluationCriteria() {
         </Box>
 
         <Container maxWidth="lg">
+          {/* ПОЛЕ ПОШУКУ */}
+          <Box sx={{ mb: 6, display: 'flex', justifyContent: 'center' }}>
+            <TextField
+                fullWidth
+                variant="outlined"
+                placeholder={isEn ? "Search subjects..." : "Пошук предметів..."}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{
+                  maxWidth: 600,
+                  bgcolor: '#fff',
+                  borderRadius: 4,
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 4,
+                    fontWeight: 600,
+                    '& fieldset': { borderColor: alpha('#182BA1', 0.2) },
+                    '&:hover fieldset': { borderColor: '#182BA1' },
+                  }
+                }}
+                InputProps={{
+                  startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchIcon sx={{ color: '#182BA1' }} />
+                      </InputAdornment>
+                  ),
+                }}
+            />
+          </Box>
+
           {isLoading ? (
               <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
                 <CircularProgress sx={{ color: '#182BA1' }} />
@@ -78,7 +120,7 @@ export default function EvaluationCriteria() {
                   const isExpanded = expandedSubject === subject.id;
 
                   return (
-                      <Grid item size={{xs: 12, sm: 6, md: 4}} key={subject.id}>
+                      <Grid item xs={12} sm={6} md={4} key={subject.id}>
                         <Paper
                             elevation={0}
                             sx={{
@@ -92,10 +134,8 @@ export default function EvaluationCriteria() {
                               }
                             }}
                         >
-                          {/* Головна частина картки */}
                           <Box
                               component={subject.hasSubItems ? 'div' : 'a'}
-                              // Використовуємо subject.url з Prisma моделі
                               href={!subject.hasSubItems ? subject.url : undefined}
                               target={!subject.hasSubItems ? "_blank" : undefined}
                               rel={!subject.hasSubItems ? "noopener noreferrer" : undefined}
@@ -113,26 +153,18 @@ export default function EvaluationCriteria() {
                           >
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                               <Box sx={{
-                                width: 50,
-                                height: 50,
-                                borderRadius: '12px',
+                                width: 50, height: 50, borderRadius: '12px',
                                 bgcolor: subject.color || '#182BA1',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#fff',
-                                fontSize: 22,
-                                fontWeight: 800,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: '#fff', fontSize: 22, fontWeight: 800,
                                 boxShadow: `0 4px 12px ${alpha(subject.color || '#182BA1', 0.4)}`,
                                 fontFamily: "'Montserrat Alternates', sans-serif"
                               }}>
                                 {localizedName.charAt(0)}
                               </Box>
                               <Typography sx={{
-                                fontWeight: 700,
-                                color: '#1e2b8d',
-                                fontFamily: "'Montserrat Alternates', sans-serif",
-                                fontSize: 16
+                                fontWeight: 700, color: '#1e2b8d',
+                                fontFamily: "'Montserrat Alternates', sans-serif", fontSize: 16
                               }}>
                                 {localizedName}
                               </Typography>
@@ -149,38 +181,21 @@ export default function EvaluationCriteria() {
                             )}
                           </Box>
 
-                          {/* Список під-предметів */}
                           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                            <Box sx={{
-                              p: 2,
-                              bgcolor: alpha('#F5F7FA', 0.8),
-                              borderTop: `1px solid ${alpha('#182BA1', 0.05)}`
-                            }}>
+                            <Box sx={{ p: 2, bgcolor: alpha('#F5F7FA', 0.8), borderTop: `1px solid ${alpha('#182BA1', 0.05)}` }}>
                               <Grid container spacing={1}>
                                 {subject.subItems?.map((sub) => (
-                                    <Grid item size={{xs: 12}} key={sub.id}>
+                                    <Grid item xs={12} key={sub.id}>
                                       <MuiLink
                                           href={sub.link}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            p: 1.5,
-                                            px: 2,
-                                            bgcolor: '#fff',
-                                            borderRadius: 2,
-                                            textDecoration: 'none',
-                                            color: '#333',
-                                            fontSize: 14,
-                                            fontWeight: 500,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            p: 1.5, px: 2, bgcolor: '#fff', borderRadius: 2,
+                                            textDecoration: 'none', color: '#333', fontSize: 14, fontWeight: 500,
                                             transition: '0.2s',
-                                            '&:hover': {
-                                              bgcolor: '#182BA1',
-                                              color: '#fff',
-                                              '& .sub-icon': { color: '#fff' }
-                                            }
+                                            '&:hover': { bgcolor: '#182BA1', color: '#fff', '& .sub-icon': { color: '#fff' } }
                                           }}
                                       >
                                         {sub.name}
@@ -196,6 +211,12 @@ export default function EvaluationCriteria() {
                   );
                 })}
               </Grid>
+          )}
+
+          {!isLoading && subjects.length === 0 && (
+              <Typography sx={{ textAlign: 'center', mt: 10, color: 'text.secondary', fontSize: 18 }}>
+                {isEn ? "No subjects found" : "Предметів не знайдено"}
+              </Typography>
           )}
         </Container>
       </Box>

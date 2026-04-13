@@ -33,8 +33,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ mode
         });
 
 
-        const modelInfo = Prisma.dmmf.datamodel.models.find(m => m.name.toLowerCase() === modelName.toLowerCase());
-        const existingFields = modelInfo?.fields.map(f => f.name) || [];
+        const modelInfo = Prisma.dmmf.datamodel.models.find((m: { name: string; }) => m.name.toLowerCase() === modelName.toLowerCase());
+        const existingFields = modelInfo?.fields.map((f: { name: any; }) => f.name) || [];
 
 
 // include для testquestion
@@ -52,7 +52,12 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ mode
         }
 
 
-        const searchFields = ['titleUk', 'nameUk', 'fullNameUk', 'fullNameEn', 'positionUk', 'positionEn'];
+        const searchFields = [
+            'titleUk', 'titleEn',
+            'textUk', 'textEn',
+            'nameUk', 'nameEn',
+            'fullNameUk', 'fullNameEn'
+        ];
         const activeFields = searchFields.filter(f => existingFields.includes(f));
 
 

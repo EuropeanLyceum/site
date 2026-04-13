@@ -11,13 +11,42 @@ export default function MaterialBase({ t, stats, locale }) {
     // Розбиваємо текст за символом нового рядка (підтримує різні ОС)
     // .filter(Boolean) видаляє порожні рядки, якщо користувач випадково натиснув Enter зайвий раз
     const items = materialBaseDescription
-        ? materialBaseDescription
-            .split(/[;\n]/)
-            .map(item => item.trim())
-            // Прибираємо крапку в самому кінці фрази, якщо вона там є
-            .map(item => item.endsWith('.') ? item.slice(0, -1) : item)
-            .filter(Boolean)
+        ? extractListItems(materialBaseDescription)
         : [];
+
+    function extractListItems(input) {
+        if (!input) return [];
+
+        // 1. HTML <li> (Quill)
+        const liMatches = [...input.matchAll(/<li[^>]*>(.*?)<\/li>/g)];
+
+        if (liMatches.length > 0) {
+            return liMatches
+                .map(match =>
+                    match[1]
+                        .replace(/<[^>]+>/g, '') // прибрати HTML
+                        .replace(/&nbsp;/g, ' ') // fix пробілів
+                        .trim()
+                )
+                .map(text => text.replace(/\.$/, ''))
+                .filter(Boolean);
+        }
+
+        // 2. Plain text (буліти + нумерація)
+        return input
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line =>
+                /^([-•*]\s+|\d+\.\s+)/.test(line) // <-- тут магія
+            )
+            .map(line =>
+                line
+                    .replace(/^([-•*]\s+|\d+\.\s+)/, '') // прибрати маркер або цифру
+                    .trim()
+            )
+            .map(text => text.replace(/\.$/, ''))
+            .filter(Boolean);
+    }
 
     return (
         <Container maxWidth="xl" sx={{ mb: 10 }}>
