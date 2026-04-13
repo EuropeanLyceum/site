@@ -18,6 +18,7 @@ export const metadata = {
     index: true,
     follow: true,
   },
+  keywords: ['академічний ліцей європейський лубни', 'школа 6 лубни', 'європейський ліцей', 'лубни освіта', 'academic lyceum european', 'european lyceum'],
 };
 
 export default function RootLayout({ children }) {
