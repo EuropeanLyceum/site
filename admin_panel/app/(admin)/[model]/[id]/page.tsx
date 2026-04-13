@@ -23,6 +23,8 @@ import {
     Park, Apartment, Stairs, Elevator, InfoOutlined, Map,
     HelpOutline
 } from '@mui/icons-material';
+import ReactQuill from "react-quill-new";
+import "react-quill-new/dist/quill.snow.css";
 
 /* ------------------------------------------------------------------ */
 /* TYPES – тільки локальні, без втручання в логіку */
@@ -642,17 +644,39 @@ export default function EditPage() {
                             );
                         }
 
-                        // 9. Default Text Fields
+                        const isRichText = key.includes('description') || key.includes('text') || key.includes('highlights');
+
+                        const quillModules = {
+                            toolbar: [
+                                [{'header': [1, 2, 3, false]}],
+                                ['bold', 'italic', 'underline', 'strike'],
+                                [{'list': 'ordered'}, {'list': 'bullet'}],
+                                ['link', 'clean']
+                            ],
+                        };
+
                         return (
                             <Grid size={{xs: 12}} key={key}>
-                                <TextField
-                                    fullWidth
-                                    label={label}
-                                    value={value || ''}
-                                    multiline={key.includes('description') || key.includes('Description') || key.includes('text') || key.includes('highlights')}
-                                    rows={key.includes('description') || key.includes('Description') || key.includes('text') || key.includes('highlights') ? 5 : 1}
-                                    onChange={e => setData({ ...data, [key]: e.target.value })}
-                                />
+                                {isRichText ? (
+                                    <Box sx={{ mb: 2 }}>
+                                        <Typography variant="caption" sx={{ color: 'text.secondary', ml: 1 }}>
+                                            {label}
+                                        </Typography>
+                                        <ReactQuill
+                                            theme="snow"
+                                            value={value || ''}
+                                            modules={quillModules}
+                                            onChange={(content: any) => setData({ ...data, [key]: content })}
+                                        />
+                                    </Box>
+                                ) : (
+                                    <TextField
+                                        fullWidth
+                                        label={label}
+                                        value={value || ''}
+                                        onChange={e => setData({ ...data, [key]: e.target.value })}
+                                    />
+                                )}
                             </Grid>
                         );
                     })}
