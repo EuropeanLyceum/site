@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Box, Typography, Container, CircularProgress, IconButton, Grid } from '@mui/material';
+import { Box, Typography, Container, CircularProgress, IconButton, Divider } from '@mui/material';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
@@ -14,10 +14,8 @@ export default function ProjectResearchPage() {
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
 
-  // Стан для збільшення головного фото
   const [isPhotoExpanded, setIsPhotoExpanded] = useState(false);
 
-  // 1. Завантаження статичної секції
   useEffect(() => {
     const fetchSection = async () => {
       try {
@@ -33,13 +31,12 @@ export default function ProjectResearchPage() {
     fetchSection();
   }, []);
 
-  // 2. ФУНКЦІЯ ПОШУКУ
   const fetchPosts = useCallback(async ({ search, page }) => {
     setLoadingPosts(true);
     try {
       const limit = 5;
       const query = new URLSearchParams({
-        type: 'PROJECTS',
+        type: 'RESEARCH_PROJECT',
         limit: limit.toString(),
         page: page.toString(),
         search: search || ''
@@ -81,18 +78,18 @@ export default function ProjectResearchPage() {
   return (
       <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh', pb: 10 }}>
 
-        {/* HERO БЛОК (Синій фон із заголовком) */}
+        {/* HERO БЛОК */}
         <Box sx={{
           background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
-          pt: { xs: 12, md: 16 },
-          pb: { xs: 16, md: 22 }, // Більший відступ знизу, щоб картка тексту "наїжджала" на фон
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 12, md: 16 },
           color: '#fff',
           position: 'relative',
           zIndex: 1
         }}>
           <Container maxWidth="lg">
             <Typography variant="h1" sx={{
-              fontSize: { xs: 36, md: 56 },
+              fontSize: { xs: 32, md: 52 },
               fontWeight: 900,
               textAlign: 'center',
               textTransform: 'uppercase',
@@ -104,10 +101,8 @@ export default function ProjectResearchPage() {
           </Container>
         </Box>
 
-        {/* БЛОК З КОНТЕНТОМ ТА ФОТО (Наїжджає на синій фон) */}
+        {/* СТАТИЧНИЙ КОНТЕНТ */}
         <Container maxWidth="lg" sx={{ mt: { xs: -8, md: -12 }, position: 'relative', zIndex: 2 }}>
-
-          {/* ГОЛОВНЕ ФОТО (Якщо воно є) */}
           {heroPhoto && (
               <Box
                   onClick={() => setIsPhotoExpanded(true)}
@@ -124,70 +119,38 @@ export default function ProjectResearchPage() {
                     transition: 'transform 0.3s ease'
                   }}
               >
-                <Image src={heroPhoto} fill style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} alt="Main section image" priority />
+                <Image src={heroPhoto} fill style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} alt="Main section" priority />
               </Box>
           )}
 
-          {/* ЖУРНАЛЬНА КАРТКА ДЛЯ ТЕКСТУ */}
           {displayDesc && (
               <Box
                   className="rich-text-content"
-                  // Якщо текст з HTML (візуальний редактор) — він відрендериться правильно
-                  // Якщо це просто текст з ентерами — він збереже абзаци завдяки whiteSpace
                   dangerouslySetInnerHTML={{ __html: displayDesc }}
                   sx={{
                     bgcolor: '#fff',
                     p: { xs: 3, md: 6 },
                     borderRadius: 4,
                     boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                    mb: 8,
-                    whiteSpace: 'pre-wrap', // Зберігає звичайні абзаци, якщо немає HTML
-
-                    // --- ГЛОБАЛЬНІ СТИЛІ ДЛЯ ТЕКСТУ ВСЕРЕДИНІ ---
-                    '& h1, & h2, & h3, & h4': {
-                      color: '#0c1865',
-                      fontWeight: 800,
-                      mt: 4,
-                      mb: 2,
-                      fontFamily: "'Montserrat Alternates', sans-serif"
-                    },
-                    '& h2': { fontSize: { xs: 24, md: 32 } },
-                    '& h3': { fontSize: { xs: 20, md: 26 }, color: '#182BA1' },
-                    '& p': {
-                      fontSize: { xs: 16, md: 18 },
-                      lineHeight: 1.8,
-                      color: '#334155',
-                      mb: 3,
-                      textAlign: 'justify'
-                    },
-                    '& ul, & ol': {
-                      pl: 4,
-                      mb: 3,
-                      fontSize: { xs: 16, md: 18 },
-                      color: '#334155',
-                      lineHeight: 1.8
-                    },
-                    '& li': { mb: 1 },
-                    '& img': {
-                      maxWidth: '100%',
-                      height: 'auto',
-                      borderRadius: 3,
-                      my: 4,
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
-                    },
-                    '& a': {
-                      color: '#182BA1',
-                      textDecoration: 'none',
-                      fontWeight: 600,
-                      '&:hover': { textDecoration: 'underline' }
-                    }
+                    mb: 4,
+                    whiteSpace: 'pre-wrap',
+                    '& h1, & h2, & h3, & h4': { color: '#0c1865', fontWeight: 800, mt: 4, mb: 2 },
+                    '& p': { fontSize: { xs: 16, md: 18 }, lineHeight: 1.8, color: '#334155', mb: 3 },
+                    '& img': { maxWidth: '100%', borderRadius: 3, my: 4 }
                   }}
               />
           )}
         </Container>
 
-        {/* СПИСОК ПРОЕКТІВ (UnifiedNewsLayout) */}
-        <Box sx={{ position: 'relative', zIndex: 5, mt: 4 }}>
+        {/* РОЗДІЛЮВАЧ МІЖ ТЕКСТОМ ТА СПИСКОМ */}
+        <Container maxWidth="lg" sx={{ mt: 8, mb: 8 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box sx={{ height: '3px', bgcolor: '#E2E8F0', width: '100%', borderRadius: 1 }} />
+          </Box>
+        </Container>
+
+        {/* СПИСОК ПРОЕКТІВ */}
+        <Box sx={{ position: 'relative', zIndex: 5 }}>
           <UnifiedNewsLayout
               translationKey="projects"
               data={posts}
@@ -198,7 +161,7 @@ export default function ProjectResearchPage() {
           />
         </Box>
 
-        {/* МОДАЛЬНЕ ВІКНО ДЛЯ ЗБІЛЬШЕННЯ ГОЛОВНОГО ФОТО */}
+        {/* МОДАЛКА ФОТО */}
         {isPhotoExpanded && heroPhoto && (
             <Box onClick={() => setIsPhotoExpanded(false)} sx={{
               position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.9)',
