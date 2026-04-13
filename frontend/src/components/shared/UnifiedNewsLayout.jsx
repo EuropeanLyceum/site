@@ -10,7 +10,8 @@ export default function UnifiedNewsLayout({
                                               data = [],
                                               isLoading = false,
                                               totalCount = 0,
-                                              onParamsChange
+                                              onParamsChange,
+                                                heroOff = false,
                                           }) {
     const { t, locale } = useTranslation(translationKey);
     const [searchQuery, setSearchQuery] = useState("");
@@ -36,6 +37,7 @@ export default function UnifiedNewsLayout({
 
     return (
         <Box sx={{ minHeight: '100vh', pb: 10, bgcolor: '#F8FAFC' }}>
+            {!heroOff &&
             <Box sx={{
                 py: { xs: 6, md: 10 },
                 background: 'linear-gradient(135deg, #0c1865 0%, #182BA1 100%)',
@@ -55,6 +57,7 @@ export default function UnifiedNewsLayout({
                     </Typography>
                 </Container>
             </Box>
+            }
 
             <Container maxWidth="lg">
                 <Box sx={{ mb: 6, display: 'flex', justifyContent: 'center' }}>
