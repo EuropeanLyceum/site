@@ -160,6 +160,7 @@ export default function ProjectResearchPage() {
               totalCount={totalPosts}
               isLoading={loadingPosts}
               onParamsChange={fetchPosts}
+              heroOff={true}
               // Ми вимикаємо Hero в UnifiedNewsLayout, якщо він там є, або просто використовуємо його як обгортку для списку
           />
         </Box>
