@@ -153,10 +153,10 @@ model Person {
 
   fullNameUk    String
   fullNameEn    String
-  positionUk    String
-  positionEn    String
-  descriptionUk String @db.Text
-  descriptionEn String @db.Text
+  positionUk    String?
+  positionEn    String?
+  descriptionUk String? @db.Text
+  descriptionEn String? @db.Text
 
   photo String?
   email String?
