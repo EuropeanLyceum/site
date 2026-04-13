@@ -649,8 +649,8 @@ export default function EditPage() {
                                     fullWidth
                                     label={label}
                                     value={value || ''}
-                                    multiline={key.includes('description') || key.includes('text') || key.includes('highlights')}
-                                    rows={key.includes('description') || key.includes('text') || key.includes('highlights') ? 5 : 1}
+                                    multiline={key.includes('description') || key.includes('Description') || key.includes('text') || key.includes('highlights')}
+                                    rows={key.includes('description') || key.includes('Description') || key.includes('text') || key.includes('highlights') ? 5 : 1}
                                     onChange={e => setData({ ...data, [key]: e.target.value })}
                                 />
                             </Grid>
