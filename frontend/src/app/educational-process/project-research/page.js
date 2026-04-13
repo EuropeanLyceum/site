@@ -1,11 +1,10 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
-import { Box, Typography, Container, CircularProgress, IconButton, Button, Grid } from '@mui/material';
+import { Box, Typography, Container, CircularProgress, IconButton, Grid } from '@mui/material';
 import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
-import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
-import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout"; // Використовуємо його як основу
+import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout";
 
 export default function ProjectResearchPage() {
   const { t, locale } = useTranslation('projects');
@@ -15,10 +14,10 @@ export default function ProjectResearchPage() {
   const [posts, setPosts] = useState([]);
   const [totalPosts, setTotalPosts] = useState(0);
 
-  const [gallery, setGallery] = useState({ open: false, images: [], index: 0 });
-  const [expandedItem, setExpandedItem] = useState(null);
+  // Стан для збільшення головного фото
+  const [isPhotoExpanded, setIsPhotoExpanded] = useState(false);
 
-  // 1. Завантаження статичної секції (виконується один раз)
+  // 1. Завантаження статичної секції
   useEffect(() => {
     const fetchSection = async () => {
       try {
@@ -34,7 +33,7 @@ export default function ProjectResearchPage() {
     fetchSection();
   }, []);
 
-  // 2. ФУНКЦІЯ ПОШУКУ (Серверна логіка)
+  // 2. ФУНКЦІЯ ПОШУКУ
   const fetchPosts = useCallback(async ({ search, page }) => {
     setLoadingPosts(true);
     try {
@@ -68,92 +67,127 @@ export default function ProjectResearchPage() {
     }
   }, []);
 
-  // Логіка галереї
-  const handleImageClick = (images, index) => {
-    if (!images || images.length === 0) return;
-    setGallery({ open: true, images, index });
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeGallery = () => {
-    setGallery({ open: false, images: [], index: 0 });
-    document.body.style.overflow = 'unset';
-  };
-
-  const navigateImage = (direction) => {
-    const newIndex = (gallery.index + direction + gallery.images.length) % gallery.images.length;
-    setGallery(prev => ({ ...prev, index: newIndex }));
-  };
-
   if (loadingSection) return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
-        <CircularProgress sx={{ color: '#0c1865' }} />
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#F8FAFC' }}>
+        <CircularProgress size={60} thickness={4} sx={{ color: '#0c1865' }} />
       </Box>
   );
 
   const isEn = locale === 'en';
   const displayTitle = isEn ? (pageData?.titleEn || pageData?.titleUk) : pageData?.titleUk;
   const displayDesc = isEn ? (pageData?.contentEn || pageData?.contentUk) : pageData?.contentUk;
-  const heroParagraphs = displayDesc?.split(/\n\n+/).filter(p => p.trim()) || [];
-  const heroPhotos = pageData?.imagePhoto ? [pageData.imagePhoto] : [];
+  const heroPhoto = pageData?.imagePhoto;
 
   return (
-      <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh' }}>
+      <Box component="main" sx={{ background: '#F8FAFC', minHeight: '100vh', pb: 10 }}>
 
-        {/* HERO SECTION (Static Content) */}
+        {/* HERO БЛОК (Синій фон із заголовком) */}
         <Box sx={{
           background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
-          pt: { xs: 8, md: 10 },
-          pb: { xs: 12, md: 24 },
+          pt: { xs: 12, md: 16 },
+          pb: { xs: 16, md: 22 }, // Більший відступ знизу, щоб картка тексту "наїжджала" на фон
           color: '#fff',
-          clipPath: { md: 'ellipse(140% 100% at 50% 0%)', xs: 'none' },
           position: 'relative',
           zIndex: 1
         }}>
           <Container maxWidth="lg">
             <Typography variant="h1" sx={{
-              fontSize: { xs: 32, md: 52 },
+              fontSize: { xs: 36, md: 56 },
               fontWeight: 900,
-              mb: 6,
               textAlign: 'center',
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              textShadow: '0 10px 20px rgba(0,0,0,0.2)',
+              fontFamily: "'Montserrat Alternates', sans-serif"
             }}>
               {displayTitle || t('pageTitle')}
             </Typography>
-
-            <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
-              {heroParagraphs.map((paragraph, idx) => {
-                const photo = heroPhotos[idx];
-                return (
-                    <Grid container spacing={photo ? 6 : 0} key={idx} direction={idx % 2 === 0 ? 'row' : 'row-reverse'} alignItems="center" sx={{ mb: 6 }}>
-                      {photo && (
-                          <Grid item xs={12} md={5}>
-                            <Box
-                                onClick={() => handleImageClick(heroPhotos, idx)}
-                                sx={{
-                                  position: 'relative', height: { xs: 250, md: 350 }, borderRadius: 6,
-                                  overflow: 'hidden', cursor: 'pointer', boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                                  '&:hover img': { transform: 'scale(1.05)' }, transition: '0.4s'
-                                }}
-                            >
-                              <Image src={photo} fill style={{ objectFit: 'cover' }} alt="Research" />
-                            </Box>
-                          </Grid>
-                      )}
-                      <Grid item xs={12} md={photo ? 7 : 12}>
-                        <Typography sx={{ fontSize: { xs: 16, md: 19 }, lineHeight: 1.8, opacity: 0.95, whiteSpace: 'pre-line' }}>
-                          {paragraph}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                );
-              })}
-            </Box>
           </Container>
         </Box>
 
-        {/* SEARCHABLE CONTENT SECTION */}
-        <Box sx={{ mt: { md: -10, xs: 2 }, position: 'relative', zIndex: 5, pb: 10 }}>
+        {/* БЛОК З КОНТЕНТОМ ТА ФОТО (Наїжджає на синій фон) */}
+        <Container maxWidth="lg" sx={{ mt: { xs: -8, md: -12 }, position: 'relative', zIndex: 2 }}>
+
+          {/* ГОЛОВНЕ ФОТО (Якщо воно є) */}
+          {heroPhoto && (
+              <Box
+                  onClick={() => setIsPhotoExpanded(true)}
+                  sx={{
+                    width: '100%',
+                    height: { xs: 300, md: 500 },
+                    position: 'relative',
+                    borderRadius: 4,
+                    overflow: 'hidden',
+                    mb: 4,
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                    cursor: 'pointer',
+                    '&:hover img': { transform: 'scale(1.02)' },
+                    transition: 'transform 0.3s ease'
+                  }}
+              >
+                <Image src={heroPhoto} fill style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} alt="Main section image" priority />
+              </Box>
+          )}
+
+          {/* ЖУРНАЛЬНА КАРТКА ДЛЯ ТЕКСТУ */}
+          {displayDesc && (
+              <Box
+                  className="rich-text-content"
+                  // Якщо текст з HTML (візуальний редактор) — він відрендериться правильно
+                  // Якщо це просто текст з ентерами — він збереже абзаци завдяки whiteSpace
+                  dangerouslySetInnerHTML={{ __html: displayDesc }}
+                  sx={{
+                    bgcolor: '#fff',
+                    p: { xs: 3, md: 6 },
+                    borderRadius: 4,
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
+                    mb: 8,
+                    whiteSpace: 'pre-wrap', // Зберігає звичайні абзаци, якщо немає HTML
+
+                    // --- ГЛОБАЛЬНІ СТИЛІ ДЛЯ ТЕКСТУ ВСЕРЕДИНІ ---
+                    '& h1, & h2, & h3, & h4': {
+                      color: '#0c1865',
+                      fontWeight: 800,
+                      mt: 4,
+                      mb: 2,
+                      fontFamily: "'Montserrat Alternates', sans-serif"
+                    },
+                    '& h2': { fontSize: { xs: 24, md: 32 } },
+                    '& h3': { fontSize: { xs: 20, md: 26 }, color: '#182BA1' },
+                    '& p': {
+                      fontSize: { xs: 16, md: 18 },
+                      lineHeight: 1.8,
+                      color: '#334155',
+                      mb: 3,
+                      textAlign: 'justify'
+                    },
+                    '& ul, & ol': {
+                      pl: 4,
+                      mb: 3,
+                      fontSize: { xs: 16, md: 18 },
+                      color: '#334155',
+                      lineHeight: 1.8
+                    },
+                    '& li': { mb: 1 },
+                    '& img': {
+                      maxWidth: '100%',
+                      height: 'auto',
+                      borderRadius: 3,
+                      my: 4,
+                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)'
+                    },
+                    '& a': {
+                      color: '#182BA1',
+                      textDecoration: 'none',
+                      fontWeight: 600,
+                      '&:hover': { textDecoration: 'underline' }
+                    }
+                  }}
+              />
+          )}
+        </Container>
+
+        {/* СПИСОК ПРОЕКТІВ (UnifiedNewsLayout) */}
+        <Box sx={{ position: 'relative', zIndex: 5, mt: 4 }}>
           <UnifiedNewsLayout
               translationKey="projects"
               data={posts}
@@ -161,27 +195,20 @@ export default function ProjectResearchPage() {
               isLoading={loadingPosts}
               onParamsChange={fetchPosts}
               heroOff={true}
-              // Ми вимикаємо Hero в UnifiedNewsLayout, якщо він там є, або просто використовуємо його як обгортку для списку
           />
         </Box>
 
-        {/* MODAL GALLERY */}
-        {gallery.open && (
-            <Box onClick={closeGallery} sx={{
-              position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.95)',
+        {/* МОДАЛЬНЕ ВІКНО ДЛЯ ЗБІЛЬШЕННЯ ГОЛОВНОГО ФОТО */}
+        {isPhotoExpanded && heroPhoto && (
+            <Box onClick={() => setIsPhotoExpanded(false)} sx={{
+              position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.9)',
               zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2
             }}>
-              <IconButton onClick={closeGallery} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff' }}>
+              <IconButton onClick={() => setIsPhotoExpanded(false)} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff' }}>
                 <CloseIcon fontSize="large" />
               </IconButton>
-              <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '90%', maxWidth: 1100, height: '80vh' }}>
-                <Image src={gallery.images[gallery.index]} alt="Gallery" fill style={{ objectFit: 'contain' }} />
-                {gallery.images.length > 1 && (
-                    <>
-                      <Button onClick={() => navigateImage(-1)} sx={{ position: 'absolute', left: { xs: 0, md: -70 }, color: '#fff', fontSize: 40, height: '100%' }}>❮</Button>
-                      <Button onClick={() => navigateImage(1)} sx={{ position: 'absolute', right: { xs: 0, md: -70 }, color: '#fff', fontSize: 40, height: '100%' }}>❯</Button>
-                    </>
-                )}
+              <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '90%', maxWidth: 1200, height: '85vh' }}>
+                <Image src={heroPhoto} alt="Expanded" fill style={{ objectFit: 'contain' }} />
               </Box>
             </Box>
         )}
