@@ -18,6 +18,11 @@ export const metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
+  },
   keywords: ['академічний ліцей європейський лубни', 'школа 6 лубни', 'європейський ліцей', 'лубни освіта', 'academic lyceum european', 'european lyceum'],
 };
 
