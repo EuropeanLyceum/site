@@ -1061,7 +1061,7 @@ function RecordField({
                     fullWidth
                     multiline
                     minRows={5}
-                    label={fieldKey}
+                    label={label}
                     value={value || ''}
                     onChange={(e) => {
                         try {
@@ -1080,7 +1080,7 @@ function RecordField({
                 <TextField
                     fullWidth
                     type="number"
-                    label={fieldKey}
+                    label={label}
                     value={value ?? ''}
                     onChange={(e) => updateField(e.target.value)}
                 />

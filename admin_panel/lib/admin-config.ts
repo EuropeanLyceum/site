@@ -51,7 +51,7 @@ export const FIELD_LABELS: Record<string, string> = {
     teachersCount: "К-ть вчителів",
     staffCount: "Персонал",
     classesCount: "К-ть класів",
-    flexParticipants: "Учасники FLEX",
+    flexParticipantsCount: "Учасники FLEX",
     topScorersCount: "200-бальники",
 
     // ===== PERSON =====
@@ -211,7 +211,7 @@ export const ADMIN_MODELS = {
     lyceumStats: {
         label: "Дані ліцею (Головна)",
         tableFields: ["name", "email"],
-        allFields: ["name", "nameEn", "addressUk", "addressEn", "email", "phone", "logoPhoto", "quoteUk", "quoteEn", "teachingLanguage", "teachingLanguageEn", "specialization", "specializationEn", "anthemUrl", "teachersPhoto", "materialBasePhoto", "materialBaseDescriptionUk", "materialBaseDescriptionEn", "socialLinks", "studentsCount", "studentsCountReal", "teachersCount", "staffCount", "classesCount", "flexParticipants", "topScorersCount"]
+        allFields: ["name", "nameEn", "addressUk", "addressEn", "email", "phone", "logoPhoto", "quoteUk", "quoteEn", "teachingLanguage", "teachingLanguageEn", "specialization", "specializationEn", "anthemUrl", "teachersPhoto", "materialBasePhoto", "materialBaseDescriptionUk", "materialBaseDescriptionEn", "socialLinks", "studentsCount", "studentsCountReal", "teachersCount", "staffCount", "classesCount", "flexParticipantsCount", "topScorersCount"]
     },
     clubs: {
         label: 'Клуби та гуртки',
