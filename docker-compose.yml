@@ -33,7 +33,7 @@ services:
         DATABASE_URL: ${DATABASE_URL}
     container_name: admin-panel
     environment:
-      - AUTH_URL=http://european-lyceum.pp.ua/admin/api/auth
+      - AUTH_URL=https://european-lyceum.pp.ua/admin/api/auth
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
