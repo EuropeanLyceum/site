@@ -13,7 +13,7 @@ export default function Statistics({ t, stats }) {
     const finalValues = stats ? [
         stats.studentsCountReal || 0,
         stats.teachersCount || 0,
-        stats.flexParticipants || 0,
+        stats.flexParticipantsCount || 0,
         stats.topScorersCount || 0
     ] : [0, 0, 0, 0];
 
