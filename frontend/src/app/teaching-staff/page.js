@@ -167,7 +167,7 @@ export default function TeachingStaffPage() {
                         ) : (
                             <Grid container spacing={4}>
                                 {staffData.map((staff) => (
-                                    <Grid item xs={12} lg={6} key={staff.id}>
+                                    <Grid size={{xs: 12, md: 6}} key={staff.id}>
                                         <StaffCard staff={staff} locale={locale} t={t} />
                                     </Grid>
                                 ))}
