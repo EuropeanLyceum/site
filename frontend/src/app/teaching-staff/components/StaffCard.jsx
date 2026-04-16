@@ -25,6 +25,7 @@ export default function StaffCard({ staff, locale, t }) {
             border: "1px solid #E2E8F0",
             background: "#fff",
             height: "100%",
+            width: "100%",
             position: 'relative',
             overflow: 'hidden',
             '&:hover': {
