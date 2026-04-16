@@ -1,10 +1,10 @@
 'use client';
 
-import { Box, Typography, Button, alpha, Chip } from "@mui/material";
+import {Box, Typography, Button, alpha, Chip} from "@mui/material";
 import Image from "next/image";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
-export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadMore, onImageClick }) {
+export default function UndefinedNewsCard({item, locale, t, isExpanded, onReadMore, onImageClick}) {
     // 1. Захист від undefined: якщо item не передано, нічого не рендеримо
     if (!item) return null;
 
@@ -34,27 +34,27 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                 md: 'row'
             },
             background: 'linear-gradient(135deg, #0c1865 0%, #1e2b8d 100%)',
-            borderRadius: { xs: 6, md: 8 },
+            borderRadius: {xs: 6, md: 8},
             overflow: 'hidden',
             boxShadow: '0 20px 50px rgba(12, 24, 101, 0.15)',
             transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
             width: '100%', // Важливо для стабільності верстки
             '&:hover': {
-                transform: { md: 'translateY(-8px) scale(1.01)' },
+                transform: {md: 'translateY(-8px) scale(1.01)'},
                 boxShadow: '0 30px 60px rgba(12, 24, 101, 0.25)',
             }
         }}>
             {/* Текстова частина */}
             <Box sx={{
-                width: { xs: '100%', md: hasPhotos ? '60%' : '100%' },
-                p: { xs: 4, md: 6 },
+                width: {xs: '100%', md: hasPhotos ? '60%' : '100%'},
+                p: {xs: 4, md: 6},
                 display: 'flex',
                 flexDirection: 'column',
                 flexGrow: 1
             }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 3}}>
                     <Chip
-                        icon={<CalendarTodayIcon sx={{ fontSize: '14px !important', color: '#f97316 !important' }} />}
+                        icon={<CalendarTodayIcon sx={{fontSize: '14px !important', color: '#f97316 !important'}}/>}
                         label={item.date || ''}
                         sx={{
                             bgcolor: alpha('#fff', 0.1),
@@ -67,7 +67,7 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                 </Box>
 
                 <Typography variant="h3" sx={{
-                    fontSize: { xs: 24, md: 34 },
+                    fontSize: {xs: 24, md: 34},
                     color: '#fff',
                     fontWeight: 900,
                     mb: 3,
@@ -76,21 +76,23 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                     {localized.title}
                 </Typography>
 
-                <Typography sx={{
-                    fontSize: { xs: 15, md: 17 },
-                    lineHeight: 1.8,
-                    color: alpha('#fff', 0.8),
-                    mb: 5,
-                    display: '-webkit-box',
-                    overflow: 'hidden',
-                    WebkitLineClamp: isExpanded ? 'unset' : 3,
-                    WebkitBoxOrient: 'vertical',
-                    whiteSpace: 'pre-wrap',
-                }}>
-                    {localized.text}
-                </Typography>
+                <Typography
+                    component="div"
+                    sx={{
+                        fontSize: {xs: 15, md: 17},
+                        lineHeight: 1.8,
+                        color: alpha('#fff', 0.8),
+                        mb: 5,
+                        display: '-webkit-box',
+                        overflow: 'hidden',
+                        WebkitLineClamp: isExpanded ? 'unset' : 3,
+                        WebkitBoxOrient: 'vertical',
+                        whiteSpace: 'pre-wrap',
+                    }}
+                    dangerouslySetInnerHTML={{ __html: localized.text }}
+                />
 
-                <Box sx={{ mt: 'auto' }}>
+                <Box sx={{mt: 'auto'}}>
                     <Button
                         onClick={() => onReadMore?.(item.id)}
                         variant="contained"
@@ -112,13 +114,13 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
             {/* Секція Зображень */}
             {hasPhotos && (
                 <Box sx={{
-                    width: { xs: '100%', md: '40%' },
+                    width: {xs: '100%', md: '40%'},
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 0.5,
                     bgcolor: '#0c1865',
-                    height: { xs: isExpanded ? '500px' : '300px', md: 'auto' },
-                    minHeight: { md: isExpanded ? 600 : 450 },
+                    height: {xs: isExpanded ? '500px' : '300px', md: 'auto'},
+                    minHeight: {md: isExpanded ? 600 : 450},
                     position: 'relative'
                 }}>
                     {displayImages.map((img, index) => (
@@ -131,7 +133,7 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                                 width: '100%',
                                 cursor: 'pointer',
                                 overflow: 'hidden',
-                                '&:hover img': { transform: 'scale(1.1)' }
+                                '&:hover img': {transform: 'scale(1.1)'}
                             }}
                         >
                             {/* Додано unoptimized або priority залежно від потреби */}
@@ -139,16 +141,23 @@ export default function UndefinedNewsCard({ item, locale, t, isExpanded, onReadM
                                 src={img}
                                 alt={localized.title}
                                 fill
-                                style={{ objectFit: 'cover' }}
+                                style={{objectFit: 'cover'}}
                                 sizes="(max-width: 768px) 100vw, 40vw"
                             />
                             <Box className="overlay" sx={{
                                 position: 'absolute', inset: 0,
                                 bgcolor: alpha('#182BA1', 0.6),
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                opacity: 0, transition: '0.4s', '&:hover': { opacity: 1 }
+                                opacity: 0, transition: '0.4s', '&:hover': {opacity: 1}
                             }}>
-                                <Typography sx={{ color: '#fff', border: '2px solid #fff', px: 3, py: 1, borderRadius: 10, fontWeight: 900 }}>
+                                <Typography sx={{
+                                    color: '#fff',
+                                    border: '2px solid #fff',
+                                    px: 3,
+                                    py: 1,
+                                    borderRadius: 10,
+                                    fontWeight: 900
+                                }}>
                                     {t?.('viewMore') || 'View'}
                                 </Typography>
                             </Box>
