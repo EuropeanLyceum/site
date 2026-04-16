@@ -30,9 +30,8 @@ export default function Principals({ items, locale, t }) {
                                         </Typography>
                                         <Typography
                                             component="div"
-                                            sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}teSpace: 'pre-wrap',
-                                        }}
-                                        dangerouslySetInnerHTML={{ __html: (isEn ? person.descriptionEn : person.descriptionUk)}}
+                                            sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}
+                                            dangerouslySetInnerHTML={{ __html: (isEn ? person.descriptionEn : person.descriptionUk)}}
                                         />
                                     </CardContent>
                                 </Card>
