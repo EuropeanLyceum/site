@@ -28,9 +28,11 @@ export default function Principals({ items, locale, t }) {
                                         <Typography sx={{ color: '#f97316', fontWeight: 700, fontSize: 14, mb: 1, textTransform: 'uppercase' }}>
                                             {isEn ? person.positionEn : person.positionUk}
                                         </Typography>
-                                        <Typography sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}>
-                                            {isEn ? person.descriptionEn : person.descriptionUk}
-                                        </Typography>
+                                        <Typography
+                                            component="div"
+                                            sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}
+                                            dangerouslySetInnerHTML={{ __html: (isEn ? person.descriptionEn : person.descriptionUk)}}
+                                        />
                                     </CardContent>
                                 </Card>
                             </Grid>
