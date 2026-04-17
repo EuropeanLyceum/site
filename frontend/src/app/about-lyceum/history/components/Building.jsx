@@ -2,6 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import RichText from "./RichText"; // Adjust the import path as needed!
 
 export default function Building({ items, locale, t, onImageClick }) {
     if (!items?.length) return null;
@@ -16,7 +17,13 @@ export default function Building({ items, locale, t, onImageClick }) {
                 {items.map((item, idx) => {
                     const title = locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk;
                     const rawText = locale === 'en' ? (item.textEn || item.textUk) : item.textUk;
-                    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
+                    
+                    // SMART SPLIT: 
+                    // Adds a double newline between </p> and <p> just in case your 
+                    // CMS sends continuous HTML blocks, then safely splits them into an array.
+                    const formattedText = rawText ? rawText.replace(/(<\/p>)\s*(<p[^>]*>)/gi, '$1\n\n$2') : '';
+                    const paragraphs = formattedText.split(/\n\n+/).filter(p => p.trim()) || [];
+                    
                     const photos = item.photoGallery || [];
 
                     return (
@@ -42,7 +49,7 @@ export default function Building({ items, locale, t, onImageClick }) {
                                         sx={{ mb: 6 }}
                                     >
                                         {photo && (
-                                            <Grid item size={{ xs: 12, md: 5 }}>
+                                            <Grid item xs={12} md={5}>
                                                 <Box
                                                     onClick={() => onImageClick(photos, pIdx)}
                                                     sx={{
@@ -57,8 +64,17 @@ export default function Building({ items, locale, t, onImageClick }) {
                                                 </Box>
                                             </Grid>
                                         )}
-                                        <Grid item size={{ xs: 12, md: photo ? 7 : 12 }}>
-                                            <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>{p}</Typography>
+                                        <Grid item xs={12} md={photo ? 7 : 12}>
+                                            {/* RICH TEXT IMPLEMENTATION */}
+                                            <RichText 
+                                                html={p} 
+                                                sx={{ 
+                                                    ...paragraphSx, 
+                                                    // Only keep pre-line if it's plain text. If it contains real HTML
+                                                    // like <p> or <br>, the browser will handle line breaks naturally.
+                                                    whiteSpace: p.includes('<p>') ? 'normal' : 'pre-line' 
+                                                }} 
+                                            />
                                         </Grid>
                                     </Grid>
                                 );

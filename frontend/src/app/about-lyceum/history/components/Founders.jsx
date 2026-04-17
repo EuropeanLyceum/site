@@ -2,6 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import RichText from "./RichText"; // Path to your RichText component
 
 export default function Founders({ data, locale, t, onImageClick }) {
     if (!data) return null;
@@ -10,8 +11,9 @@ export default function Founders({ data, locale, t, onImageClick }) {
     const title = locale === 'en' ? (data.titleEn || data.titleUk) : data.titleUk;
     const rawText = locale === 'en' ? (data.textEn || data.textUk) : data.textUk;
 
-    // Розбиваємо текст на абзаци (по подвійному ентеру)
-    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
+    // SMART SPLIT: Handles both plain text and HTML blocks
+    const formattedText = rawText ? rawText.replace(/(<\/p>)\s*(<p[^>]*>)/gi, '$1\n\n$2') : '';
+    const paragraphs = formattedText.split(/\n\n+/).filter(p => p.trim()) || [];
     const photos = data.photoGallery || [];
 
     return (
@@ -24,9 +26,6 @@ export default function Founders({ data, locale, t, onImageClick }) {
                 {paragraphs.map((p, index) => {
                     const photo = photos[index];
                     // Логіка шахів: парні (0, 2) -> Текст зліва (row-reverse), непарні (1, 3) -> Фото зліва (row)
-                    // Оскільки в DOM у нас порядок [Фото, Текст], то:
-                    // row: Фото зліва, Текст справа
-                    // row-reverse: Текст зліва, Фото справа
                     const direction = index % 2 === 0 ? 'row-reverse' : 'row';
 
                     return (
@@ -38,7 +37,7 @@ export default function Founders({ data, locale, t, onImageClick }) {
                             alignItems="center"
                             sx={{ mb: 4 }}
                         >
-                            {/* Блок ФОТО (якщо фото немає, блок не рендериться) */}
+                            {/* Блок ФОТО */}
                             {photo && (
                                 <Grid item size={{ xs: 12, md: 5 }}>
                                     <Box
@@ -56,17 +55,22 @@ export default function Founders({ data, locale, t, onImageClick }) {
                                 </Grid>
                             )}
 
-                            {/* Блок ТЕКСТ (якщо немає фото, займає всю ширину) */}
+                            {/* Блок ТЕКСТ */}
                             <Grid item size={{ xs: 12, md: photo ? 7 : 12 }}>
-                                <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>
-                                    {p}
-                                </Typography>
+                                <RichText 
+                                    html={p}
+                                    sx={{ 
+                                        ...paragraphSx, 
+                                        // Use normal white-space if HTML tags like <p> are present
+                                        whiteSpace: p.includes('<p>') ? 'normal' : 'pre-line' 
+                                    }}
+                                />
                             </Grid>
                         </Grid>
                     );
                 })}
 
-                {/* Якщо фотографій більше, ніж абзаців -> показуємо кнопку "Всі фото" */}
+                {/* Якщо фотографій більше, ніж абзаців */}
                 {photos.length > paragraphs.length && (
                     <Box sx={{ textAlign: 'center', mt: 4 }}>
                         <Button

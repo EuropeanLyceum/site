@@ -3,6 +3,7 @@ import { Box, Typography, Grid, Button, alpha, Chip } from '@mui/material';
 import Image from 'next/image';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import RichText from "./RichText"; // Adjust path as needed
 
 export default function InnovativePost({ item, index, locale, t, onImageClick }) {
     const isEn = locale === 'en';
@@ -10,7 +11,9 @@ export default function InnovativePost({ item, index, locale, t, onImageClick })
     const title = isEn ? (item.titleEn || item.titleUk) : item.titleUk;
     const rawText = isEn ? (item.textEn || item.textUk) : item.textUk;
 
-    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
+    // SMART SPLIT: Prepares the text for the chess layout by splitting on double newlines
+    const formattedText = rawText ? rawText.replace(/(<\/p>)\s*(<p[^>]*>)/gi, '$1\n\n$2') : '';
+    const paragraphs = formattedText.split(/\n\n+/).filter(p => p.trim()) || [];
     const photos = item.photoGallery || [];
 
     const pubDate = item.publicationDate ? new Date(item.publicationDate).toLocaleDateString(isEn ? 'en-GB' : 'uk-UA', {
@@ -57,7 +60,6 @@ export default function InnovativePost({ item, index, locale, t, onImageClick })
             <Box sx={{ mb: 4 }}>
                 {paragraphs.map((p, pIdx) => {
                     const photo = photos[pIdx];
-                    // Чергування: Текст зліва (row-reverse), потім Фото зліва (row)
                     const direction = pIdx % 2 === 0 ? 'row-reverse' : 'row';
 
                     return (
@@ -79,12 +81,18 @@ export default function InnovativePost({ item, index, locale, t, onImageClick })
                                 </Grid>
                             )}
                             <Grid item xs={12} md={photo ? 7 : 12}>
-                                <Typography sx={{
-                                    color: '#475569', fontSize: { xs: 16, md: 18 },
-                                    lineHeight: 1.9, textAlign: 'justify', whiteSpace: 'pre-line'
-                                }}>
-                                    {p}
-                                </Typography>
+                                {/* RICH TEXT IMPLEMENTATION */}
+                                <RichText 
+                                    html={p}
+                                    sx={{
+                                        color: '#475569', 
+                                        fontSize: { xs: 16, md: 18 },
+                                        lineHeight: 1.9, 
+                                        textAlign: 'justify',
+                                        // Use normal wrap for HTML, pre-line for raw text blocks
+                                        whiteSpace: p.includes('<p>') ? 'normal' : 'pre-line'
+                                    }}
+                                />
                             </Grid>
                         </Grid>
                     );
@@ -96,7 +104,6 @@ export default function InnovativePost({ item, index, locale, t, onImageClick })
                 display: 'flex', flexWrap: 'wrap', alignItems: 'center',
                 justifyContent: 'space-between', pt: 4, borderTop: '2px solid #f8fafc', gap: 3
             }}>
-                {/* Attributes Rendering */}
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {item.attributes && typeof item.attributes === 'object' &&
                         Object.entries(item.attributes).map(([key, value]) => (

@@ -1,6 +1,7 @@
 'use client';
 import { Box, Typography, Grid, alpha } from '@mui/material';
 import Image from 'next/image';
+import RichText from "./RichText"; // Adjust the path to your file
 
 export default function Teachers({ items, locale, t }) {
     if (!items?.length) return null;
@@ -14,6 +15,8 @@ export default function Teachers({ items, locale, t }) {
 
                 {items.sort((a, b) => a.order - b.order).map((teacher) => {
                     const isEn = locale === 'en';
+                    const description = isEn ? teacher.descriptionEn : teacher.descriptionUk;
+                    
                     return (
                         <Box key={teacher.id} sx={{
                             mb: 6, p: 4, background: alpha('#fff', 0.03),
@@ -22,7 +25,12 @@ export default function Teachers({ items, locale, t }) {
                             <Grid container spacing={4} alignItems="center">
                                 <Grid item size={{ xs: 12, md: 4 }}>
                                     <Box sx={{ position: 'relative', height: 400, borderRadius: 4, overflow: 'hidden' }}>
-                                        <Image src={teacher.photo || ''} fill style={{ objectFit: 'cover' }} alt="Teacher" />
+                                        <Image 
+                                            src={teacher.photo || ''} 
+                                            fill 
+                                            style={{ objectFit: 'cover' }} 
+                                            alt={isEn ? teacher.fullNameEn : teacher.fullNameUk} 
+                                        />
                                     </Box>
                                 </Grid>
                                 <Grid item size={{ xs: 12, md: 8 }}>
@@ -32,9 +40,16 @@ export default function Teachers({ items, locale, t }) {
                                     <Typography sx={{ color: alpha('#fff', 0.5), fontWeight: 700, mb: 3, textTransform: 'uppercase', fontSize: 14 }}>
                                         {isEn ? teacher.specializationEn : teacher.specializationUk}
                                     </Typography>
-                                    <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>
-                                        {isEn ? teacher.descriptionEn : teacher.descriptionUk}
-                                    </Typography>
+                                    
+                                    {/* RICH TEXT IMPLEMENTATION */}
+                                    <RichText 
+                                        html={description}
+                                        sx={{ 
+                                            ...paragraphSx,
+                                            // Fallback for plain text to preserve line breaks
+                                            whiteSpace: description?.includes('<p>') ? 'normal' : 'pre-line' 
+                                        }}
+                                    />
                                 </Grid>
                             </Grid>
                         </Box>
