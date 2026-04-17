@@ -23,17 +23,19 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
         <Box
             sx={{
                 width: '100%',
-                // Запобігаємо виходу тексту за межі контейнера
-                overflowWrap: 'anywhere',
-                wordBreak: 'normal',
-                whiteSpace: 'normal',
-                hyphens: 'auto', // Робить переноси слів за правилами мови (якщо підтримується)
+                maxWidth: '100%',
 
-                // Стилізація контенту всередині HTML
+                whiteSpace: 'normal',
+                overflowWrap: 'break-word',
+                wordBreak: 'normal',
+
+                hyphens: 'manual',
+
                 '& p': {
                     margin: 0,
                     mb: 1.5,
                     lineHeight: 1.6,
+                    textAlign: 'left',
                 },
                 '& p:last-child': { mb: 0 },
 
