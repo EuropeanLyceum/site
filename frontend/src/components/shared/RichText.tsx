@@ -13,9 +13,12 @@ interface RichTextProps {
 export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
     const safeHtml = useMemo(() => {
         if (typeof window !== "undefined") {
-            return DOMPurify.sanitize(html);
+            const cleanedHtml = html.replace(/&nbsp;|\u00A0/g, ' ');
+
+            return DOMPurify.sanitize(cleanedHtml);
         }
-        return html;
+
+        return html.replace(/&nbsp;|\u00A0/g, ' ');
     }, [html]);
 
     return (
