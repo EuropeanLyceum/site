@@ -1,6 +1,7 @@
 'use client';
 import { Box, Grid, Typography, Card, CardContent, alpha } from '@mui/material';
 import Image from 'next/image';
+import RichText from "./RichText"; // Ensure this path is correct
 
 export default function Principals({ items, locale, t }) {
     if (!items?.length) return null;
@@ -15,11 +16,18 @@ export default function Principals({ items, locale, t }) {
                 <Grid container spacing={3}>
                     {items.sort((a, b) => a.order - b.order).map((person) => {
                         const isEn = locale === 'en';
+                        const description = isEn ? person.descriptionEn : person.descriptionUk;
+                        
                         return (
                             <Grid item key={person.id} size={{xs: 12, md: 6, lg: 4}}>
                                 <Card sx={cardSx}>
                                     <Box sx={{ position: 'relative', height: 350, borderRadius: 4, overflow: 'hidden', mb: 2 }}>
-                                        <Image src={person.photo || ''} alt="Director" fill style={{ objectFit: 'cover' }} />
+                                        <Image 
+                                            src={person.photo || ''} 
+                                            alt={isEn ? person.fullNameEn : person.fullNameUk} 
+                                            fill 
+                                            style={{ objectFit: 'cover' }} 
+                                        />
                                     </Box>
                                     <CardContent sx={{ textAlign: 'center', p: 1 }}>
                                         <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: 20, mb: 1 }}>
@@ -28,10 +36,18 @@ export default function Principals({ items, locale, t }) {
                                         <Typography sx={{ color: '#f97316', fontWeight: 700, fontSize: 14, mb: 1, textTransform: 'uppercase' }}>
                                             {isEn ? person.positionEn : person.positionUk}
                                         </Typography>
-                                        <Typography
-                                            component="div"
-                                            sx={{ color: alpha('#fff', 0.6), fontSize: 14, lineHeight: 1.6 }}
-                                            dangerouslySetInnerHTML={{ __html: (isEn ? person.descriptionEn : person.descriptionUk)}}
+                                        
+                                        {/* RICH TEXT IMPLEMENTATION */}
+                                        <RichText 
+                                            html={description}
+                                            sx={{ 
+                                                color: alpha('#fff', 0.6), 
+                                                fontSize: 14, 
+                                                lineHeight: 1.6,
+                                                // Center align the rich text content to match the card style
+                                                '& p': { textAlign: 'center' },
+                                                '& ul': { display: 'inline-block', textAlign: 'left' } 
+                                            }}
                                         />
                                     </CardContent>
                                 </Card>
