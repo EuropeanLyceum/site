@@ -28,7 +28,7 @@ export default function Building({ items, locale, t, onImageClick }) {
                             <Grid container spacing={6} alignItems="flex-start">
                                 {/* Основне фото (якщо є) */}
                                 {photos.length > 0 && (
-                                    <Grid item xs={12} md={5}>
+                                    <Grid size={{xs: 12, md: 5}}>
                                         <Box
                                             onClick={() => onImageClick(photos, 0)}
                                             sx={imageContainerSx}
@@ -57,7 +57,7 @@ export default function Building({ items, locale, t, onImageClick }) {
                                 )}
 
                                 {/* Текст одним блоком */}
-                                <Grid item xs={12} md={photos.length > 0 ? 7 : 12}>
+                                <Grid size={{xs: 12, md: photos.length > 0 ? 7 : 12}}>
                                     <RichText
                                         html={rawText}
                                         sx={paragraphSx}
