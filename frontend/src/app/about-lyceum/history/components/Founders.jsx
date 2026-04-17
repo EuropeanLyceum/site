@@ -2,7 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import RichText from "./RichText"; // Path to your RichText component
+import RichText from "../../../../RichText.tsx"; // Path to your RichText component
 
 export default function Founders({ data, locale, t, onImageClick }) {
     if (!data) return null;
