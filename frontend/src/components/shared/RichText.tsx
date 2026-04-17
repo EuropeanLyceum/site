@@ -12,7 +12,6 @@ interface RichTextProps {
 
 export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
     const safeHtml = useMemo(() => {
-        // Перевірка на наявність вікна для безпечного SSR
         if (typeof window !== "undefined") {
             return DOMPurify.sanitize(html);
         }
@@ -25,11 +24,12 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
                 width: '100%',
                 maxWidth: '100%',
 
+                // 🔹 ГОЛОВНЕ РІШЕННЯ:
                 whiteSpace: 'normal',
-                overflowWrap: 'break-word',
-                wordBreak: 'normal',
-
-                hyphens: 'manual',
+                wordBreak: 'keep-all',      // ЗАБОРОНЯЄ розривати слова (найважливіше!)
+                overflowWrap: 'anywhere',   // Дозволяє розрив тільки якщо слово фізично не влізає в екран (напр. довгий лінк)
+                lineBreak: 'loose',         // Допомагає уникнути розривів у кирилиці
+                hyphens: 'none',            // Вимикаємо будь-які тире
 
                 '& p': {
                     margin: 0,
@@ -64,15 +64,18 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
                 },
 
                 // Ефект обрізання тексту (Line Clamp)
-                ...(clamp ? {
+                ...(clamp && {
                     display: '-webkit-box',
                     WebkitLineClamp: clamp,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                } : {}),
+                    // При clamp ми прибираємо keep-all, бо Safari може "з'їсти" текст,
+                    // але залишаємо логіку переносу цілим словом через normal:
+                    wordBreak: 'normal',
+                }),
 
-                // Прокидаємо зовнішні стилі (sx) в самий кінець, щоб вони мали пріоритет
+                // Зовнішні стилі
                 ...sx,
             }}
             dangerouslySetInnerHTML={{ __html: safeHtml }}
