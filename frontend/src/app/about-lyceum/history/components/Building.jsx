@@ -2,7 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import RichText from "@/components/shared/RichText"; // Переконайтеся, що шлях вірний
+import RichText from "@/components/shared/RichText";
 
 export default function Building({ items, locale, t, onImageClick }) {
     if (!items?.length) return null;
@@ -17,12 +17,6 @@ export default function Building({ items, locale, t, onImageClick }) {
                 {items.map((item, idx) => {
                     const title = locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk;
                     const rawText = locale === 'en' ? (item.textEn || item.textUk) : item.textUk;
-
-                    // Розбиваємо текст на блоки для синхронізації з фото
-                    const paragraphs = rawText
-                        ? rawText.replace(/(<\/p>)\s*(<p[^>]*>)/gi, '$1\n\n$2').split(/\n\n+/).filter(p => p.trim())
-                        : [];
-
                     const photos = item.photoGallery || [];
 
                     return (
@@ -31,44 +25,45 @@ export default function Building({ items, locale, t, onImageClick }) {
                                 {title}
                             </Typography>
 
-                            {paragraphs.map((p, pIdx) => {
-                                const photo = photos[pIdx];
-                                const direction = pIdx % 2 === 0 ? 'row-reverse' : 'row';
-
-                                return (
-                                    <Grid container spacing={6} key={pIdx} direction={direction} alignItems="center" sx={{ mb: 6 }}>
-                                        {photo && (
-                                            <Grid item xs={12} md={5}>
-                                                <Box
-                                                    onClick={() => onImageClick(photos, pIdx)}
-                                                    sx={imageContainerSx}
-                                                >
-                                                    <Image src={photo} fill style={{ objectFit: 'cover', transition: '0.5s' }} alt="Building" />
-                                                </Box>
-                                            </Grid>
-                                        )}
-                                        <Grid item xs={12} md={photo ? 7 : 12}>
-                                            <RichText
-                                                html={p}
-                                                sx={paragraphSx}
+                            <Grid container spacing={6} alignItems="flex-start">
+                                {/* Основне фото (якщо є) */}
+                                {photos.length > 0 && (
+                                    <Grid item xs={12} md={5}>
+                                        <Box
+                                            onClick={() => onImageClick(photos, 0)}
+                                            sx={imageContainerSx}
+                                        >
+                                            <Image
+                                                src={photos[0]}
+                                                fill
+                                                style={{ objectFit: 'cover' }}
+                                                alt={title}
                                             />
-                                        </Grid>
-                                    </Grid>
-                                );
-                            })}
+                                        </Box>
 
-                            {photos.length > paragraphs.length && (
-                                <Box sx={{ textAlign: 'center', mt: 4 }}>
-                                    <Button
-                                        variant="outlined"
-                                        startIcon={<PhotoLibraryIcon />}
-                                        onClick={() => onImageClick(photos, 0)}
-                                        sx={allPhotosBtnSx}
-                                    >
-                                        {t("viewAllPhotos")} ({photos.length})
-                                    </Button>
-                                </Box>
-                            )}
+                                        {/* Кнопка "Всі фото", якщо їх більше одного */}
+                                        {photos.length > 1 && (
+                                            <Button
+                                                fullWidth
+                                                variant="outlined"
+                                                startIcon={<PhotoLibraryIcon />}
+                                                onClick={() => onImageClick(photos, 0)}
+                                                sx={{ ...allPhotosBtnSx, mt: 2 }}
+                                            >
+                                                {t("viewAllPhotos")} ({photos.length})
+                                            </Button>
+                                        )}
+                                    </Grid>
+                                )}
+
+                                {/* Текст одним блоком */}
+                                <Grid item xs={12} md={photos.length > 0 ? 7 : 12}>
+                                    <RichText
+                                        html={rawText}
+                                        sx={paragraphSx}
+                                    />
+                                </Grid>
+                            </Grid>
                         </Box>
                     );
                 })}
@@ -80,7 +75,7 @@ export default function Building({ items, locale, t, onImageClick }) {
 const titleSx = { fontFamily: "'Montserrat Alternates', sans-serif", fontSize: { xs: 28, md: 42 }, fontWeight: 800, color: '#fff' };
 const paragraphSx = { fontSize: { xs: 15, md: 17 }, lineHeight: 1.8, color: alpha('#fff', 0.8), textAlign: 'justify' };
 const imageContainerSx = {
-    position: 'relative', height: 350, borderRadius: 4, overflow: 'hidden', cursor: 'pointer',
+    position: 'relative', height: { xs: 250, md: 400 }, borderRadius: 4, overflow: 'hidden', cursor: 'pointer',
     boxShadow: '0 10px 30px rgba(0,0,0,0.3)', '&:hover img': { transform: 'scale(1.05)' }, transition: 'all 0.3s ease'
 };
 const allPhotosBtnSx = {
