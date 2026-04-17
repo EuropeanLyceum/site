@@ -12,13 +12,18 @@ interface RichTextProps {
 
 export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
     const safeHtml = useMemo(() => {
-        if (typeof window !== "undefined") {
-            const cleanedHtml = html.replace(/&nbsp;|\u00A0/g, ' ');
+        // 1. Якщо html прийшов порожній, null або undefined — зразу виходимо
+        if (!html) return "";
 
+        // 2. Очищуємо від нерозривних пробілів (тепер безпечно, бо html точно рядок)
+        const cleanedHtml = html.replace(/&nbsp;|\u00A0/g, ' ');
+
+        // 3. Санітайзимо тільки в браузері
+        if (typeof window !== "undefined") {
             return DOMPurify.sanitize(cleanedHtml);
         }
 
-        return html.replace(/&nbsp;|\u00A0/g, ' ');
+        return cleanedHtml;
     }, [html]);
 
     return (

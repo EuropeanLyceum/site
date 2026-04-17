@@ -1,7 +1,7 @@
 'use client';
 import { Box, Typography, Grid, alpha } from '@mui/material';
 import Image from 'next/image';
-import RichText from "../../../../components/shared/RichText"; // Adjust the path to your file
+import RichText from "@/components/shared/RichText";
 
 export default function Teachers({ items, locale, t }) {
     if (!items?.length) return null;
