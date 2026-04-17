@@ -13,9 +13,12 @@ export default function RichText({
   sx?: any;
   clamp?: number;
 }) {
-  const safeHtml = useMemo(() => {
-    return DOMPurify.sanitize(html);
-  }, [html]);
+    const safeHtml = useMemo(() => {
+        if (typeof window !== "undefined") {
+            return DOMPurify.sanitize(html);
+        }
+        return html; // Повертаємо як є для SSR, DOMPurify очистить на клієнті
+    }, [html]);
 
   return (
     <Box

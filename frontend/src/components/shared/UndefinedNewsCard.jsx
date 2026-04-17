@@ -3,6 +3,7 @@
 import {Box, Typography, Button, alpha, Chip} from "@mui/material";
 import Image from "next/image";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import RichText from "@/components/shared/RichText.tsx";
 
 export default function UndefinedNewsCard({item, locale, t, isExpanded, onReadMore, onImageClick}) {
     // 1. Захист від undefined: якщо item не передано, нічого не рендеримо
@@ -76,20 +77,19 @@ export default function UndefinedNewsCard({item, locale, t, isExpanded, onReadMo
                     {localized.title}
                 </Typography>
 
-                <Typography
-                    component="div"
+                <RichText
+                    component="div" // Це поле ігнорується RichText, але не заважає
                     sx={{
                         fontSize: {xs: 15, md: 17},
                         lineHeight: 1.8,
                         color: alpha('#fff', 0.8),
                         mb: 5,
-                        display: '-webkit-box',
-                        overflow: 'hidden',
-                        WebkitLineClamp: isExpanded ? 'unset' : 3,
-                        WebkitBoxOrient: 'vertical',
+                        // WebkitLineClamp тепер можна передати через пропс clamp
                         whiteSpace: 'pre-wrap',
                     }}
-                    dangerouslySetInnerHTML={{ __html: localized.text }}
+                    // ТУТ ПОМИЛКА: RichText очікує 'html', а не dangerouslySetInnerHTML
+                    html={localized.text}
+                    clamp={isExpanded ? undefined : 3}
                 />
 
                 <Box sx={{mt: 'auto'}}>

@@ -17,17 +17,12 @@ export default function Principals({ items, locale, t }) {
                     {items.sort((a, b) => a.order - b.order).map((person) => {
                         const isEn = locale === 'en';
                         const description = isEn ? person.descriptionEn : person.descriptionUk;
-                        
+
                         return (
-                            <Grid item key={person.id} size={{xs: 12, md: 6, lg: 4}}>
+                            <Grid item key={person.id} xs={12} sm={6} md={4}>
                                 <Card sx={cardSx}>
                                     <Box sx={{ position: 'relative', height: 350, borderRadius: 4, overflow: 'hidden', mb: 2 }}>
-                                        <Image 
-                                            src={person.photo || ''} 
-                                            alt={isEn ? person.fullNameEn : person.fullNameUk} 
-                                            fill 
-                                            style={{ objectFit: 'cover' }} 
-                                        />
+                                        <Image src={person.photo || ''} alt="Principal" fill style={{ objectFit: 'cover' }} />
                                     </Box>
                                     <CardContent sx={{ textAlign: 'center', p: 1 }}>
                                         <Typography sx={{ color: '#fff', fontWeight: 800, fontSize: 20, mb: 1 }}>
@@ -36,17 +31,15 @@ export default function Principals({ items, locale, t }) {
                                         <Typography sx={{ color: '#f97316', fontWeight: 700, fontSize: 14, mb: 1, textTransform: 'uppercase' }}>
                                             {isEn ? person.positionEn : person.positionUk}
                                         </Typography>
-                                        
-                                        {/* RICH TEXT IMPLEMENTATION */}
-                                        <RichText 
+
+                                        <RichText
                                             html={description}
-                                            sx={{ 
-                                                color: alpha('#fff', 0.6), 
-                                                fontSize: 14, 
+                                            sx={{
+                                                color: alpha('#fff', 0.6),
+                                                fontSize: 14,
                                                 lineHeight: 1.6,
-                                                // Center align the rich text content to match the card style
-                                                '& p': { textAlign: 'center' },
-                                                '& ul': { display: 'inline-block', textAlign: 'left' } 
+                                                '& p': { textAlign: 'center' }, // Центруємо абзаци RichText
+                                                '& ul': { display: 'inline-block', textAlign: 'left' }
                                             }}
                                         />
                                     </CardContent>
