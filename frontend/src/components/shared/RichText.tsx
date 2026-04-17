@@ -1,74 +1,79 @@
 'use client';
 
-import {Box} from "@mui/material";
+import { Box, SxProps, Theme } from "@mui/material";
 import DOMPurify from "dompurify";
-import {useMemo} from "react";
+import React, { useMemo } from "react";
 
-export default function RichText({
-                                     html = "",
-                                     sx = {},
-                                     clamp,
-                                 }: {
+interface RichTextProps {
     html?: string;
-    sx?: any;
+    sx?: SxProps<Theme>;
     clamp?: number;
-}) {
+}
+
+export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
     const safeHtml = useMemo(() => {
+        // Перевірка на наявність вікна для безпечного SSR
         if (typeof window !== "undefined") {
             return DOMPurify.sanitize(html);
         }
-        return html; // Повертаємо як є для SSR, DOMPurify очистить на клієнті
+        return html;
     }, [html]);
 
     return (
-        <Box>
-            <Box
-                sx={{
-                    // 🔹 ГОЛОВНІ ПРАВИЛА ДЛЯ ПЕРЕНОСУ ТЕКСТУ
-                    width: '100%',
+        <Box
+            sx={{
+                width: '100%',
+                // Запобігаємо виходу тексту за межі контейнера
+                overflowWrap: 'anywhere',
+                wordBreak: 'normal',
+                whiteSpace: 'normal',
+                hyphens: 'auto', // Робить переноси слів за правилами мови (якщо підтримується)
+
+                // Стилізація контенту всередині HTML
+                '& p': {
+                    margin: 0,
+                    mb: 1.5,
+                    lineHeight: 1.6,
+                },
+                '& p:last-child': { mb: 0 },
+
+                '& ul, & ol': {
+                    ml: 0,
+                    pl: 3,
+                    mb: 2,
+                },
+
+                '& li': {
+                    mb: 0.5,
+                },
+
+                '& img': {
                     maxWidth: '100%',
-                    whiteSpace: 'normal',        // Скасовуємо pre-wrap, який ламав верстку
-                    overflowWrap: 'break-word',  // Примусово переносимо довгі слова
-                    wordBreak: 'break-word',     // Додатковий захист для старих браузерів
+                    height: 'auto',
+                    borderRadius: 2,
+                    display: 'block',
+                    my: 2,
+                },
 
-                    // 🔹 Стилізація внутрішніх тегів
-                    '& p': {
-                        margin: 0,
-                        marginBottom: '0.8rem', // Додаємо відступ між абзацами для читабельності
-                    },
-                    '& p:last-child': {marginBottom: 0},
+                '& a': {
+                    color: 'inherit',
+                    textDecoration: 'underline',
+                    '&:hover': { opacity: 0.8 },
+                },
 
-                    '& strong': {fontWeight: 700},
-                    '& em': {fontStyle: 'italic'},
+                // Ефект обрізання тексту (Line Clamp)
+                ...(clamp ? {
+                    display: '-webkit-box',
+                    WebkitLineClamp: clamp,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                } : {}),
 
-                    '& ul': {
-                        paddingLeft: 20,
-                        margin: '8px 0',
-                    },
-
-                    '& li': {
-                        marginBottom: 4,
-                    },
-
-                    '& img': {
-                        maxWidth: '100%',
-                        height: 'auto', // Щоб картинки не розтягувалися
-                        borderRadius: 8,
-                    },
-
-                    // 🔥 clamp (обрізання тексту)
-                    ...(clamp && {
-                        display: '-webkit-box',
-                        overflow: 'hidden',
-                        WebkitLineClamp: clamp,
-                        WebkitBoxOrient: 'vertical',
-                    }),
-
-                    // 🔥 кастомні стилі, які приходять через пропси
-                    ...sx,
-                }}
-                dangerouslySetInnerHTML={{__html: safeHtml}}
-            />
-        </Box>
+                // Прокидаємо зовнішні стилі (sx) в самий кінець, щоб вони мали пріоритет
+                ...sx,
+            }}
+            dangerouslySetInnerHTML={{ __html: safeHtml }}
+        />
     );
 }
