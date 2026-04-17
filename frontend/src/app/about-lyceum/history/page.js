@@ -6,7 +6,6 @@ import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from '@/contexts/TranslationProvider';
 
-// Import the ONE generic component
 import UniversalHistorySection from './components/UniversalHistorySection';
 import Principals from './components/Principals';
 import Teachers from './components/Teachers';

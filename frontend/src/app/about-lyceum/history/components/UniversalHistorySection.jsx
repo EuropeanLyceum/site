@@ -2,7 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import RichText from "@/components/shared/RichText"; // Переконайся, що шлях правильний
+import RichText from "@/components/shared/RichText";
 
 // --- Helper for Styles ---
 const styles = {
