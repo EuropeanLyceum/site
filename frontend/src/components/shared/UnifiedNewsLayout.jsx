@@ -1,9 +1,12 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Box, Typography, Grid, CircularProgress, Container, TextField, InputAdornment, Pagination, Stack, IconButton } from '@mui/material'; // Added IconButton
-import CloseIcon from '@mui/icons-material/Close'; // Ensure this is imported
+import { Box, Typography, CircularProgress, Container, TextField, InputAdornment, Pagination, Stack, IconButton } from '@mui/material'; 
+import CloseIcon from '@mui/icons-material/Close'; 
 import SearchIcon from '@mui/icons-material/Search';
-import Image from 'next/image'; // Ensure this is imported for the modal
+// NEW IMPORTS FOR ARROWS
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import Image from 'next/image'; 
 import { useTranslation } from '@/contexts/TranslationProvider';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
 
@@ -20,7 +23,7 @@ export default function UnifiedNewsLayout({
     const [page, setPage] = useState(1);
     const [expandedItem, setExpandedItem] = useState(null);
 
-    // --- NEW: Gallery State ---
+    // Gallery State
     const [galleryState, setGalleryState] = useState({
         isOpen: false,
         photos: [],
@@ -28,8 +31,8 @@ export default function UnifiedNewsLayout({
     });
 
     const itemsPerPage = 5;
+    const count = Math.ceil(totalCount / itemsPerPage);
 
-    // Скрол вгору при зміні сторінки
     const handlePageChange = (event, value) => {
         setPage(value);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -42,9 +45,7 @@ export default function UnifiedNewsLayout({
         return () => clearTimeout(handler);
     }, [searchQuery, page, onParamsChange]);
 
-    const count = Math.ceil(totalCount / itemsPerPage);
-
-    // --- NEW: Gallery Handlers ---
+    // --- Gallery Handlers ---
     const handleOpenGallery = (photos, index) => {
         setGalleryState({
             isOpen: true,
@@ -54,8 +55,37 @@ export default function UnifiedNewsLayout({
     };
 
     const handleCloseGallery = () => {
-        setGalleryState({ ...galleryState, isOpen: false });
+        setGalleryState(prev => ({ ...prev, isOpen: false }));
     };
+
+    // --- NEW: Next / Prev Handlers ---
+    const handlePrevPhoto = (e) => {
+        e.stopPropagation(); // Prevents modal from closing
+        setGalleryState(prev => ({
+            ...prev,
+            currentIndex: prev.currentIndex === 0 ? prev.photos.length - 1 : prev.currentIndex - 1
+        }));
+    };
+
+    const handleNextPhoto = (e) => {
+        e.stopPropagation(); // Prevents modal from closing
+        setGalleryState(prev => ({
+            ...prev,
+            currentIndex: (prev.currentIndex + 1) % prev.photos.length
+        }));
+    };
+
+    // Add Keyboard navigation (Optional, but great for UX)
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (!galleryState.isOpen) return;
+            if (e.key === 'ArrowLeft') handlePrevPhoto(e);
+            if (e.key === 'ArrowRight') handleNextPhoto(e);
+            if (e.key === 'Escape') handleCloseGallery();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [galleryState.isOpen, galleryState.photos]);
 
 
     return (
@@ -110,7 +140,7 @@ export default function UnifiedNewsLayout({
                                     locale={locale}
                                     isExpanded={expandedItem === item.id}
                                     onReadMore={(id) => setExpandedItem(expandedItem === id ? null : id)}
-                                    onImageClick={handleOpenGallery} // Pass the handler here!
+                                    onImageClick={handleOpenGallery} 
                                 />
                             ))}
                         </Stack>
@@ -137,19 +167,49 @@ export default function UnifiedNewsLayout({
                 )}
             </Container>
 
-            {/* --- NEW: Simple Modal for the Gallery --- */}
+            {/* --- UPDATED: Modal with Navigation Arrows --- */}
             {galleryState.isOpen && galleryState.photos.length > 0 && (
                 <Box onClick={handleCloseGallery} sx={{
-                    position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.9)',
+                    position: 'fixed', inset: 0, bgcolor: 'rgba(0,0,0,0.92)',
                     zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center', p: 2
                 }}>
-                    <IconButton onClick={handleCloseGallery} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff' }}>
+                    
+                    {/* Close Button */}
+                    <IconButton onClick={handleCloseGallery} sx={{ position: 'absolute', top: 20, right: 20, color: '#fff', zIndex: 10 }}>
                         <CloseIcon fontSize="large" />
                     </IconButton>
+
+                    {/* Previous Button (Only show if there's more than 1 photo) */}
+                    {galleryState.photos.length > 1 && (
+                        <IconButton onClick={handlePrevPhoto} sx={{ 
+                            position: 'absolute', left: { xs: 10, md: 40 }, color: '#fff', zIndex: 10, 
+                            bgcolor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } 
+                        }}>
+                            <ArrowBackIosNewIcon fontSize="large" />
+                        </IconButton>
+                    )}
+
+                    {/* Image Container */}
                     <Box onClick={(e) => e.stopPropagation()} sx={{ position: 'relative', width: '90%', maxWidth: 1200, height: '85vh' }}>
-                        {/* Currently just shows the clicked image. You can add prev/next buttons here if needed */}
-                        <Image src={galleryState.photos[galleryState.currentIndex]} alt="Expanded" fill style={{ objectFit: 'contain' }} />
+                        <Image src={galleryState.photos[galleryState.currentIndex]} alt={`Expanded View ${galleryState.currentIndex + 1}`} fill style={{ objectFit: 'contain' }} />
+                        
+                        {/* Optional: Show Image Counter (e.g., 1 / 4) */}
+                        {galleryState.photos.length > 1 && (
+                             <Typography sx={{ position: 'absolute', bottom: -30, left: '50%', transform: 'translateX(-50%)', color: '#fff', fontWeight: 600 }}>
+                                 {galleryState.currentIndex + 1} / {galleryState.photos.length}
+                             </Typography>
+                        )}
                     </Box>
+
+                    {/* Next Button (Only show if there's more than 1 photo) */}
+                    {galleryState.photos.length > 1 && (
+                        <IconButton onClick={handleNextPhoto} sx={{ 
+                            position: 'absolute', right: { xs: 10, md: 40 }, color: '#fff', zIndex: 10, 
+                            bgcolor: 'rgba(255,255,255,0.1)', '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' } 
+                        }}>
+                            <ArrowForwardIosIcon fontSize="large" />
+                        </IconButton>
+                    )}
                 </Box>
             )}
 
