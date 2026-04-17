@@ -135,7 +135,7 @@ export default function UnifiedNewsLayout({
                         <Stack spacing={4}>
                             {data.map(item => (
                                 <UndefinedNewsCard
-                                    key={item.id}
+                                    t={t}
                                     item={item}
                                     locale={locale}
                                     isExpanded={expandedItem === item.id}
