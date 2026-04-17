@@ -1,9 +1,9 @@
 'use client';
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import RichText from "./RichText"; // Make sure the path matches your project structure
-
+import PhotoLibraryIcon from '@mui/icons-material/'
+    import RichText from "../../../../components/RichText";
+    
 export default function Development({ items, locale, t, onImageClick }) {
     if (!items?.length) return null;
 
