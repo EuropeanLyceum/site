@@ -3,7 +3,7 @@ import { Box, Typography, Grid, Button, alpha, Chip } from '@mui/material';
 import Image from 'next/image';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import RichText from "./RichText"; // Adjust path as needed
+import RichText from "../../../../RichText"; // Adjust path as needed
 
 export default function InnovativePost({ item, index, locale, t, onImageClick }) {
     const isEn = locale === 'en';

@@ -1,7 +1,7 @@
 'use client';
 import { Box, Grid, Typography, Card, CardContent, alpha } from '@mui/material';
 import Image from 'next/image';
-import RichText from "./RichText"; // Ensure this path is correct
+import RichText from "../../../../RichText"; // Ensure this path is correct
 
 export default function Principals({ items, locale, t }) {
     if (!items?.length) return null;
