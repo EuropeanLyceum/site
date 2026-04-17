@@ -155,6 +155,7 @@ const uk = {
         historyTitle: "Історія закладу",
         viewAllPhotos: "Переглянути всі фото",
         foundersTitle: "Фундатори",
+        viewMore: "Переглянути більше",
 
         schoolBuildingTitle: "Будівля школи",
 
