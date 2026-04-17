@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import FamilyRestroomIcon from '@mui/icons-material/FamilyRestroom';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
+import RichText from "../../../components/shared/RichText.tsx";
 
 export default function ParentsPage() {
     const { locale } = useTranslation("parents");
@@ -155,9 +156,7 @@ export default function ParentsPage() {
                                 <Grid key={item.id} item xs={12} md={6}>
                                     <Paper sx={{ p: 4, height: '100%', borderRadius: 6, border: '1px solid #e2e8f0', transition: '0.3s', '&:hover': { transform: 'translateY(-5px)', boxShadow: '0 12px 30px rgba(0,0,0,0.05)' } }}>
                                         <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865', mb: 2 }}>{l(item.titleUk, item.titleEn)}</Typography>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }}>
-                                            {l(item.textUk, item.textEn)}
-                                        </Typography>
+                                        <RichText sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }} html={l(item.textUk, item.textEn)}/>
                                         {item.photoGallery?.length > 0 && (
                                             <Box sx={{ mt: 'auto', pt: 2 }}>
                                                 <Grid container spacing={2}>

@@ -11,6 +11,7 @@ import {
     HomeOutlined, CheckCircleOutline, KeyboardArrowRight
 } from "@mui/icons-material";
 import { useTranslation } from "@/contexts/TranslationProvider.jsx";
+import RichText from "@/components/shared/RichText.tsx";
 
 const ProfileTests = () => {
     const { t, locale } = useTranslation("test");
@@ -193,9 +194,17 @@ const ProfileTests = () => {
                                         {getLangField(showResult, 'name')}
                                     </Typography>
 
-                                    <Typography variant="body1" sx={{ fontSize: '1.2rem', color: '#475569', mb: 6, lineHeight: 1.8 }}>
-                                        {getLangField(showResult, 'description')}
-                                    </Typography>
+                                    {/* RICHTEXT ДЛЯ ОПИСУ СПЕЦІАЛІЗАЦІЇ */}
+                                    <RichText
+                                        html={getLangField(showResult, 'description')}
+                                        sx={{
+                                            fontSize: '1.1rem',
+                                            color: '#475569',
+                                            mb: 6,
+                                            '& p': { textAlign: 'center' }, // Вирівнювання по центру для результату
+                                            '& ul': { textAlign: 'left', display: 'inline-block' }
+                                        }}
+                                    />
 
                                     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center" mt={4}>
                                         <Button variant="outlined" startIcon={<Replay />} onClick={resetTest} sx={{ borderRadius: 4, px: 4, py: 1.5, fontWeight: 800 }}>

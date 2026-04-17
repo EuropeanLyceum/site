@@ -13,11 +13,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard";
+import RichText from "@/components/shared/RichText";
 
 export default function TeacherCertificationPage() {
-  const { locale } = useTranslation("teacherCertification");
+  const { locale, t } = useTranslation("teacherCertification");
 
-  // Статичні дані (Hero, Комісія, Посилання)
   const [staticData, setStaticData] = useState({
     section: null,
     externalLinks: [],
@@ -25,7 +25,6 @@ export default function TeacherCertificationPage() {
   });
   const [isLoadingStatic, setIsLoadingStatic] = useState(true);
 
-  // Динамічні заходи з пошуком та пагінацією
   const [articles, setArticles] = useState([]);
   const [totalArticles, setTotalArticles] = useState(0);
   const [isLoadingArticles, setIsLoadingArticles] = useState(false);
@@ -39,7 +38,6 @@ export default function TeacherCertificationPage() {
   const isEn = locale === 'en';
   const l = (uk, en) => (isEn ? en || uk : uk);
 
-  // 1. Завантаження статичного контенту (1 раз)
   useEffect(() => {
     const loadStatic = async () => {
       try {
@@ -67,7 +65,6 @@ export default function TeacherCertificationPage() {
     loadStatic();
   }, []);
 
-  // 2. Функція серверного завантаження статей
   const fetchArticles = useCallback(async (search, currentPage) => {
     setIsLoadingArticles(true);
     try {
@@ -86,7 +83,7 @@ export default function TeacherCertificationPage() {
         title: l(item.titleUk, item.titleEn),
         text: l(item.textUk, item.textEn),
         images: item.photoGallery || [],
-        date: new Date(item.publicationDate || item.createdAt).toLocaleDateString(isEn ? 'en-US' : 'uk-UA')
+        date: new Date(item.publicationDate || item.createdAt).toLocaleDateString(isEn ? 'en-GB' : 'uk-UA')
       }));
 
       setArticles(formatted);
@@ -98,7 +95,6 @@ export default function TeacherCertificationPage() {
     }
   }, [isEn]);
 
-  // 3. Дебаунс для пошуку (400мс)
   useEffect(() => {
     const handler = setTimeout(() => {
       fetchArticles(searchQuery, page);
@@ -106,51 +102,43 @@ export default function TeacherCertificationPage() {
     return () => clearTimeout(handler);
   }, [searchQuery, page, fetchArticles]);
 
-  if (isLoadingStatic) return <Box sx={{ py: 20, textAlign: 'center' }}><CircularProgress /></Box>;
+  if (isLoadingStatic) return (
+      <Box sx={{ py: 20, textAlign: 'center' }}>
+        <CircularProgress sx={{ color: '#0c1865' }} />
+      </Box>
+  );
 
   return (
       <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
         {/* HERO SECTION */}
-        <Box sx={{
-          py: { xs: 8, md: 12 },
-          background: 'linear-gradient(135deg, #0c1865 0%, #1e293b 100%)',
-          color: '#fff', textAlign: 'center',
-          clipPath: 'polygon(0 0, 100% 0, 100% 90%, 0% 100%)',
-          mb: 6
-        }}>
+        <Box sx={heroSx}>
           <Container maxWidth="md">
-            <Typography variant="h1" sx={{
-              fontWeight: 900,
-              fontFamily: "'Montserrat Alternates', sans-serif",
-              fontSize: { xs: 32, md: 54 },
-              mb: 2, textTransform: 'uppercase'
-            }}>
+            <Typography variant="h1" sx={heroTitleSx}>
               {l(staticData.section?.titleUk, staticData.section?.titleEn) || "Certification"}
             </Typography>
-            <Typography sx={{ fontSize: '1.2rem', opacity: 0.8, maxWidth: '700px', mx: 'auto' }}>
-              {l(staticData.section?.contentUk, staticData.section?.contentEn)}
-            </Typography>
+            <RichText
+                html={l(staticData.section?.contentUk, staticData.section?.contentEn)}
+                sx={{
+                  '& p': { fontSize: '1.2rem', opacity: 0.9, color: '#fff', textAlign: 'center' }
+                }}
+            />
           </Container>
         </Box>
 
-        <Container maxWidth="lg">
+        <Container maxWidth="lg" sx={{ mt: -4, position: 'relative', zIndex: 2 }}>
           {/* ІНФОРМАЦІЙНИЙ БЛОК */}
           <Grid container spacing={4} sx={{ mb: 10 }}>
-            {/* Email */}
-            <Grid item xs={12}>
-              <Paper sx={{
-                p: 4, bgcolor: '#fff', borderRadius: 6,
-                display: 'flex', alignItems: 'center', gap: 3,
-                border: '1px solid #e2e8f0', boxShadow: '0 10px 40px rgba(0,0,0,0.03)'
-              }}>
-                <Box sx={{ bgcolor: alpha('#f97316', 0.1), p: 2, borderRadius: 4 }}>
+            {/* Email Card */}
+            <Grid size={12}>
+              <Paper sx={emailCardSx}>
+                <Box sx={iconWrapperSx('#f97316')}>
                   <EmailIcon sx={{ fontSize: 40, color: '#f97316' }} />
                 </Box>
                 <Box>
-                  <Typography variant="subtitle2" sx={{ color: '#64748b', fontWeight: 700, textTransform: 'uppercase' }}>
+                  <Typography variant="subtitle2" sx={labelSx}>
                     {isEn ? "Email for documents" : "Електронна пошта для документів"}
                   </Typography>
-                  <MuiLink href="mailto:atestacia24licey@gmail.com" sx={{ color: '#0c1865', fontWeight: 900, fontSize: { xs: 18, md: 24 }, textDecoration: 'none' }}>
+                  <MuiLink href="mailto:atestacia24licey@gmail.com" sx={emailLinkSx}>
                     atestacia24licey@gmail.com
                   </MuiLink>
                 </Box>
@@ -158,21 +146,21 @@ export default function TeacherCertificationPage() {
             </Grid>
 
             {/* Комісія */}
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
                 <GroupsIcon sx={{ color: '#182BA1' }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
+                <Typography variant="h5" sx={sectionTitleSx}>
                   {isEn ? "Commission" : "Комісія"}
                 </Typography>
               </Stack>
-              <Accordion sx={{ borderRadius: '20px !important', border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+              <Accordion sx={accordionSx}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography sx={{ fontWeight: 700 }}>{isEn ? "View List" : "Переглянути склад"}</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ p: 0 }}>
                   {staticData.commission.map((person) => (
-                      <Box key={person.id} sx={{ px: 3, py: 2, borderBottom: '1px solid #f1f5f9' }}>
-                        <Typography sx={{ fontWeight: 800 }}>{l(person.fullNameUk, person.fullNameEn)}</Typography>
+                      <Box key={person.id} sx={personRowSx}>
+                        <Typography sx={{ fontWeight: 800, color: '#0c1865' }}>{l(person.fullNameUk, person.fullNameEn)}</Typography>
                         <Typography variant="body2" sx={{ color: '#64748b' }}>{l(person.positionUk, person.positionEn)}</Typography>
                       </Box>
                   ))}
@@ -181,23 +169,18 @@ export default function TeacherCertificationPage() {
             </Grid>
 
             {/* Документи */}
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
                 <AssignmentIcon sx={{ color: '#182BA1' }} />
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>
+                <Typography variant="h5" sx={sectionTitleSx}>
                   {isEn ? "Documents" : "Документація"}
                 </Typography>
               </Stack>
               <Stack spacing={2}>
                 {staticData.externalLinks.map((doc) => (
-                    <Paper key={doc.id} component="a" href={doc.url} target="_blank"
-                           sx={{
-                             p: 2.5, borderRadius: 4, textDecoration: 'none',
-                             display: 'flex', justifyContent: 'space-between', border: '1px solid #e2e8f0',
-                             transition: '0.3s', '&:hover': { bgcolor: '#0c1865', '& *': { color: '#fff' } }
-                           }}>
-                      <Typography sx={{ fontWeight: 700, color: '#0c1865' }}>{l(doc.titleUk, doc.titleEn)}</Typography>
-                      <span>→</span>
+                    <Paper key={doc.id} component="a" href={doc.url} target="_blank" sx={docLinkSx}>
+                      <Typography sx={{ fontWeight: 700 }}>{l(doc.titleUk, doc.titleEn)}</Typography>
+                      <Typography variant="h6" sx={{ ml: 1 }}>→</Typography>
                     </Paper>
                 ))}
               </Stack>
@@ -205,8 +188,8 @@ export default function TeacherCertificationPage() {
           </Grid>
 
           {/* ПОШУК ТА ХІД АТЕСТАЦІЇ */}
-          <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" sx={{ mb: 4 }} spacing={2}>
-            <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', fontFamily: "'Montserrat Alternates', sans-serif" }}>
+          <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" sx={{ mb: 6 }} spacing={2}>
+            <Typography variant="h4" sx={feedTitleSx}>
               {isEn ? "Certification Events" : "Хід атестації"}
             </Typography>
             <TextField
@@ -215,7 +198,7 @@ export default function TeacherCertificationPage() {
                 value={searchQuery}
                 onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }}
                 InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ color: '#182BA1' }} /></InputAdornment> }}
-                sx={{ width: { xs: '100%', md: 350 }, bgcolor: '#fff', borderRadius: 2 }}
+                sx={searchSx}
             />
           </Stack>
 
@@ -234,22 +217,23 @@ export default function TeacherCertificationPage() {
                       />
                   ))}
                   {articles.length === 0 && (
-                      <Typography sx={{ color: '#94a3b8', fontStyle: 'italic', textAlign: 'center', py: 5 }}>
+                      <Typography sx={noResultsSx}>
                         {isEn ? "No updates found" : "Інформацію не знайдено"}
                       </Typography>
                   )}
                 </Stack>
 
                 {totalArticles > itemsPerPage && (
-                    <Stack alignItems="center" sx={{ mt: 6 }}>
+                    <Stack alignItems="center" sx={{ mt: 8 }}>
                       <Pagination
                           count={Math.ceil(totalArticles / itemsPerPage)}
                           page={page}
                           onChange={(_, v) => {
                             setPage(v);
-                            window.scrollTo({ top: 500, behavior: 'smooth' });
+                            window.scrollTo({ top: 450, behavior: 'smooth' });
                           }}
                           color="primary"
+                          size="large"
                       />
                     </Stack>
                 )}
@@ -259,3 +243,114 @@ export default function TeacherCertificationPage() {
       </Box>
   );
 }
+
+// --- Styles ---
+
+const heroSx = {
+  py: { xs: 10, md: 15 },
+  background: 'linear-gradient(135deg, #0c1865 0%, #1e293b 100%)',
+  color: '#fff',
+  textAlign: 'center',
+  clipPath: 'polygon(0 0, 100% 0, 100% 92%, 0% 100%)',
+  mb: 2
+};
+
+const heroTitleSx = {
+  fontWeight: 900,
+  fontFamily: "'Montserrat Alternates', sans-serif",
+  fontSize: { xs: 34, md: 54 },
+  mb: 3,
+  textTransform: 'uppercase',
+  lineHeight: 1.1
+};
+
+const emailCardSx = {
+  p: { xs: 3, md: 5 },
+  bgcolor: '#fff',
+  borderRadius: 6,
+  display: 'flex',
+  alignItems: 'center',
+  gap: 4,
+  border: '1px solid #e2e8f0',
+  boxShadow: '0 20px 50px rgba(0,0,0,0.04)'
+};
+
+const iconWrapperSx = (color) => ({
+  bgcolor: alpha(color, 0.1),
+  p: 2.5,
+  borderRadius: 4,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+});
+
+const labelSx = {
+  color: '#64748b',
+  fontWeight: 800,
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em',
+  mb: 0.5
+};
+
+const emailLinkSx = {
+  color: '#0c1865',
+  fontWeight: 900,
+  fontSize: { xs: '1.1rem', md: '1.6rem' },
+  textDecoration: 'none',
+  '&:hover': { color: '#f97316' }
+};
+
+const sectionTitleSx = {
+  fontWeight: 800,
+  color: '#0c1865',
+  fontFamily: "'Montserrat Alternates', sans-serif"
+};
+
+const accordionSx = {
+  borderRadius: '20px !important',
+  border: '1px solid #e2e8f0',
+  boxShadow: 'none',
+  '&:before': { display: 'none' }
+};
+
+const personRowSx = {
+  px: 3, py: 2,
+  borderBottom: '1px solid #f1f5f9',
+  '&:last-child': { borderBottom: 'none' }
+};
+
+const docLinkSx = {
+  p: 3, borderRadius: 4, textDecoration: 'none',
+  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+  border: '1px solid #e2e8f0',
+  transition: '0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+  color: '#0c1865',
+  '&:hover': {
+    bgcolor: '#0c1865',
+    color: '#fff',
+    transform: 'translateY(-3px)',
+    boxShadow: '0 10px 20px rgba(12, 24, 101, 0.2)'
+  }
+};
+
+const feedTitleSx = {
+  fontWeight: 900,
+  color: '#0c1865',
+  fontFamily: "'Montserrat Alternates', sans-serif"
+};
+
+const searchSx = {
+  width: { xs: '100%', md: 350 },
+  bgcolor: '#fff',
+  borderRadius: 4,
+  boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
+  '& .MuiOutlinedInput-root': { borderRadius: 4 }
+};
+
+const noResultsSx = {
+  color: '#94a3b8',
+  fontStyle: 'italic',
+  textAlign: 'center',
+  py: 10,
+  fontSize: '1.1rem'
+};

@@ -15,6 +15,7 @@ import Image from 'next/image';
 
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UndefinedNewsCard from "@/components/shared/UndefinedNewsCard.jsx";
+import RichText from "../../../components/shared/RichText.tsx";
 
 export default function PsychologicalSupport() {
   const { t, locale } = useTranslation("psychological");
@@ -153,7 +154,7 @@ export default function PsychologicalSupport() {
                   <Grid item xs={12} md={8} sx={{ p: { xs: 4, md: 6 } }}>
                     <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', mb: 1 }}>{l(staticData.psychologist.fullNameUk, staticData.psychologist.fullNameEn)}</Typography>
                     <Typography variant="subtitle1" sx={{ color: '#f97316', fontWeight: 700, mb: 3 }}>{l(staticData.psychologist.positionUk, staticData.psychologist.positionEn)}</Typography>
-                    <Typography sx={{ mb: 4, color: '#475569', lineHeight: 1.8 }}>{l(staticData.psychologist.descriptionUk, staticData.psychologist.descriptionEn)}</Typography>
+                    <RichText sx={{ mb: 4, color: '#475569', lineHeight: 1.8 }} html={l(staticData.psychologist.descriptionUk, staticData.psychologist.descriptionEn)}/>
 
                     <Grid container spacing={3}>
                       <Grid item xs={12} sm={6}>

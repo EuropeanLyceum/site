@@ -5,6 +5,7 @@ import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
 import UnifiedNewsLayout from "@/components/shared/UnifiedNewsLayout";
+import RichText from "@/components/shared/RichText.tsx";
 
 export default function ProjectResearchPage() {
   const { t, locale } = useTranslation('projects');
@@ -124,19 +125,13 @@ export default function ProjectResearchPage() {
           )}
 
           {displayDesc && (
-              <Box
-                  className="rich-text-content"
-                  dangerouslySetInnerHTML={{ __html: displayDesc }}
+              <RichText
+                  html={displayDesc}
                   sx={{
                     bgcolor: '#fff',
                     p: { xs: 3, md: 6 },
                     borderRadius: 4,
                     boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                    mb: 4,
-                    whiteSpace: 'pre-wrap',
-                    '& h1, & h2, & h3, & h4': { color: '#0c1865', fontWeight: 800, mt: 4, mb: 2 },
-                    '& p': { fontSize: { xs: 16, md: 18 }, lineHeight: 1.8, color: '#334155', mb: 3 },
-                    '& img': { maxWidth: '100%', borderRadius: 3, my: 4 }
                   }}
               />
           )}
