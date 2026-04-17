@@ -16,40 +16,24 @@ export default function Teachers({ items, locale, t }) {
                 {items.sort((a, b) => a.order - b.order).map((teacher) => {
                     const isEn = locale === 'en';
                     const description = isEn ? teacher.descriptionEn : teacher.descriptionUk;
-                    
+
                     return (
-                        <Box key={teacher.id} sx={{
-                            mb: 6, p: 4, background: alpha('#fff', 0.03),
-                            borderRadius: 6, border: `1px solid ${alpha('#fff', 0.05)}`
-                        }}>
+                        <Box key={teacher.id} sx={teacherBoxSx}>
                             <Grid container spacing={4} alignItems="center">
-                                <Grid item size={{ xs: 12, md: 4 }}>
+                                <Grid item xs={12} md={4}>
                                     <Box sx={{ position: 'relative', height: 400, borderRadius: 4, overflow: 'hidden' }}>
-                                        <Image 
-                                            src={teacher.photo || ''} 
-                                            fill 
-                                            style={{ objectFit: 'cover' }} 
-                                            alt={isEn ? teacher.fullNameEn : teacher.fullNameUk} 
-                                        />
+                                        <Image src={teacher.photo || ''} fill style={{ objectFit: 'cover' }} alt="Teacher" />
                                     </Box>
                                 </Grid>
-                                <Grid item size={{ xs: 12, md: 8 }}>
-                                    <Typography variant="h4" sx={{ color: '#f97316', fontWeight: 800, mb: 1, fontFamily: "'Montserrat Alternates', sans-serif" }}>
+                                <Grid item xs={12} md={8}>
+                                    <Typography variant="h4" sx={{ color: '#f97316', fontWeight: 800, mb: 1 }}>
                                         {isEn ? teacher.fullNameEn : teacher.fullNameUk}
                                     </Typography>
-                                    <Typography sx={{ color: alpha('#fff', 0.5), fontWeight: 700, mb: 3, textTransform: 'uppercase', fontSize: 14 }}>
+                                    <Typography sx={{ color: alpha('#fff', 0.5), fontWeight: 700, mb: 3, textTransform: 'uppercase', fontSize: 13 }}>
                                         {isEn ? teacher.specializationEn : teacher.specializationUk}
                                     </Typography>
-                                    
-                                    {/* RICH TEXT IMPLEMENTATION */}
-                                    <RichText 
-                                        html={description}
-                                        sx={{ 
-                                            ...paragraphSx,
-                                            // Fallback for plain text to preserve line breaks
-                                            whiteSpace: description?.includes('<p>') ? 'normal' : 'pre-line' 
-                                        }}
-                                    />
+
+                                    <RichText html={description} sx={paragraphSx} />
                                 </Grid>
                             </Grid>
                         </Box>
@@ -59,6 +43,11 @@ export default function Teachers({ items, locale, t }) {
         </Box>
     );
 }
+
+const teacherBoxSx = {
+    mb: 6, p: 4, background: alpha('#fff', 0.03),
+    borderRadius: 6, border: `1px solid ${alpha('#fff', 0.05)}`
+};
 
 const titleSx = { fontFamily: "'Montserrat Alternates', sans-serif", fontSize: { xs: 28, md: 42 }, fontWeight: 800, color: '#fff' };
 const paragraphSx = { fontSize: { xs: 15, md: 17 }, lineHeight: 1.7, color: alpha('#fff', 0.8), textAlign: 'justify' };
