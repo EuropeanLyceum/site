@@ -19,7 +19,7 @@ export default function Principals({ items, locale, t }) {
                         const description = isEn ? person.descriptionEn : person.descriptionUk;
 
                         return (
-                            <Grid item key={person.id} xs={12} sm={6} md={4}>
+                            <Grid size={{xs:12, sm:6, md: 4}}>
                                 <Card sx={cardSx}>
                                     <Box sx={{ position: 'relative', height: 350, borderRadius: 4, overflow: 'hidden', mb: 2 }}>
                                         <Image src={person.photo || ''} alt="Principal" fill style={{ objectFit: 'cover' }} />
