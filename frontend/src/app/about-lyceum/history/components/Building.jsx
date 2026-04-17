@@ -2,7 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import RichText from "./RichText"; // Adjust the import path as needed!
+import RichText from "../../../../../components/RichText"; // Adjust the import path as needed!
 
 export default function Building({ items, locale, t, onImageClick }) {
     if (!items?.length) return null;
