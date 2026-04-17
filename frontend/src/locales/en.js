@@ -143,6 +143,7 @@ const en = {
         historyTitle: "Institution history",
         viewAllPhotos: "View all photos",
         foundersTitle: "Founders",
+        viewMore: "View more",
 
         schoolBuildingTitle: "School building",
 
