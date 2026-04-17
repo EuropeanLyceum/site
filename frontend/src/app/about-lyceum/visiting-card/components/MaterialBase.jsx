@@ -2,7 +2,7 @@
 import { Box, Grid, Typography, Container, alpha } from "@mui/material";
 import Image from "next/image";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import RichText from "../../../../RichText"; // Adjust path as needed
+import RichText from "../../../../components/shared/RichText"; // Adjust path as needed
 
 export default function MaterialBase({ t, stats, locale }) {
     if (!stats) return null;

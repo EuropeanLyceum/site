@@ -1,6 +1,6 @@
 'use client';
 import { Box, Typography, Container, alpha } from "@mui/material";
-import RichText from "../../../../RichText"; // Ensure the path is correct
+import RichText from "../../../../components/shared/RichText"; // Ensure the path is correct
 
 export default function Clubs({ t, clubs, locale }) {
     if (!clubs || clubs.length === 0) return null;
