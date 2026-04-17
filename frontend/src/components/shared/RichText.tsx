@@ -24,12 +24,11 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
                 width: '100%',
                 maxWidth: '100%',
 
-                // 🔹 ГОЛОВНЕ РІШЕННЯ:
+                // 🔹 ПРАВИЛЬНЕ РІШЕННЯ ДЛЯ ПЕРЕНОСІВ:
                 whiteSpace: 'normal',
-                wordBreak: 'keep-all',      // ЗАБОРОНЯЄ розривати слова (найважливіше!)
-                overflowWrap: 'anywhere',   // Дозволяє розрив тільки якщо слово фізично не влізає в екран (напр. довгий лінк)
-                lineBreak: 'loose',         // Допомагає уникнути розривів у кирилиці
-                hyphens: 'none',            // Вимикаємо будь-які тире
+                wordBreak: 'normal',         // Стандартні правила (слова не розриваються посередині без потреби)
+                overflowWrap: 'break-word',  // Розриває довге слово/URL ТІЛЬКИ якщо воно не влазить у ширину екрана
+                hyphens: 'none',             // Можна змінити на 'auto', якщо хочете граматичні переноси по складах (потребує <html lang="uk">)
 
                 '& p': {
                     margin: 0,
@@ -60,6 +59,8 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
                 '& a': {
                     color: 'inherit',
                     textDecoration: 'underline',
+                    // Робимо так, щоб довгі лінки точно ламалися і не псували верстку
+                    wordBreak: 'break-word',
                     '&:hover': { opacity: 0.8 },
                 },
 
@@ -70,9 +71,8 @@ export default function RichText({ html = "", sx = {}, clamp }: RichTextProps) {
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
-                    // При clamp ми прибираємо keep-all, бо Safari може "з'їсти" текст,
-                    // але залишаємо логіку переносу цілим словом через normal:
-                    wordBreak: 'normal',
+                    // Залишаємо базові правила для обрізаного тексту
+                    whiteSpace: 'normal',
                 }),
 
                 // Зовнішні стилі
