@@ -4,6 +4,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import SchoolIcon from '@mui/icons-material/School';
 import { sanitizeTextWithLineBreaks } from "@/utils/sanitize";
+import RichText from "@/components/shared/RichText.tsx";
 
 export default function StaffCard({ staff, locale, t }) {
     const isEn = locale === "en";
@@ -105,7 +106,7 @@ export default function StaffCard({ staff, locale, t }) {
                 )}
 
                 {/* Опис (через санітайзер) */}
-                <Box
+                <RichText
                     sx={{
                         color: "#475569",
                         fontSize: { xs: 14, md: 15 },
@@ -113,7 +114,7 @@ export default function StaffCard({ staff, locale, t }) {
                         flexGrow: 1,
                         "& p": { m: 0, mb: 1.5 }
                     }}
-                    dangerouslySetInnerHTML={{ __html: sanitizeTextWithLineBreaks(description) }}
+                    html={description}
                 />
 
                 {/* Контакти (Email та Phone) */}

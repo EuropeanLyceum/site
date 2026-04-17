@@ -10,6 +10,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LaunchIcon from '@mui/icons-material/Launch';
 import { useTranslation } from '@/contexts/TranslationProvider.jsx';
+import RichText from "@/components/shared/RichText.tsx";
 
 export default function StudentsPage() {
     const { locale } = useTranslation("students");
@@ -155,9 +156,7 @@ export default function StudentsPage() {
                                             <MenuBookIcon sx={{ color: '#182BA1' }} />
                                             <Typography variant="h5" sx={{ fontWeight: 800, color: '#0c1865' }}>{l(item.titleUk, item.titleEn)}</Typography>
                                         </Box>
-                                        <Typography sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }}>
-                                            {l(item.textUk, item.textEn)}
-                                        </Typography>
+                                        <RichText sx={{ whiteSpace: 'pre-wrap', color: '#475569', mb: 3, lineHeight: 1.7 }} html={l(item.textUk, item.textEn)}/>
                                         {item.photoGallery?.length > 0 && (
                                             <Box sx={{ mt: 'auto', pt: 2 }}>
                                                 <Grid container spacing={1}>
