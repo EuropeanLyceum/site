@@ -1,5 +1,6 @@
 'use client';
 import { Box, Typography, Container, alpha } from "@mui/material";
+import RichText from "./RichText"; // Ensure the path is correct
 
 export default function Clubs({ t, clubs, locale }) {
     if (!clubs || clubs.length === 0) return null;
@@ -23,12 +24,14 @@ export default function Clubs({ t, clubs, locale }) {
                             display: 'flex', alignItems: 'flex-start', gap: 3, mb: 4, pb: 4,
                             borderBottom: idx !== clubs.length - 1 ? '1px solid #E2E8F0' : 'none'
                         }}>
+                            {/* Numbering */}
                             <Typography sx={{
                                 fontSize: 40, fontWeight: 900, color: alpha('#182BA1', 0.1),
                                 lineHeight: 1, minWidth: 50
                             }}>
                                 {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                             </Typography>
+
                             <Box sx={{ flexGrow: 1 }}>
                                 <Typography sx={{
                                     fontSize: { xs: 20, md: 26 }, fontWeight: 800,
@@ -36,9 +39,19 @@ export default function Clubs({ t, clubs, locale }) {
                                 }}>
                                     {name}
                                 </Typography>
-                                <Typography sx={{ color: '#64748B', fontSize: 17, lineHeight: 1.6 }}>
-                                    {desc}
-                                </Typography>
+
+                                {/* RICH TEXT IMPLEMENTATION */}
+                                <RichText 
+                                    html={desc}
+                                    sx={{ 
+                                        color: '#64748B', 
+                                        fontSize: 17, 
+                                        lineHeight: 1.6,
+                                        // Standard reset for club list descriptions
+                                        whiteSpace: desc?.includes('<p>') ? 'normal' : 'pre-line',
+                                        '& ul': { color: '#64748B', mt: 1 } 
+                                    }}
+                                />
                             </Box>
                         </Box>
                     );
