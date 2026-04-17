@@ -2,6 +2,7 @@
 import { Box, Typography, Grid, alpha, Button } from "@mui/material";
 import Image from "next/image";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
+import RichText from "./RichText"; // Make sure the path matches your project structure
 
 export default function Development({ items, locale, t, onImageClick }) {
     if (!items?.length) return null;
@@ -17,7 +18,11 @@ export default function Development({ items, locale, t, onImageClick }) {
                     const photos = item.photoGallery || [];
                     const title = locale === 'en' ? (item.titleEn || item.titleUk) : item.titleUk;
                     const rawText = locale === 'en' ? (item.textEn || item.textUk) : item.textUk;
-                    const paragraphs = rawText?.split(/\n\n+/).filter(p => p.trim()) || [];
+                    
+                    // SMART SPLIT: Safely separates contiguous <p> tags with double newlines
+                    // so the layout doesn't break if the CMS switches from plain text to rich HTML.
+                    const formattedText = rawText ? rawText.replace(/(<\/p>)\s*(<p[^>]*>)/gi, '$1\n\n$2') : '';
+                    const paragraphs = formattedText.split(/\n\n+/).filter(p => p.trim()) || [];
 
                     return (
                         <Box key={item.id} sx={{ mb: 6, pb: 6, borderBottom: idx !== items.length - 1 ? '1px solid rgba(255,255,255,0.1)' : 'none' }}>
@@ -58,9 +63,15 @@ export default function Development({ items, locale, t, onImageClick }) {
                                         )}
 
                                         <Grid item size={{ xs: 12, md: photo ? 7 : 12 }}>
-                                            <Typography sx={{ ...paragraphSx, whiteSpace: 'pre-line' }}>
-                                                {p}
-                                            </Typography>
+                                            {/* RICH TEXT IMPLEMENTATION */}
+                                            <RichText 
+                                                html={p} 
+                                                sx={{ 
+                                                    ...paragraphSx, 
+                                                    // Switches to normal whitespace if actual HTML tags are detected
+                                                    whiteSpace: p.includes('<p>') ? 'normal' : 'pre-line' 
+                                                }} 
+                                            />
                                         </Grid>
                                     </Grid>
                                 );
