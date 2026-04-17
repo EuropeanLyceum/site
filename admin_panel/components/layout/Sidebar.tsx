@@ -24,6 +24,7 @@ const groupedLinks = [
                     {href: "/pageSection?type=HOME_HERO", label: "Заголовок та вступ"},
                     {href: "/fAQ", label: "Питання (FAQ)"},
                     {href: "/workingArea", label: "Зона роботи"},
+                    {href: "/clubs", label: "Клуби"},
                 ]
             },
             {
