@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import {
     Box, Typography, Container, IconButton, Paper,
-    Stack, Card, CardActionArea, CircularProgress, Grid2 as Grid
+    Stack, Card, CardActionArea, CircularProgress, Grid
 } from "@mui/material";
 
 // Іконки
