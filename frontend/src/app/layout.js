@@ -23,7 +23,10 @@ export const metadata = {
     shortcut: '/icon.png',
     apple: '/icon.png',
   },
-  keywords: ['академічний ліцей європейський лубни', 'школа 6 лубни', 'європейський ліцей', 'лубни освіта', 'academic lyceum european', 'european lyceum'],
+  keywords: ['академічний ліцей європейський лубни', 'академічний ліцей європейський лубни сайт',
+    'школа 6 лубни', 'школа 6 лубни сайт', 'європейський ліцей сайт', 'академічний ліцей європейський сайт',
+    'європейський ліцей', 'лубни освіта', 'academic lyceum european', 'european lyceum',
+    'academic lyceum european site', 'european lyceum site'],
 };
 
 export default function RootLayout({ children }) {
