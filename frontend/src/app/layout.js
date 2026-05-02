@@ -12,7 +12,7 @@ const montserratAlternates = Montserrat_Alternates({
 });
 
 export const metadata = {
-  title: "European Lyceum LMR",
+  title: "Академічний ліцей «Європейський» ЛМР",
   description: "Офіційний сайт Академічного ліцею 'Європейський' Лубенської міської ради (Academic European lyceum LMR). Новини та інформація про ліцей.",
   robots: {
     index: true,
