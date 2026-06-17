@@ -176,7 +176,7 @@ const uk = {
         learnMore: "Переглянути більше",
         noContent: "Інноваційна діяльність відсутня",
         viewVideo: "Переглянути відео",
-        searchPlaceholder: "Пршук",
+        searchPlaceholder: "Пошук",
         viewMore: "Показати більше",
         viewAllPhotos: "Показати всі фото"
     },
