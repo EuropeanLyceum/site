@@ -158,7 +158,10 @@ const en = {
         downloading: "Downloading...",
         learnMore: "Learn more",
         noContent: "No content available",
-        viewVideo: "View video"
+        viewVideo: "View video",
+        searchPlaceholder: "Search",
+        viewMore: "View more",
+        viewAllPhotos: "View all photos"
     },
 
 
