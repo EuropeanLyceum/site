@@ -120,7 +120,7 @@ export default function EvaluationCriteria() {
                   const isExpanded = expandedSubject === subject.id;
 
                   return (
-                      <Grid item xs={12} sm={6} md={4} key={subject.id}>
+                      <Grid size={{xs: 12, sm: 6, md: 4}} key={subject.id}>
                         <Paper
                             elevation={0}
                             sx={{
@@ -185,7 +185,7 @@ export default function EvaluationCriteria() {
                             <Box sx={{ p: 2, bgcolor: alpha('#F5F7FA', 0.8), borderTop: `1px solid ${alpha('#182BA1', 0.05)}` }}>
                               <Grid container spacing={1}>
                                 {subject.subItems?.map((sub) => (
-                                    <Grid item xs={12} key={sub.id}>
+                                    <Grid size={{xs: 12}} key={sub.id}>
                                       <MuiLink
                                           href={sub.link}
                                           target="_blank"

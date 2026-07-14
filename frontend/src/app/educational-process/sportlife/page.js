@@ -13,7 +13,7 @@ export default function SportLifePage() {
     try {
       const limit = 5;
       const query = new URLSearchParams({
-        type: 'SPORT_LIFE', // Тип контенту з вашої бази
+        type: 'SPORT', // Тип контенту з вашої бази
         limit: limit.toString(),
         page: page.toString(),
         search: search || ''
