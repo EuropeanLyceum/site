@@ -36,7 +36,7 @@ export default function TeacherHelpPage() {
       try {
         const [secRes, linkRes] = await Promise.all([
           fetch('/admin/api/admin/pageSection?type=TEACHERS_INFO'),
-          fetch('/admin/api/admin/externalLink?pageKey=TEACHER')
+          fetch('/admin/api/admin/externalLink?pageKey=TEACHER_HELP')
         ]);
         const sJson = await secRes.json();
         const lJson = await linkRes.json();

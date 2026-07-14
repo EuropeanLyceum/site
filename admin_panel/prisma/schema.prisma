@@ -387,6 +387,7 @@ enum PageSectionType {
   INNOVATIVE
   PROJECT_RESEARCH
   QUALIFICATION
+  METHODOLOGICAL
 }
 
 enum ExternalPageKey {

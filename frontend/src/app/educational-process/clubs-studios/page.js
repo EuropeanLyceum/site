@@ -12,7 +12,7 @@ export default function ClubsStudiosPage() {
     try {
       const limit = 5;
       const query = new URLSearchParams({
-        type: 'CLUBS_STUDIOS', // Твій тип контенту
+        type: 'CLUBS', // Твій тип контенту
         limit: limit.toString(),
         page: page.toString(),
         search: search || ''
