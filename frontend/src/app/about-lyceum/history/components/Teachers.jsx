@@ -20,12 +20,12 @@ export default function Teachers({ items, locale, t }) {
                     return (
                         <Box key={teacher.id} sx={teacherBoxSx}>
                             <Grid container spacing={4} alignItems="center">
-                                <Grid item xs={12} md={4}>
+                                <Grid size={{xs: 12, md: 4}} >
                                     <Box sx={{ position: 'relative', height: 400, borderRadius: 4, overflow: 'hidden' }}>
                                         <Image src={teacher.photo || ''} fill style={{ objectFit: 'cover' }} alt="Teacher" />
                                     </Box>
                                 </Grid>
-                                <Grid item xs={12} md={8}>
+                                <Grid size={{xs: 12, md: 8}}>
                                     <Typography variant="h4" sx={{ color: '#f97316', fontWeight: 800, mb: 1 }}>
                                         {isEn ? teacher.fullNameEn : teacher.fullNameUk}
                                     </Typography>
