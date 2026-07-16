@@ -146,22 +146,22 @@ export default function PsychologicalSupport() {
           {staticData.psychologist && (
               <Paper elevation={0} sx={{ borderRadius: 8, overflow: 'hidden', bgcolor: '#fff', border: '1px solid #e2e8f0', boxShadow: '0 20px 40px rgba(0,0,0,0.03)', mb: 10 }}>
                 <Grid container>
-                  <Grid item xs={12} md={4}>
+                  <Grid size={{xs: 12, md:4}}>
                     <Box sx={{ position: 'relative', height: { xs: 400, md: '100%' }, minHeight: 450 }}>
                       <Image src={staticData.psychologist.photo} alt="Psychologist" fill style={{ objectFit: 'cover' }} />
                     </Box>
                   </Grid>
-                  <Grid item xs={12} md={8} sx={{ p: { xs: 4, md: 6 } }}>
+                  <Grid size={{xs: 12, md:8}} sx={{ p: { xs: 4, md: 6 } }}>
                     <Typography variant="h4" sx={{ fontWeight: 900, color: '#0c1865', mb: 1 }}>{l(staticData.psychologist.fullNameUk, staticData.psychologist.fullNameEn)}</Typography>
                     <Typography variant="subtitle1" sx={{ color: '#f97316', fontWeight: 700, mb: 3 }}>{l(staticData.psychologist.positionUk, staticData.psychologist.positionEn)}</Typography>
                     <RichText sx={{ mb: 4, color: '#475569', lineHeight: 1.8 }} html={l(staticData.psychologist.descriptionUk, staticData.psychologist.descriptionEn)}/>
 
                     <Grid container spacing={3}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{xs: 12, sm:6}}>
                         <Stack direction="row" spacing={1.5} alignItems="center" mb={1}><SchoolIcon sx={{ color: '#182BA1' }} /><Typography fontWeight={700}>{t("specialization")}</Typography></Stack>
                         <Typography variant="body2">{l(staticData.psychologist.specializationUk, staticData.psychologist.specializationEn)}</Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{xs: 12, sm:6}}>
                         <Stack direction="row" spacing={1.5} alignItems="center" mb={1}><ContactSupportIcon sx={{ color: '#182BA1' }} /><Typography fontWeight={700}>{t("howToContact")}</Typography></Stack>
                         <Typography variant="body2">Email: <b>{staticData.psychologist.email}</b></Typography>
                         <Typography variant="body2">Тел: <b>{staticData.psychologist.phone}</b></Typography>
@@ -177,7 +177,7 @@ export default function PsychologicalSupport() {
             <Typography variant="h4" sx={{ fontWeight: 900, mb: 4, color: '#0c1865', textAlign: 'center' }}>{t("usefulResources")}</Typography>
             <Grid container spacing={2}>
               {staticData.links.map((link) => (
-                  <Grid item xs={12} sm={6} md={4} key={link.id}>
+                  <Grid size={{xs: 12, sm:6, md: 4}} key={link.id}>
                     <Paper component="a" href={link.url} target="_blank" sx={{ p: 3, borderRadius: 4, display: 'flex', alignItems: 'center', gap: 2, textDecoration: 'none', transition: '0.3s', border: '1px solid #e2e8f0', '&:hover': { transform: 'translateY(-5px)', borderColor: '#182BA1' } }}>
                       <LaunchIcon sx={{ color: '#f97316' }} />
                       <Typography fontWeight={700} color="#0c1865">{l(link.titleUk, link.titleEn)}</Typography>
