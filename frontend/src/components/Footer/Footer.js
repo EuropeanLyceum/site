@@ -41,7 +41,7 @@ const Footer = () => {
         { img: instagramImage, alt: "Instagram", href: "https://www.instagram.com/european_lyceum_", width: 40 },
         { img: youTubeImage, alt: "YouTube", href: "https://www.youtube.com/c/SolarTVLubny", width: 56 },
         { img: facebookImage, alt: "Facebook", href: "https://www.facebook.com/share/19q3p763W2/", width: 24 },
-        { img: telegramImage, alt: "Telegram", href: "https://t.me/european_infobot", width: 56 }
+        { img: telegramImage, alt: "Telegram", href: "https://t.me/european_infobot", width: 40 }
     ];
 
     return (
