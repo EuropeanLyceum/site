@@ -8,7 +8,7 @@ const en = {
         studentsCount: "students are studying at our lyceum",
         teachersCount: "teachers currently work at the lyceum",
         flexWinners: "winners of the FLEX national exchange program",
-        examResults: "students scored 200 points on NMT 2024",
+        examResults: "students scored 200 points on NMT/ZNO",
         faqTitle: "FAQ (Frequently Asked Questions)",
     },
 
@@ -252,6 +252,9 @@ const en = {
 
     projects: {
         pageTitle: "Project research",
+        readMore: "Read more",
+        collapse: "Read less",
+        viewMore: "View more",
         noResults: "No results",
         searchPlaceholder: "Search"
     },
