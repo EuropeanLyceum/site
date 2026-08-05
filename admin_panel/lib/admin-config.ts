@@ -124,7 +124,7 @@ export const ADMIN_MODELS = {
         tableFields: ["titleUk", "pageKey", "order"],
         allFields: ["pageKey", "titleUk", "titleEn", "url", "order"],
         enums: {
-            pageKey: ["PARENTS", "STUDENTS", "TEACHER_HELP", "PSYCHOLOGICAL", "BULLYING", "CERTIFICATION", "METHODOLOGICAL"]
+            pageKey: ["PARENTS", "STUDENTS", "TEACHER_HELP", "PSYCHOLOGICAL", "BULLYING", "CERTIFICATION", "METHODOLOGICAL", "NEWSPAPER"]
         }
     },
 
