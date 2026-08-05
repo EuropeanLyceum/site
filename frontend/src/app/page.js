@@ -50,8 +50,8 @@ export default function MainPage() {
         fetch('/admin/api/admin/externalLink?pageKey=NEWSPAPER')
             .then(res => res.json())
             .then(data => {
-                console.log(data)
-                if (!data.error) setLink(data[0].url);
+                console.log(data.data)
+                if (!data.error) setLink(data.data[0].url);
             }).catch(err => console.error("Link Error:", err));
 
     }, [locale]);
