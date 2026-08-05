@@ -16,3 +16,6 @@ volumes/
 # Logs
 *.log
 logs/
+
+# backups
+/backups/
