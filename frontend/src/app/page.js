@@ -12,6 +12,7 @@ export default function MainPage() {
     const [faqs, setFaqs] = useState([]);
     const [heroData, setHeroData] = useState(null);
     const [stats, setStats] = useState(null);
+    const [link, setLink] = useState(null);
 
     useEffect(() => {
         const isEn = locale === "en";
@@ -46,12 +47,18 @@ export default function MainPage() {
                 if (!data.error) setStats(data);
             }).catch(err => console.error("Stats Error:", err));
 
+        fetch('/admin/api/admin/externalLink?pageKey=NEWSPAPER')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.error) setLink(data.url);
+            }).catch(err => console.error("Link Error:", err));
+
     }, [locale]);
 
     return (
         <>
             <Hero t={t} locale={locale} data={heroData} />
-            <UsefulFunctions t={t} />
+            <UsefulFunctions t={t} linkToNewspaper={link}/>
             <Statistics t={t} stats={stats} />
             <FAQSection
                 t={t}

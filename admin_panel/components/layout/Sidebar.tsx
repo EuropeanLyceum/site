@@ -178,6 +178,7 @@ const groupedLinks = [
             {href: "/location", label: "VR-Тур (Поверхи/Кімнати)"},
             {href: "/testQuestion", label: "Тест: Питання"},
             {href: "/specialization", label: "Тест: Результати (Профілі)"},
+            {href: "/externalLink?pageKey=NEWSPAPER", label: "Посилання на меридіан"}
         ],
     },
     {

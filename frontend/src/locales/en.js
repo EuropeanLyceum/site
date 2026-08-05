@@ -5,6 +5,7 @@ const en = {
         virtualTour: "Virtual Tour",
         profileTests: "Profile Tests",
         faq: "FAQ",
+        newspaper: "Lyceum`s newspaper",
         studentsCount: "students are studying at our lyceum",
         teachersCount: "teachers currently work at the lyceum",
         flexWinners: "winners of the FLEX national exchange program",

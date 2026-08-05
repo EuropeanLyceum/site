@@ -4,8 +4,9 @@ import FunctionCard from "./FunctionCard";
 import virtualImg from "@/assets/photos/home/virtual.jpg";
 import testImage from "@/assets/photos/home/test.jpg";
 import faqImg from "@/assets/photos/home/FAQ.jpg";
+import meredianImg from "@/assets/photos/home/newspaper.png";
 
-export default function UsefulFunctions({ t }) {
+export default function UsefulFunctions({ t, linkToNewspaper }) {
     const handleFaqClick = (e) => {
         if (!document.getElementById("faq-section")) return;
         e.preventDefault();
@@ -50,7 +51,7 @@ export default function UsefulFunctions({ t }) {
                     </Grid>
 
                     {/* Bottom row */}
-                    <Grid item size={{xs: 12, md: 6}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
+                    <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
                         <FunctionCard
                             href="/features/profile-tests"
                             image={testImage}
@@ -58,7 +59,15 @@ export default function UsefulFunctions({ t }) {
                         />
                     </Grid>
 
-                    <Grid item size={{xs: 12, md: 6}} sx={{ pl: { xs: '0 !important', md: '32px !important' } }}>
+                    <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
+                        <FunctionCard
+                            href=linkToNewspaper
+                            image={meredianImg}
+                            title={t("newspaper")}
+                        />
+                    </Grid>
+
+                    <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '32px !important' } }}>
                         <FunctionCard
                             image={faqImg}
                             title={t("faq")}

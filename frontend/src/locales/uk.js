@@ -9,6 +9,7 @@ const uk = {
         recommendTry: "Рекомендуємо спробувати!",
         virtualTour: "Віртуальна прогулянка",
         profileTests: "Профільні тести",
+        newspaper: "Ліцейський мередіан",
         faq: "FAQ",
         studentsCount: "учнів здобувають освіту у нашому ліцеї",
         teachersCount: "вчителів працюють у ліцеї на даний час",
