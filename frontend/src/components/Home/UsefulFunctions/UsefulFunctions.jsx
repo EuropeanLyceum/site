@@ -61,7 +61,7 @@ export default function UsefulFunctions({ t, linkToNewspaper }) {
 
                     <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
                         <FunctionCard
-                            href=linkToNewspaper
+                            href={linkToNewspaper}
                             image={meredianImg}
                             title={t("newspaper")}
                         />
