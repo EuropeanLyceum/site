@@ -163,7 +163,7 @@ const groupedLinks = [
                 label: "🏅 Сертифікація",
                 subLinks: [
                     {href: "/pageSection?type=CERTIFICATION_REAL", label: "Заголовок та вступ"},
-                    {href: "/person?type=CERTIFIED_TEACHER", label: "Члени комісії"},
+                    {href: "/person?type=CERTIFIED_TEACHER", label: "Сертифіковані вчителі"},
                     {href: "/content?type=CERTIFICATION_REAL", label: "Матеріали"},
                     {href: "/externalLink?pageKey=CERTIFICATION_REAL", label: "Корисні посилання"},
                 ],
