@@ -6,6 +6,7 @@ import {
   AccordionDetails, Link as MuiLink, CircularProgress, alpha, Grid, Paper, Stack,
   TextField, InputAdornment, Pagination
 } from '@mui/material';
+import Image from 'next/image';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EmailIcon from '@mui/icons-material/Email';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -157,13 +158,45 @@ export default function TeacherCertificationPage() {
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography sx={{ fontWeight: 700 }}>{isEn ? "View List" : "Переглянути склад"}</Typography>
                 </AccordionSummary>
-                <AccordionDetails sx={{ p: 0 }}>
-                  {staticData.commission.map((person) => (
-                      <Box key={person.id} sx={personRowSx}>
-                        <Typography sx={{ fontWeight: 800, color: '#0c1865' }}>{l(person.fullNameUk, person.fullNameEn)}</Typography>
-                        <Typography variant="body2" sx={{ color: '#64748b' }}>{l(person.positionUk, person.positionEn)}</Typography>
-                      </Box>
-                  ))}
+                <AccordionDetails sx={{ p: 3 }}>
+                  <Grid container spacing={3}>
+                    {staticData.commission.map((person) => (
+                        <Grid size={{ xs: 12, sm: 6 }} key={person.id}>
+                          <Paper sx={personCardSx}>
+                            <Box sx={personPhotoWrapperSx}>
+                              {person.photo ? (
+                                  <Image
+                                      src={person.photo}
+                                      alt={l(person.fullNameUk, person.fullNameEn)}
+                                      fill
+                                      style={{ objectFit: 'cover' }}
+                                  />
+                              ) : (
+                                  <Box sx={personPhotoPlaceholderSx}>
+                                    <Typography sx={{ fontWeight: 900, color: '#64748b' }}>
+                                      {l(person.fullNameUk, person.fullNameEn)
+                                          ?.split(' ')
+                                          .map((n) => n[0])
+                                          .slice(0, 2)
+                                          .join('')}
+                                    </Typography>
+                                  </Box>
+                              )}
+                            </Box>
+
+                            <Stack spacing={1} alignItems="center">
+                              <Typography sx={personNameSx}>
+                                {l(person.fullNameUk, person.fullNameEn)}
+                              </Typography>
+
+                              <Typography variant="body2" sx={personPositionSx}>
+                                {l(person.positionUk, person.positionEn)}
+                              </Typography>
+                            </Stack>
+                          </Paper>
+                        </Grid>
+                    ))}
+                  </Grid>
                 </AccordionDetails>
               </Accordion>
             </Grid>
@@ -353,4 +386,55 @@ const noResultsSx = {
   textAlign: 'center',
   py: 10,
   fontSize: '1.1rem'
+};
+
+const personCardSx = {
+  p: 3,
+  height: '100%',
+  borderRadius: 5,
+  border: '1px solid #e2e8f0',
+  boxShadow: '0 10px 30px rgba(15, 23, 42, 0.05)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  textAlign: 'center',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 18px 40px rgba(15, 23, 42, 0.12)',
+    borderColor: '#c7d2fe',
+  },
+};
+
+const personPhotoWrapperSx = {
+  position: 'relative',
+  width: 112,
+  height: 112,
+  borderRadius: '50%',
+  overflow: 'hidden',
+  mb: 2,
+  border: '4px solid #fff',
+  boxShadow: '0 8px 20px rgba(12, 24, 101, 0.15)',
+  bgcolor: '#e2e8f0',
+};
+
+const personPhotoPlaceholderSx = {
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  bgcolor: '#e2e8f0',
+  fontSize: '1.1rem',
+};
+
+const personNameSx = {
+  fontWeight: 800,
+  color: '#0c1865',
+  lineHeight: 1.3,
+};
+
+const personPositionSx = {
+  color: '#64748b',
+  lineHeight: 1.5,
 };
