@@ -88,7 +88,8 @@ const Header = () => {
       sub: [
         { label: t("teacherHelp"), href: "/methodical-work/teacher-support" },
         { label: t("qualificationImprovement"), href: "/methodical-work/qualification-improvement" },
-        { label: t("teacherCertification"), href: "/methodical-work/teacher-certification" },
+        { label: t("teacherAttestation"), href: "/methodical-work/teacher-certification" },
+        { label: t("teacherCertification"), href: "/methodical-work/teacher-certification-real" },
         { label: t("methodicalEvents"), href: "/methodical-work/methodical-events" }
       ]
     },

@@ -67,7 +67,7 @@ export default function UsefulFunctions({ t, linkToNewspaper }) {
                         />
                     </Grid>
 
-                    <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '32px !important' } }}>
+                    <Grid item size={{xs: 12, md: 6, lg: 4}} sx={{ pl: { xs: '0 !important', md: '0 !important' } }}>
                         <FunctionCard
                             image={faqImg}
                             title={t("faq")}

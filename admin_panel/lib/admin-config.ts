@@ -103,7 +103,7 @@ export const ADMIN_MODELS = {
         tableFields: ["titleUk", "type", "publicationDate"],
         allFields: ["type", "slug", "titleUk", "titleEn", "textUk", "textEn", "photoGallery", "videoUrl", "publicationDate", "attributes"],
         enums: {
-            type: ["NEWS", "RESEARCH_PROJECT", "INNOVATION", "HISTORY", "BUILDING", "FOUNDERS", "FOR_PARENTS", "FOR_STUDENTS", "FOR_TEACHERS", "PATRIOTIC", "CLUBS", "SPORT", "METHODOLOGICAL", "PSYCHOLOGICAL", "ANTI_BULLYING", "QUALIFICATION", "CERTIFICATION", "INTELLECT", "GOVERNMENT"]
+            type: ["NEWS", "RESEARCH_PROJECT", "INNOVATION", "HISTORY", "BUILDING", "FOUNDERS", "FOR_PARENTS", "FOR_STUDENTS", "FOR_TEACHERS", "PATRIOTIC", "CLUBS", "SPORT", "METHODOLOGICAL", "PSYCHOLOGICAL", "ANTI_BULLYING", "QUALIFICATION", "CERTIFICATION", "CERTIFICATION_REAL", "INTELLECT", "GOVERNMENT"]
         }
     },
     pageSection: {
@@ -111,7 +111,7 @@ export const ADMIN_MODELS = {
         tableFields: ["type", "titleUk", "updatedAt"],
         allFields: ["type", "titleUk", "titleEn", "contentUk", "contentEn", "imagePhoto"],
         enums: {
-            type: ["HOME_HERO", "PARENTS_INFO", "STUDENTS_INFO", "PSYCHOLOGICAL", "CERTIFICATION", "ANTI_BULLYING", "INNOVATIVE", "PROJECT_RESEARCH"]
+            type: ["HOME_HERO", "PARENTS_INFO", "STUDENTS_INFO", "PSYCHOLOGICAL", "CERTIFICATION", "CERTIFICATION_REAL", "ANTI_BULLYING", "INNOVATIVE", "PROJECT_RESEARCH"]
         }
     },
     fAQ: {
@@ -124,7 +124,7 @@ export const ADMIN_MODELS = {
         tableFields: ["titleUk", "pageKey", "order"],
         allFields: ["pageKey", "titleUk", "titleEn", "url", "order"],
         enums: {
-            pageKey: ["PARENTS", "STUDENTS", "TEACHER_HELP", "PSYCHOLOGICAL", "BULLYING", "CERTIFICATION", "METHODOLOGICAL", "NEWSPAPER"]
+            pageKey: ["PARENTS", "STUDENTS", "TEACHER_HELP", "PSYCHOLOGICAL", "BULLYING", "CERTIFICATION", "CERTIFICATION_REAL", "METHODOLOGICAL", "NEWSPAPER"]
         }
     },
 
@@ -140,7 +140,7 @@ export const ADMIN_MODELS = {
             }
         },
         enums: {
-            type: ["TEACHER", "PRINCIPALS", "COMMISSION_MEMBER", "FAMOUS_PERSON", "ALUMNI", "STUDENT_COUNCIL", "PSYCHOLOGIST"]
+            type: ["TEACHER", "PRINCIPALS", "COMMISSION_MEMBER", "FAMOUS_PERSON", "ALUMNI", "STUDENT_COUNCIL", "PSYCHOLOGIST", "CERTIFIED_TEACHER"]
         }
     },
     personCategory: {
