@@ -43,9 +43,9 @@ export default function TeacherCertificationPage() {
     const loadStatic = async () => {
       try {
         const [secRes, linkRes, commRes] = await Promise.all([
-          fetch('/admin/api/admin/pageSection?type=CERTIFICATION'),
-          fetch('/admin/api/admin/externalLink?pageKey=CERTIFICATION'),
-          fetch('/admin/api/admin/person?type=COMMISSION_MEMBER')
+          fetch('/admin/api/admin/pageSection?type=CERTIFICATION_REAL'),
+          fetch('/admin/api/admin/externalLink?pageKey=CERTIFICATION_REAL'),
+          fetch('/admin/api/admin/person?type=CERTIFIED_TEACHER')
         ]);
 
         const [sJson, lJson, cJson] = await Promise.all([
@@ -70,7 +70,7 @@ export default function TeacherCertificationPage() {
     setIsLoadingArticles(true);
     try {
       const params = new URLSearchParams({
-        type: 'CERTIFICATION',
+        type: 'CERTIFICATION_REAL',
         limit: itemsPerPage.toString(),
         page: currentPage.toString(),
         search: search || ''
@@ -115,7 +115,7 @@ export default function TeacherCertificationPage() {
         <Box sx={heroSx}>
           <Container maxWidth="md">
             <Typography variant="h1" sx={heroTitleSx}>
-              {l(staticData.section?.titleUk, staticData.section?.titleEn) || "Attestation"}
+              {l(staticData.section?.titleUk, staticData.section?.titleEn) || "Certification_REAL"}
             </Typography>
             <RichText
                 html={l(staticData.section?.contentUk, staticData.section?.contentEn)}
@@ -129,34 +129,17 @@ export default function TeacherCertificationPage() {
         <Container maxWidth="lg" sx={{ mt: -4, position: 'relative', zIndex: 2 }}>
           {/* ІНФОРМАЦІЙНИЙ БЛОК */}
           <Grid container spacing={4} sx={{ mb: 10 }}>
-            {/* Email Card */}
-            <Grid size={12}>
-              <Paper sx={emailCardSx}>
-                <Box sx={iconWrapperSx('#f97316')}>
-                  <EmailIcon sx={{ fontSize: 40, color: '#f97316' }} />
-                </Box>
-                <Box>
-                  <Typography variant="subtitle2" sx={labelSx}>
-                    {isEn ? "Email for documents" : "Електронна пошта для документів"}
-                  </Typography>
-                  <MuiLink href="mailto:atestacia24licey@gmail.com" sx={emailLinkSx}>
-                    atestacia24licey@gmail.com
-                  </MuiLink>
-                </Box>
-              </Paper>
-            </Grid>
-
             {/* Комісія */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
                 <GroupsIcon sx={{ color: '#182BA1' }} />
                 <Typography variant="h5" sx={sectionTitleSx}>
-                  {isEn ? "Commission" : "Комісія"}
+                  {isEn ? "Certified teachers" : "Сертифіковані вчителі"}
                 </Typography>
               </Stack>
               <Accordion sx={accordionSx}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography sx={{ fontWeight: 700 }}>{isEn ? "View List" : "Переглянути склад"}</Typography>
+                  <Typography sx={{ fontWeight: 700 }}>{isEn ? "View List" : "Переглянути"}</Typography>
                 </AccordionSummary>
                 <AccordionDetails sx={{ p: 3 }}>
                   <Grid container spacing={3}>
@@ -223,7 +206,7 @@ export default function TeacherCertificationPage() {
           {/* ПОШУК ТА ХІД АТЕСТАЦІЇ */}
           <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" sx={{ mb: 6 }} spacing={2}>
             <Typography variant="h4" sx={feedTitleSx}>
-              {isEn ? "Attestation Events" : "Хід атестації"}
+              {isEn ? "Certification Events" : "Хід атестації"}
             </Typography>
             <TextField
                 size="small"

@@ -151,12 +151,21 @@ const groupedLinks = [
                 ],
             },
             {
-                label: "🏅 Сертифікація",
+                label: "🏅 Атестація",
                 subLinks: [
                     {href: "/pageSection?type=CERTIFICATION", label: "Заголовок та вступ"},
                     {href: "/person?type=COMMISSION_MEMBER", label: "Члени комісії"},
                     {href: "/content?type=CERTIFICATION", label: "Матеріали"}, // Новий тип
                     {href: "/externalLink?pageKey=CERTIFICATION", label: "Корисні посилання"},
+                ],
+            },
+            {
+                label: "🏅 Сертифікація",
+                subLinks: [
+                    {href: "/pageSection?type=CERTIFICATION_REAL", label: "Заголовок та вступ"},
+                    {href: "/person?type=CERTIFIED_TEACHER", label: "Члени комісії"},
+                    {href: "/content?type=CERTIFICATION_REAL", label: "Матеріали"},
+                    {href: "/externalLink?pageKey=CERTIFICATION_REAL", label: "Корисні посилання"},
                 ],
             },
         ],

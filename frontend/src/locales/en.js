@@ -91,6 +91,7 @@ const en = {
         methodicalWork: "Methodical work",
         teacherHelp: "Teacher support",
         qualificationImprovement: "Qualification improvement",
+        teacherAttestation: "Teacher attestation",
         teacherCertification: "Teacher certification",
         methodicalEvents: "Main methodical events",
         pedagogicalOlympus: "Pedagogical olympus",
