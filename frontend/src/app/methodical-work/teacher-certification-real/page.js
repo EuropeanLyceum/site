@@ -126,7 +126,7 @@ export default function TeacherCertificationPage() {
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ mt: -4, position: 'relative', zIndex: 2 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, position: 'relative', zIndex: 2 }}>
           {/* ІНФОРМАЦІЙНИЙ БЛОК */}
           <Grid container spacing={4} sx={{ mb: 10 }}>
             {/* Комісія */}
