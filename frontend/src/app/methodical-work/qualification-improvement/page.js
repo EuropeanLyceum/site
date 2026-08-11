@@ -104,7 +104,7 @@ export default function QualificationImprovementPage() {
           </Container>
         </Box>
 
-        <Container maxWidth="lg" sx={{ mt: { xs: -4, md: -6 }, position: 'relative', zIndex: 2 }}>
+        <Container maxWidth="lg" sx={{ mt: -10, position: 'relative', zIndex: 2 }}>
           {/* SEARCH & TITLE */}
           <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems="center" spacing={3} sx={{ mb: 6 }}>
             <Typography variant="h4" sx={sectionTitleSx}>
