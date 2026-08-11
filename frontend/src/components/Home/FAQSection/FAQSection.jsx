@@ -7,7 +7,6 @@ import {
     AccordionSummary,
     AccordionDetails,
     Typography,
-    Container,
     CircularProgress
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -24,7 +23,7 @@ const FAQSection = ({ options = [], title, image, imageAlt, t }) => {
                 position: 'relative'
             }}
         >
-            <Container maxWidth="xl" disableGutters>
+            <Box disableGutters>
                 <Grid container spacing={4} alignItems="center">
                     {/* ФОТО */}
                     <Grid item size={{ xs: 0, md: 5 }} sx={{ position: 'relative' }}>
@@ -133,7 +132,7 @@ const FAQSection = ({ options = [], title, image, imageAlt, t }) => {
                         )}
                     </Grid>
                 </Grid>
-            </Container>
+            </Box>
         </Box>
     );
 };
