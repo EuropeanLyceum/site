@@ -264,7 +264,7 @@ export default function TeacherCertificationPage() {
 
 const heroSx = {
   py: { xs: 10, md: 15 },
-  background: 'linear-gradient(135deg, #0c1865 0%, #1e293b 100%)',
+  background: 'linear-gradient(135deg, #0c1865 0%, #182BA1 100%)',
   color: '#fff',
   textAlign: 'center',
   clipPath: 'polygon(0 0, 100% 0, 100% 92%, 0% 100%)',
