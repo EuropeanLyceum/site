@@ -235,7 +235,7 @@ const heroTitleSx = {
 
 const sectionTitleSx = {
   fontWeight: 900,
-  color: '#0c1865',
+  color: '#fff',
   fontFamily: "'Montserrat Alternates', sans-serif",
   textAlign: { xs: 'center', md: 'left' }
 };
