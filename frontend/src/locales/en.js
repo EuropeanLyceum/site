@@ -304,7 +304,7 @@ const en = {
         noResults: "No results",
         searchPlaceholder: "Search",
 
-        methodologicalRecommendations: "General methodological recommendations for organizing the educational process in fifth grades",
+        methodologicalRecommendations: "General methodological recommendations",
     },
 
     qualification: {
