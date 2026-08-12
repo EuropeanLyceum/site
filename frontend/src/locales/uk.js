@@ -327,7 +327,7 @@ const uk = {
         noResults: "За вашим запитом нічого не знайдено",
         searchPlaceholder: "Пошук...",
 
-        methodologicalRecommendations: "Загальні методичні рекомендації щодо організації навчально-виховного процесу в п'ятих класах",
+        methodologicalRecommendations: "Загальні методичні рекомендації",
     },
 
     qualification: {
