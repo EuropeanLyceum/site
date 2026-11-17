@@ -6,16 +6,16 @@ This guide explains how to run the application locally using Docker Compose.
 
 ```bash
 # Start all services
-docker compose -f docker-compose.local.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 
 # View logs
-docker compose -f docker-compose.local.yml logs -f
+docker compose -f docker-compose.dev.yml logs -f
 
 # Stop all services
-docker compose -f docker-compose.local.yml down
+docker compose -f docker-compose.dev.yml down
 
 # Stop and remove volumes (clean slate)
-docker compose -f docker-compose.local.yml down -v
+docker compose -f docker-compose.dev.yml down -v
 ```
 
 ## Access Points
@@ -49,11 +49,11 @@ JWT_SECRET=local-jwt-secret-change-in-production
 NEXT_PUBLIC_API_URL=
 ```
 
-**Note**: Default values are provided in `docker-compose.local.yml`, so you can start without a `.env` file for quick testing.
+**Note**: Default values are provided in `docker-compose.dev.yml`, so you can start without a `.env` file for quick testing.
 
 ## Differences from Production
 
-### Local Configuration (`docker-compose.local.yml`)
+### Local Configuration (`docker-compose.dev.yml`)
 
 1. **Exposed Ports**:
    - PostgreSQL: `5432` (for database tools)
@@ -101,7 +101,7 @@ docker exec admin-panel-local sh -c "cd /app && node scripts/auth/init-admin.js"
 
 ### Port Already in Use
 
-If port 8080 is already in use, change it in `docker-compose.local.yml`:
+If port 8080 is already in use, change it in `docker-compose.dev.yml`:
 
 ```yaml
 nginx:
@@ -113,7 +113,7 @@ nginx:
 
 1. Check if PostgreSQL is running:
    ```bash
-   docker compose -f docker-compose.local.yml ps postgres_db
+   docker compose -f docker-compose.dev.yml ps postgres_db
    ```
 
 2. Verify DATABASE_URL:
@@ -130,12 +130,12 @@ nginx:
 
 1. Check logs:
    ```bash
-   docker compose -f docker-compose.local.yml logs
+   docker compose -f docker-compose.dev.yml logs
    ```
 
 2. Rebuild containers:
    ```bash
-   docker compose -f docker-compose.local.yml up -d --build
+   docker compose -f docker-compose.dev.yml up -d --build
    ```
 
 ### Nginx Configuration Issues
@@ -155,8 +155,8 @@ nginx:
 ### Making Changes
 
 1. **Code Changes**: Edit files in `admin_panel/` or `frontend/`
-2. **Rebuild**: `docker compose -f docker-compose.local.yml up -d --build <service-name>`
-3. **View Logs**: `docker compose -f docker-compose.local.yml logs -f <service-name>`
+2. **Rebuild**: `docker compose -f docker-compose.dev.yml up -d --build <service-name>`
+3. **View Logs**: `docker compose -f docker-compose.dev.yml logs -f <service-name>`
 
 ### Hot Reload
 
@@ -169,13 +169,13 @@ For hot reload during development, you might want to:
 
 ```bash
 # Stop and remove containers
-docker compose -f docker-compose.local.yml down
+docker compose -f docker-compose.dev.yml down
 
 # Stop, remove containers, and volumes
-docker compose -f docker-compose.local.yml down -v
+docker compose -f docker-compose.dev.yml down -v
 
 # Remove images (optional)
-docker compose -f docker-compose.local.yml down --rmi all
+docker compose -f docker-compose.dev.yml down --rmi all
 ```
 
 ## Switching Between Local and Production
@@ -184,7 +184,7 @@ To switch between local and production configurations:
 
 ```bash
 # Local development
-docker compose -f docker-compose.local.yml up -d
+docker compose -f docker-compose.dev.yml up -d
 
 # Production
 docker compose -f docker-compose.yml up -d
