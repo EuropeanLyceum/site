@@ -6,8 +6,7 @@ const prisma = new PrismaClient();
 async function checkPassword() {
   try {
     console.log('🔍 Перевірка пароля в базі даних...');
-    
-    // Знаходимо адміністратора
+
     const admin = await prisma.adminUser.findFirst({
       where: { username: 'new' }
     });
@@ -21,8 +20,7 @@ async function checkPassword() {
     console.log('📧 Email:', admin.email);
     console.log('🔐 Роль:', admin.role);
     console.log('✅ Активний:', admin.isActive);
-    
-    // Тестуємо різні паролі
+
     const testPasswords = [
       'Euro202509220034@Secure',
       '12345678',

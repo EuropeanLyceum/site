@@ -1,24 +1,33 @@
-FROM node:20-alpine
+FROM node:20-bookworm-slim
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+
+RUN npm ci
 
 COPY . .
 
-# Generate Prisma client
-RUN npx prisma generate
+ARG NEXTAUTH_SECRET
+ARG NEXTAUTH_URL
+ARG DATABASE_URL
+ARG AUTH_URL
 
-# Build for production
+ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
+ENV NEXTAUTH_URL=$NEXTAUTH_URL
+ENV DATABASE_URL=$DATABASE_URL
+ENV AUTH_URL=$AUTH_URL
+ENV NODE_ENV=production
+
+RUN npx prisma generate
 RUN npm run build
 
-ENV NODE_ENV=production
+RUN mkdir -p .next/standalone/.next
+RUN cp -r .next/static .next/standalone/.next/static
+RUN cp -r public .next/standalone/
 
 EXPOSE 3001
 
-# якщо standalone
-CMD ["node", ".next/standalone/server.js"]
+WORKDIR /app/.next/standalone
 
-# або звичайний Next.js build
-# CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]

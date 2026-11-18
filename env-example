@@ -1,0 +1,12 @@
+﻿COMPOSE_PROJECT_NAME=string
+DATABASE_URL=file:./prisma/dev.db
+NEXT_PUBLIC_API_URL=
+
+# Admin Panel Configuration
+NEXTAUTH_SECRET="your-unique-random-jwt-secret-key-change-this-in-production-2024"
+NEXTAUTH_URL=http://localhost
+JWT_SECRET="your-unique-random-jwt-secret-key-change-this-in-production-2024"
+# Frontend Configuration
+# Leave empty for same-origin requests (recommended when using nginx)
+# Or set to full URL if frontend needs to call admin API from different domain
+NEXT_PUBLIC_API_URL=
