@@ -16,8 +16,7 @@ It has two parts: a public website for students, parents and teachers, and an ad
 
 **Admin panel**
 - Secure login for staff, password change
-- One generic editor for 18 content types: pages and sections, news, staff and categories, clubs, documents and files, FAQ, statistics, profile tests and more
-- Image uploads through Cloudinary
+- One generic editor for 17 content types: pages and sections, staff and categories, clubs, documents and files, FAQ, statistics, profile tests and more
 
 ## Tech stack
 
